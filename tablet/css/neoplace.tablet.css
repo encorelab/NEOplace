@@ -19,3 +19,23 @@
     padding: 1px;
     width: 44px;
 }
+
+/** teacher styles **/
+
+.teacher {
+    background: #F3D0D0;
+}
+
+.teacher .foobar {
+
+}
+
+/** student styles **/
+
+.student {
+    background: #E8F3E8;
+}
+
+.teacher .foobar {
+
+}

@@ -3,6 +3,9 @@
     "domain": "proto.encorelab.org",
     "port": 5222
   },
+"rollcall": {
+    "url": "http://rollcall.proto.encorelab.org/"
+  },
 "bosh": {
     "url": "http://proto.encorelab.org:5280/http-bind/"
   },
