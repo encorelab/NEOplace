@@ -5,7 +5,7 @@ Mike Tissenbaum&#39;s Sail Smart Space app.
 
 See https://github.com/educoder/sail.docs/wiki for more info about the Sail Smart Space platform.
 
-#Licence
+#License
 This software is available under the [MIT licence](http://www.opensource.org/licenses/mit-license.php)
 
 **Copyright (c) 2011 -- Jim Slotta - Ontario Institute for Studies in Education (OISE) at University of Toronto**
