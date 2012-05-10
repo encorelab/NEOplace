@@ -20,6 +20,15 @@
     width: 44px;
 }
 
+/** codiqa generated **/
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
 /** teacher styles **/
 
 .teacher {
@@ -38,4 +47,10 @@
 
 .teacher .foobar {
 
+}
+
+/** common styles **/
+
+.footnote {
+    font-size: 0.7em;
 }

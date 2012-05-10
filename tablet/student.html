@@ -12,26 +12,138 @@
     <script src="js/sail.js/sail.js" type="text/javascript"></script>
 </head>
 <body class="student">
-    <div data-role="page" id="participant-ui" style="display: none">
-        <header data-theme="b" data-role="header" data-position="fixed">
-            <h1>
-                NEOplace
-            </h1>
-        </header>
+
+    <!-- START loading -->
+    <div data-role="page" id="loadingAnimation">
+
+        <div data-theme="a" data-role="header">
+            <h1>NEOplace - Pre-class Activity - Welcome</h1>
+        </div>
         <div data-role="content">
-            <div id="main-region"  data-theme="b" data-content-theme="d" data-role="collapsible" data-collapsed="false">
-            
+            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Welcome" width="650" height="240" alt="Welcome" /></p>
+            <p class="text-align-center">[Instructions: You have X minutes to narrow choose your tags.]</p>
+            <a href="#groupPrincipleReview" data-role="button"  data-theme="b" id="startButton" style="display:none;">Start</a>
+        </div>
+
+    </div>
+    <!-- END loading -->
+    
+    <!-- START groupPrincipleReview page -->
+    <div data-role="page" id="groupPrincipleReview">
+
+        <header data-theme="a" data-role="header">
+            <h1>NEOplace - Pre-class Activity - Step 1 of 3</h1>
+        </header>
+
+        <div data-role="content">
+
+            <div class="text-align-center">
+                <img src="/assets/170aa052139c382dq1.JPG" />
             </div>
+
+            <div>
+                <h2>Peer Selected Tags</h2>
+                <p>From the list of tags below select those that you agree connect to the problem above.</p>
+                <p class="footnote"><span class="ui-li-count ui-btn-up-c ui-btn-corner-all">#</span> indicates how many of your classmates chose this tag.</p>
+            </div>
+
+            <div data-role="fieldcontain">
+                <fieldset data-role="controlgroup" id="peerTags">
+                    <!-- To be dynamically filled -->
+                </fieldset>
+            </div>
+
+            <p class="text-align-center">When you're done, press Submit Tags to send your selections to the shared laptop.</p>
+            <a data-role="button" data-transition="fade" data-theme="b" href="#tagConsensus">
+                Sumbit Tags
+            </a>
         </div>
     </div>
-    
+    <!-- END groupPrincipleReview -->
+
+    <!-- START tagConsensus page -->
+    <div data-role="page" id="tagConsensus">
+
+        <header data-theme="a" data-role="header">
+            <h1>NEOplace - Pre-class Activity - Step 2 of 3</h1>
+        </header>
+
+        <div data-role="content">
+            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Look+at+laptop" width="650" height="240" alt="Go to laptop" /></p>
+            <p class="text-align-center">[Instructions: Go to laptop and agree.]</p>
+            <a href="#equationOrdering" data-role="button"  data-theme="b" id="continueButton">Continue</a>
+        </div>
+    </div>
+    <!-- END tagConsensus -->
+
+    <!-- START equationOrdering -->
+    <div data-role="page" id="equationOrdering">
+
+        <div data-theme="a" data-role="header">
+            <h1>NEOplace - Pre-class Activity - Step 3 of 3</h1>
+        </div>
+        
+        <div data-role="content">
+
+            <div class="text-align-center">
+                <img src="/assets/170aa052139c382dq1.JPG" />
+            </div>
+
+            <div>
+                <h2>Connected Equations</h2>
+                <p>This is a list of equations attached to the problem by your peers&nbsp;-
+                    select any of the equations that you agree could be used to solve the problem.</p>
+                <p class="footnote"><span class="ui-li-count ui-btn-up-c ui-btn-corner-all">#</span> indicates how many of your classmates chose this equation.</p>
+            </div>
+
+            <fieldset data-role="controlgroup" id="peerEquations">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a" id="eqCol1">
+                        <!-- to be dynamically filled -->
+                    </div>
+                    <div class="ui-block-b" id="eqCol2">
+                        <!-- to be dynamically filled -->
+                    </div>
+                </div>
+            </fieldset>
+
+            <select name="select-choice-a" id="select-choice-a" data-native-menu="false" tabindex="-1">
+                <option>Add an Equation not shown above</option>
+                <option value="x">x = x + 1</option>
+                <option value="y">y = y - 1</option>
+                <option value="z">z = z * 3</option>
+            </select>
+
+            <p class="text-align-center">When you're done, press Submit Equations to send your selections to the shared laptop.</p>
+            <a data-role="button" data-transition="fade" data-theme="b" href="#finishPage">
+                Submit Equations
+            </a>
+        </div>
+    </div>
+    <!-- END equationOrdering -->
+
+    <!-- START finishPage -->
+    <div data-role="page" id="finishPage">
+
+        <div data-theme="a" data-role="header">
+            <h1>NEOplace - Pre-class Activity - Done</h1>
+        </div>
+        <div data-role="content">
+            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Done" width="650" height="240" alt="Done" /></p>
+            <p class="text-align-center">[Some instructions on what they should be doing now.]</p>
+        </div>
+
+    </div>
+    <!-- END finishPage -->
+
+
     <script type="text/javascript">
         Sail.load()
             .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
             .then('js/jquery.mobile.toast.js')
             .then('js/neoplace.tablet.js')
             .then('js/neoplace.tablet.student.js')
-            .thenRun(function() { return Sail.init(NEOplace.Tablet.Student); }); 
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  //TODO: put back in
     </script>
         
 </body>
