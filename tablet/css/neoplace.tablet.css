@@ -45,12 +45,19 @@
     background: #E8F3E8;
 }
 
-.teacher .foobar {
-
+.student #tagDropArea {
+    background-color: #f0f0f0;
+    border: 8px dashed #666;
+    height: 500px;
+    width: 650px;
 }
 
 /** common styles **/
 
 .footnote {
     font-size: 0.7em;
+}
+
+.draggable {
+
 }
