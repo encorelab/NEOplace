@@ -1,3 +1,6 @@
 [submodule "classroom/tablet/js/sail.js"]
 	path = classroom/tablet/js/sail.js
 	url = git@github.com:educoder/sail.js.git
+[submodule "agents/sail.rb"]
+	path = agents/sail.rb
+	url = git@github.com:educoder/sail.rb.git

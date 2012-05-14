@@ -5,6 +5,14 @@ Mike Tissenbaum&#39;s Sail Smart Space app.
 
 See https://github.com/educoder/sail.docs/wiki for more info about the Sail Smart Space platform.
 
+Agents
+======
+
+Running:
+
+  cd agents
+  bundle exec ruby daemon.rb
+
 #License
 This software is available under the [MIT licence](http://www.opensource.org/licenses/mit-license.php)
 
