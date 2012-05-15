@@ -1,0 +1,50 @@
+[
+	{
+		"name":"vectors",
+		"biggie":"Newton's Laws"
+	},
+	{
+		"name":"Newton's Second Law",
+		"biggie":"Newton's Laws"
+	},
+	{
+		"name":"Newton's Third Law",
+		"biggie":"Newton's Laws"
+	},
+	{
+		"name":"Acceleration",
+		"biggie":"Newton's Laws"
+	},
+	{
+		"name":"Kinetic Friction",
+		"biggie":"Force and Motion"
+	},
+	{
+		"name":"Static Friction",
+		"biggie":"Force and Motion"
+	},
+	{
+		"name":"Fnet = 0",
+		"biggie":"Force and Motion"
+	},
+	{
+		"name":"Fnet = constant",
+		"biggie":"Force and Motion"
+	},
+	{
+		"name":"Knetic Energy",
+		"biggie":"Work and Energy"
+	},
+	{
+		"name":"Potential Energy",
+		"biggie":"Work and Energy"
+	},
+	{
+		"name":"Conservation of Energy",
+		"biggie":"Work and Energy"
+	},
+	{
+		"name":"Work",
+		"biggie":"Work and Energy"
+	}
+]
