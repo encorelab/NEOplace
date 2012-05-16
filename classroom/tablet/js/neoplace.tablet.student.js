@@ -118,6 +118,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 var checkboxes = $("#peerEquations input[type='checkbox']"); //.checkboxradio("refresh");
                 checkboxes.checkboxradio("refresh");
+
+                //update formatting of equations
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
             });
             
         },

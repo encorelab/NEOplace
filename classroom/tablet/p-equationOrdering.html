@@ -1,0 +1,80 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>NEOplace - Classroom Activity</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <link href="js/sail.js/css/sail.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="css/jquery.mobile-1.1.0.css" /> 
+    <link href="css/neoplace.tablet.css" rel="stylesheet" type="text/css" />
+    
+    <script src="js/sail.js/sail.js" type="text/javascript"></script>
+
+    <script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+    });
+    </script>
+
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.student.js')
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  //TODO: put back in
+    </script>
+
+</head>
+<body class="student">
+
+    <!-- START equationOrdering -->
+    <div data-role="page" id="equationOrdering">
+
+        <div data-theme="a" data-role="header">
+            <h1>NEOplace - Pre-class Activity - Step 3 of 3</h1>
+        </div>
+        
+        <div data-role="content">
+
+            <div class="text-align-center">
+                <img src="/assets/170aa052139c382dq1.JPG" />
+            </div>
+
+            <div>
+                <h2>Connected Equations</h2>
+                <p>This is a list of equations attached to the problem by your peers&nbsp;-
+                    select any of the equations that you agree could be used to solve the problem.</p>
+                <p class="footnote"><span class="ui-li-count ui-btn-up-c ui-btn-corner-all">#</span> indicates how many of your classmates chose this equation.</p>
+            </div>
+
+            <fieldset data-role="controlgroup" id="peerEquations">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a" id="eqCol1">
+                        <!-- to be dynamically filled -->
+                    </div>
+                    <div class="ui-block-b" id="eqCol2">
+                        <!-- to be dynamically filled -->
+                    </div>
+                </div>
+            </fieldset>
+
+            <select name="select-choice-a" id="select-choice-a" data-native-menu="false" tabindex="-1">
+                <option>Add an Equation not shown above</option>
+                <option value="x">$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</option>
+                <option value="y">$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</option>
+                <option value="z">$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</option>
+            </select>
+
+            <p class="text-align-center">When you're done, press Submit Equations to send your selections to the shared laptop.</p>
+            <a data-role="button" data-transition="fade" data-theme="b" href="p-finishPage.html">
+                Submit Equations
+            </a>
+        </div>
+    </div>
+    <!-- END equationOrdering -->
+
+</body>
+</html>
