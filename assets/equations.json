@@ -2,142 +2,142 @@
 
 	{
 		"EQ_ID": 1,
-		"name": "(∆d) ⃗=(d_2 ) ⃗-(d_1 ) ⃗"
+		"name": "\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}"
 	},
 
 	{
 		"EQ_ID": 2,
-		"name": "v ⃗=(∆d) ⃗/∆t"
+		"name": "\\vec{v}=\\vec{d}/\\Delta t"
 	},
 
 	{
 		"EQ_ID": 3,
-		"name": "v_average=〖∆d〗_total/∆t"
+		"name": "v_{average}=\\Delta d_{total}/\\Delta t"
 	},
 
 	{
 		"EQ_ID": 4,
-		"name": "f=1/T"
+		"name": "\\boldsymbol{f}=1/\\boldsymbol{T}"
 	},
 
 	{
 		"EQ_ID": 5,
-		"name": "(∆v) ⃗=(v_2 ) ⃗-(v_1 ) ⃗"
+		"name": "\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}"
 	},
 
 	{
 		"EQ_ID": 6,
-		"name": "a ⃗=(∆v) ⃗/∆t"
+		"name": "\\vec{a}=\\vec{\\Delta v}/\\Delta{t}"
 	},
 
 	{
 		"EQ_ID": 7,
-		"name": "(v_2 ) ⃗=(v_1 ) ⃗+a ⃗∆t"
+		"name": "\\vec{v_{2}}=\\vec{v_{1}}+\\vec{a}\\Delta{t}"
 	},
 
 	{
 		"EQ_ID": 8,
-		"name": "(∆d) ⃗=(v_1 ) ⃗∆t+1/2 a ⃗(∆t)^2"
+		"name": "\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}"
 	},
 
 	{
 		"EQ_ID": 9,
-		"name": "(∆d) ⃗=(v_2 ) ⃗∆t-1/2 a ⃗(∆t)^2"
+		"name": "\\vec{\\Delta d}=\\vec{v_{2}}\\Delta{t}-1/2\\vec{a}(\\Delta{t})^{2}"
 	},
 
 	{
 		"EQ_ID": 10,
-		"name": "(∆d) ⃗=((v ⃗_1+v ⃗_2 ))/2 ∆t"
+		"name": "\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}"
 	},
 
 	{
 		"EQ_ID": 11,
-		"name": "〖v_2〗^2=〖v_1〗^2+2a∆d"
+		"name": "{v_{2}}^{2}={v_{1}}^{2}+2a\\Delta d"
 	},
 
 	{
 		"EQ_ID": 12,
-		"name": "(_A^ )v ⃗  (_C^ ) =(_A^ )v ⃗  (_B^ ) +(_B^ )v ⃗  (_C^ ) "
+		"name": "{_{A}\\vec{v}_{C}} ={_{A}\\vec{v}_{B}} + {_{B}\\vec{v}_{C}}"
 	},
 
 	{
 		"EQ_ID": 13,
-		"name": "F_g=mg"
+		"name": "F_{g}=mg"
 	},
 
 	{
 		"EQ_ID": 14,
-		"name": "F_g=(Gm_1 m_2)/R^2 "
+		"name": "F_{g}=\\frac{Gm_{1}m_{2}}{R^{2}}"
 	},
 
 	{
 		"EQ_ID": 15,
-		"name": "F_f=μ_k F_N"
+		"name": "F_{f}=\\mu _{k}F_{N}"
 	},
 
 	{
 		"EQ_ID": 16,
-		"name": "F_f=μ_s F_N"
+		"name": "F_{f}=\\mu _{s}F_{N}"
 	},
 
 	{
 		"EQ_ID": 17,
-		"name": "(F_net ) ⃗=(F_1 ) ⃗+(F_2 ) ⃗+(F_3 ) ⃗+⋯"
+		"name": "\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots "
 	},
 
 	{
 		"EQ_ID": 18,
-		"name": "(F_net ) ⃗=ma ⃗"
+		"name": "\\vec{F_{net}}=m\\vec{a}"
 	},
 
 	{
 		"EQ_ID": 19,
-		"name": "((_A^ )F (_B^ )  ) ⃗=-((_B^ )F (_A^ )  ) ⃗"
+		"name": "\\vec{_{A}F_{B}}=-\\vec{_{B}F_{A}}"
 	},
 
 	{
 		"EQ_ID": 20,
-		"name": "W=F ⃗∙∆d ⃗"
+		"name": "W=\\vec{F}\\cdot \\Delta \\vec{d}"
 	},
 
 	{
 		"EQ_ID": 21,
-		"name": "W=F∆dcos(θ)"
+		"name": "W=F\\Delta cos(\\theta )"
 	},
 
 	{
 		"EQ_ID": 22,
-		"name": "P=W/∆t"
+		"name": "P=\\frac{W}{\\Delta t}"
 	},
 
 	{
 		"EQ_ID": 23,
-		"name": "W=∆E"
+		"name": "W=\\Delta E"
 	},
 
 	{
 		"EQ_ID": 24,
-		"name": "∆E=mg∆h"
+		"name": "\\Delta E=mg\\Delta h"
 	},
 
 	{
 		"EQ_ID": 25,
-		"name": "E_g=mgh"
+		"name": "E_{g}=mgh"
 	},
 
 	{
 		"EQ_ID": 26,
-		"name": "E_k=1/2 mv^2"
+		"name": "E_{k}=\\frac{1}{2}mv^{2}"
 	},
 
 	{
 		"EQ_ID": 27,
-		"name": "E_T=E_g+E_k"
+		"name": "E_{T}=E_{g}+W_{k}"
 	},
 
 	{
 		"EQ_ID": 28,
-		"name": "E_T(before) =E_T(after)"
+		"name": "E_{T(before)}=E_{T(after)}"
 	}
 
 
