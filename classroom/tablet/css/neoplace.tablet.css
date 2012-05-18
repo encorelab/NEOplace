@@ -52,6 +52,11 @@
     width: 650px;
 }
 
+.problem {
+    padding: 50px;
+    background-color: #fff;
+}
+
 /** common styles **/
 
 .footnote {
