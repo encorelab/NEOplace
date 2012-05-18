@@ -17,12 +17,12 @@ RUNS = ['ab', 'bc', 'a','b','c','d'].collect{|alph| "neo-#{alph}"}
 @daemon.load_config("../config.json")
 ENV['ROLLCALL_URL'] = @daemon.config[:rollcall][:url]
 
-#require 'event_logger'
+require 'event_logger'
 #require 'location_tracker'
 #require 'choreographer'
 
 RUNS.each do |run|
-  #@daemon << EventLogger.new(:room => run, :password => AGENT_PASSWORD, :database => run)
+  @daemon << EventLogger.new(:room => run, :password => AGENT_PASSWORD, :database => run)
   #@daemon << LocationTracker.new(:room => run, :password => AGENT_PASSWORD, :database => run)
   #@daemon << Choreographer.new(:room => run, :password => AGENT_PASSWORD, :database => run)
 end
