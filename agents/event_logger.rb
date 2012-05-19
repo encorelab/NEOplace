@@ -39,4 +39,8 @@ class EventLogger < Sail::Agent
     #   log client.instance_variable_get(:@tmp_handlers).inspect
     # end
   end
+<<<<<<< Updated upstream
 end
+=======
+end
+>>>>>>> Stashed changes
