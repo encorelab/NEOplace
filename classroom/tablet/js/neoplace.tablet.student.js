@@ -53,9 +53,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
             //show the first screen
             $("#startButton").css("display","block");
+            //element.webkitRequestFullScreen(); 
+            //element.requestFullscreen();
 
             //
             $( '#groupPrincipleReview' ).live( 'pageinit',function(event){
+
+                //TODO: part of dynamic call
+                var problem = {
+                    name: "TruckAndCrate"
+                }
+
+                //$("#problem").append(output);
 
                 //TODO: array needs to a result of a backend call
                 var peerTagsResults = [
