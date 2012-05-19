@@ -12,9 +12,6 @@
 		"name":"MellonDrop"
 	},
 	{
-		"name":"FootballKick"
-	},
-	{
 		"name":"BookDrop"
 	},
 	{
@@ -66,15 +63,6 @@
 		"name":"AcceleratingCar"
 	},
 	{
-		"name":"MaximumHeight"
-	},
-	{
-		"name":"BallUphill"
-	},
-	{
-		"name":"TwoBalls"
-	},
-	{
 		"name":"ThrownBall"
 	},
 	{
@@ -93,18 +81,12 @@
 		"name":"ObjectAcceleration"
 	},
 	{
-		"name":"ThreeBlocks"
-	},
-	{
-		"name":"Rollercoaster"
-	},
-	{
 		"name":"ConcretePusher"
 	},
 	{
 		"name":"MuttWilliams"
 	},
 	{
-		"name":"TwoMasses"
+		"name":"BlockOnBoard"
 	}
 ]
