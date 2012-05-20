@@ -51,13 +51,20 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 });
             }
 
-            //show the first screen
-            $("#startButton").css("display","block");
-            //element.webkitRequestFullScreen(); 
-            //element.requestFullscreen();
+            //TODO: I need to know what group they are in
+            $("#loginScreen #statusMsg").html('You have been assigned to <strong>{group #2}</strong>.<br /><br />');
+
+            //TODO:faked. This needs to be triggered by classroom_start event
+            //setTimeout(classroomStart,5000);
+            //function classroomStart(){
+                //Note: could be better to maybe just go to the next page right away?
+                //esp if they are seeing this because they had to refresh the app
+                $("#loginScreen #statusMsg").append('<img src="/assets/img/group_gather.gif" width="300" height="208" alt="" /><br />When your group is together and ready to go, tap the Start button.');
+                $("#startButton").css("display","block");
+            //}
 
             //
-            $( '#groupPrincipleReview' ).live( 'pageinit',function(event){
+            $( '#principleReview' ).live( 'pageinit',function(event){
 
                 //TODO: part of dynamic call
                 var problem = {
@@ -76,37 +83,75 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 var numTags = peerTagsResults.length;
                 var output = "";
-                var output2 = "";
                 for (var i=0; i<numTags; i++){
                     var tag = peerTagsResults[i];
                     output += '<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" /> \
                                 <label for="checkbox-'+tag.id+'">'+tag.name+' \
-                                <span class="ui-li-count ui-btn-up-c ui-btn-corner-all">'+tag.votes+'</span> \
+                                <span class="peer-count">'+tag.votes+'</span> \
                                 </label>';
-                    //output2 += tag.votes + '<br />';
                 }
-                $("#peerTags").append(output).trigger("create");
-                //var checkboxes = $("#peerTags input[type='checkbox']"); //.checkboxradio("refresh");
-                //checkboxes.checkboxradio("refresh");
-
-                //$("#tagVotes").append(output2);
+                $("#principleReview #peerTags").append(output).trigger("create");
 
             });
 
             //
-            $( '#equationOrdering' ).live( 'pageinit',function(event){
+            $( '#principleConsensus' ).live( 'pageinit',function(event){
+
+                //TODO: part of dynamic call
+                var problem = {
+                    name: "TruckAndCrate"
+                }
+
+                //$("#problem").append(output);
+
+                //TODO: array needs to a result of a backend call
+                var peerTagsResults = [
+                    {id:1, name:"Newton's Second Law", submitted:[1,2]},
+                    {id:2, name:"Acceleration", submitted:[1,2,3]},
+                    {id:4, name:"Fnet = 0", submitted:[2,3]}
+                ];
+
+                var numTags = peerTagsResults.length;
+                var output = '<table>';
+                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">2</th><th width="100">3</th></tr>';
+                var yes = "✔";
+                var no = "x";
+                for (var i=0; i<numTags; i++){
+                    var tag = peerTagsResults[i];
+                    output += '<tr><th>'+tag.name+'</th>';
+                    output += '<td>'+'<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" ';
+                    output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
+                    output += ' /><label for="checkbox-'+tag.id+'"></label>'+'</td>';
+                    output += '<td>'
+                    output += (tag.submitted.indexOf(2) > -1) ? yes : no;
+                    output += '</td>';
+                    output += '<td>';
+                    output += (tag.submitted.indexOf(3) > -1) ? yes : no;
+                    output += '</td>';
+                    output += '</tr>';
+                }
+                output += "</table>";
+                $("#principleConsensus #peerTags").append(output).trigger("create");
+
+                //TODO: Client (not agent) will detect whether or not they are in agreement
+                //$("#principleConsensus #continueButton").css({ opacity: 1 });
+
+            });
+
+            //equationsReview
+            $( '#equationsReview' ).live( 'pageinit',function(event){
 
                 //TODO: array needs to a result of a backend call
                 var peerEquationResults = [
-                    {id:1, name:"d=vt + 1/2at^2"},
-                    {id:2, name:"v2 = v1 +a*t"},
-                    {id:3, name:"d = (v1+v2)/2*t"},
-                    {id:4, name:"Fnet = m*a"},
-                    {id:5, name:"W = F*d*cosΘ"},
-                    {id:6, name:"PE = m*g*h"},
-                    {id:7, name:"KE = 1/2*m*v^2"},
-                    {id:8, name:"P = W/t"},
-                    {id:9, name:"d=vt"}
+                    {id:1, name:"d=vt + 1/2at^2", votes:1},
+                    {id:2, name:"v2 = v1 +a*t", votes:2},
+                    {id:3, name:"d = (v1+v2)/2*t", votes:4},
+                    {id:4, name:"Fnet = m*a", votes:2},
+                    {id:5, name:"W = F*d*cosΘ", votes:1},
+                    {id:6, name:"PE = m*g*h", votes:3},
+                    {id:7, name:"KE = 1/2*m*v^2", votes:1},
+                    {id:8, name:"P = W/t", votes:1},
+                    {id:9, name:"d=vt", votes:6}
                 ];
 
                 var numTags = peerEquationResults.length;
@@ -114,8 +159,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 var output = "";
                 for (var i=0; i<numTags; i++){
                     var tag = peerEquationResults[i];
-                    output += '<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" /><label for="checkbox-'+tag.id+'">'+tag.name+'</label>';
                     
+                    output += '<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" /> \
+                        <label for="checkbox-'+tag.id+'">'+tag.name+' \
+                        <span class="peer-count">'+tag.votes+'</span> \
+                        </label>';
+
                     //if halfway through list, create new column
                     if ( i == halfway-1 ) {
                         $("#peerEquations #eqCol1").append(output);
@@ -132,7 +181,50 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
             });
-            
+
+            //equationConsensus
+            $( '#equationConsensus' ).live( 'pageinit',function(event){
+
+                //TODO: part of dynamic call
+                var problem = {
+                    name: "TruckAndCrate"
+                }
+
+                //$("#problem").append(output);
+
+                //TODO: array needs to a result of a backend call
+                var equationResultss = [
+                    {id:1, name:"d=vt + 1/2at^2", submitted:[2]},
+                    {id:2, name:"Fnet = m*a", submitted:[1,2,3]},
+                    {id:4, name:"KE = 1/2*m*v^2", submitted:[1,3]}
+                ];
+
+                var numTags = equationResultss.length;
+                var output = '<table>';
+                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">2</th><th width="100">3</th></tr>';
+                var yes = "✔";
+                var no = "x";
+                for (var i=0; i<numTags; i++){
+                    var equation = equationResultss[i];
+                    output += '<tr><th>'+equation.name+'</th>';
+                    output += '<td>'+'<input type="checkbox" name="checkbox-'+equation.id+'" id="checkbox-'+equation.id+'" class="custom" ';
+                    output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
+                    output += ' /><label for="checkbox-'+equation.id+'"></label>'+'</td>';
+                    output += '<td>'
+                    output += (equation.submitted.indexOf(2) > -1) ? yes : no;
+                    output += '</td>';
+                    output += '<td>';
+                    output += (equation.submitted.indexOf(3) > -1) ? yes : no;
+                    output += '</td>';
+                    output += '</tr>';
+                }
+                output += "</table>";
+                $("#equationConsensus #peerTags").append(output).trigger("create");
+
+                //TODO: Client (not agent) will detect whether or not they are in agreement
+                //$("#principleConsensus #continueButton").css({ opacity: 1 });
+
+            });
         },
 
         unauthenticated: function(ev) {
