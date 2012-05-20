@@ -1,12 +1,53 @@
 /* apply a natural box layout model to all elements */
 * { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 
+body {
+  background-color: #eee;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 100%;
+}
+
+/** sail.css **/
+.mask {
+  opacity: 0.7;
+  background-color: #000;
+  position: absolute;
+  z-index: 1000;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+.widget-box {
+    text-align: center;
+    color: #fff;
+    background-color: #333;
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    -webkit-box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    -moz-box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+}
+.auth-box {
+    position: absolute;
+    top: 40% !important;
+    left: 10%;
+    right: 10%;
+    padding: 0 20px 20px 20px !important;
+}
+
+
+#connecting {
+    top: 60% !important;
+}
+
+
 /** used in jquery.mobile.toast.js **/
 .ui-sail-loading-icon {
     background-attachment: scroll;
     background-clip: border-box;
     background-color: #2A2A2A;
-    background-image: url("../loader-small.gif");
+    background-image: url("../loader.gif");
     background-origin: padding-box;
     background-position: 0 0;
     background-repeat: repeat;
@@ -44,32 +85,121 @@
 /** student styles **/
 
 .student {
-    background: #E8F3E8;
+
 }
 
-.student #tagDropArea {
-    background-color: #f0f0f0;
-    border: 8px dashed #666;
-    height: 500px;
-    width: 650px;
+#loginScreen #statusMsg {
+    font-size: 1.2em;
+    margin: 50px auto 100px auto;
 }
 
 #problem {
-    padding: 50px;
-    margin: 20px 20px 50px 20px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    -moz-box-shadow: 10px 10px 3px #ccc;
-    -webkit-box-shadow: 10px 10px 3px #ccc;
-    box-shadow: 10px 10px 3px #ccc;
+    padding: 1em 50px 30px 50px;
+    width: 725px;
+    margin: 0px auto 50px auto;
+    font-size: 1.2em;
 }
+
+#problem h2 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.paper {
+    position: relative;
+    background: #fff url(/assets/img/paperclip.png) no-repeat 20px 0;
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
+}
+
+.paper:before, .paper:after {
+    position: absolute;
+    width: 40%;
+    height: 10px;
+    content: ' ';
+    left: 12px;
+    bottom: 12px;
+    background: transparent;
+    -webkit-transform: skew(-5deg) rotate(-5deg);
+    -moz-transform: skew(-5deg) rotate(-5deg);
+    -ms-transform: skew(-5deg) rotate(-5deg);
+    -o-transform: skew(-5deg) rotate(-5deg);
+    transform: skew(-5deg) rotate(-5deg);
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    z-index: -1;
+}
+
+.paper:after {
+    left: auto;
+    right: 12px;
+    -webkit-transform: skew(5deg) rotate(5deg);
+    -moz-transform: skew(5deg) rotate(5deg);
+    -ms-transform: skew(5deg) rotate(5deg);
+    -o-transform: skew(5deg) rotate(5deg);
+    transform: skew(5deg) rotate(5deg);
+}
+
+/* override the jquery mobile styles because it ruins the paper effect */
+.ui-body-c{
+    background-image: none !important;
+}
+
+.ui-overlay-c {
+     background-color: #eee !important;
+}
+
+.ui-content {
+    padding-top: 0;
+}
+
+
+.checklist-img {
+    float: left;
+    width: 128px;
+    margin-right: 20px;
+}
+
+.checklist {
+    float: left;
+}
+
+.ui-controlgroup-vertical .ui-btn, .ui-controlgroup-vertical .ui-checkbox, .ui-controlgroup-vertical .ui-radio {
+    margin-bottom: 2px;
+    border-bottom-width: 1px;
+}
+
+/* override the jquery mobile styles because it ruins the checklist image float:left effect */
+#principleReview .ui-bar, #principleReview .ui-body {
+    clear: none;
+}
+
+.footnote {
+    font-size: 0.8em;
+}
+
+.peer-count {
+    -moz-border-radius: 1em;
+    -webkit-border-radius: 1em;
+    border-radius: 1em;
+    padding: 4px 7px;
+    background-color: #71aed5;
+    color: #fff;
+    text-shadow: 0px 0px 7px #555;
+    font-size: 11px;
+    margin-left: 5px;
+}
+
+.clear-floats {
+    clear: both;
+}
+
+th {
+    text-align: left;
+}
+
 
 /** common styles **/
 
-.footnote {
-    font-size: 0.7em;
-}
-
-.draggable {
-
-}

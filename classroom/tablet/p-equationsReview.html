@@ -1,0 +1,73 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>NEOplace - Classroom Activity</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
+    
+    <script src="js/sail.js/sail.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.student.js')
+            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+    </script>
+</head>
+<body class="student">
+
+    <!-- START equationsReview -->
+    <div data-role="page" id="equationsReview">
+        
+        <div data-role="content">
+
+            <div class="paper" id="problem">
+                <h2>Problem #1</h2>
+                <!-- TruckAndCrate.html -->
+                <p class="pimg"><img src="/assets/problems/img/TruckAndCrate.png"/></p>
+                <p>A 4700 kg truck carrying a 900 kg crate is traveling at 25 m/s to the right along a straight, level highway, as shown above. The truck driver then applies the brakes, and as it slows down, the truck travels 55 m in the next 3.0 s. The crate does not slide on the back of the truck.</p>
+                <p>a) Calculate the magnitude of the acceleration of the truck, assuming it is constant.<br />
+                b) Calculate the minimum coefficient of friction between the crate and truck that prevents the crate from sliding.</p>
+            </div>
+
+            <div>
+                <h2>Connected Equations</h2>
+                <p>On your own, check off any of the equations below that you agree could be used to solve the problem.</p>
+                <div class="checklist-img"><img src="/assets/img/checklist.gif"></div>
+                <p class="footnote"><span class="peer-count">#</span> indicates how many of your classmates chose this equation during the homework activity.</p>
+            </div>
+
+            <fieldset data-role="controlgroup" id="peerEquations">
+                <div class="ui-grid-a">
+                    <div class="ui-block-a" id="eqCol1">
+                        <!-- to be dynamically filled -->
+                    </div>
+                    <div class="ui-block-b" id="eqCol2">
+                        <!-- to be dynamically filled -->
+                    </div>
+                </div>
+            </fieldset>
+
+            <select name="select-choice-a" id="select-choice-a" data-native-menu="false" tabindex="-1">
+                <option>Add an Equation not shown above</option>
+                <option value="x">$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</option>
+                <option value="y">$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</option>
+                <option value="z">$$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$</option>
+            </select>
+
+            <p class="text-align-center">When you're done, tap Submit.</p>
+            <a data-role="button" data-transition="fade" data-theme="b" href="p-equationConsensus.html">
+                Submit
+            </a>
+        </div>
+    </div>
+    <!-- END equationsReview -->
+
+</body>
+</html>
