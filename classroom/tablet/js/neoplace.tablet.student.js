@@ -6,7 +6,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     var self = _.extend(Tablet);
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
-    var UI_TESTING_ONLY = true; 
+    var UI_TESTING_ONLY = false; 
 
     /** private function **/
     var foo = function () {
@@ -17,6 +17,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.bar = function () {
 
     };
+
+    // wiring up a test event to check sanity
+    $('.test-sail-button').click (function() {
+        var sev = new Sail.Event('test_event_out', {
+            name:'Colin',
+            status:'working'
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    });
 
     /** local event wiring **/
 
@@ -47,12 +56,17 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if ( !UI_TESTING_ONLY ) {
                 Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.session.account.login+".json", "GET", {}, function(data) {
                     console.log("Authenticated user is: ", data);
+
+                    if (data.groups[1]) {
+                        console.log('WARNING: user has been assigned to more than one group');
+                    }
+                    $("#loginScreen #statusMsg").html('You have been assigned to <strong>'+data.groups[0].name+'</strong>.<br /><br />');
                     // user's metadata is in data.metadata
                 });
             }
 
-            //TODO: I need to know what group they are in
-            $("#loginScreen #statusMsg").html('You have been assigned to <strong>{group #2}</strong>.<br /><br />');
+
+            // Colin needs some explanation of what's intended to go on here (not sure what classroom_start event is supposed to be used for... will it contain the tag array data for tag counts?)
 
             //TODO:faked. This needs to be triggered by classroom_start event
             //setTimeout(classroomStart,5000);
@@ -68,12 +82,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 //TODO: part of dynamic call
                 var problem = {
+                    id: "tempTODO",
                     name: "TruckAndCrate"
                 }
 
                 //$("#problem").append(output);
 
-                //TODO: array needs to a result of a backend call
+                //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
                 var peerTagsResults = [
                     {id:1, name:"Newton's Second Law", votes:2},
                     {id:2, name:"Acceleration", votes:7},
@@ -85,12 +100,23 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 var output = "";
                 for (var i=0; i<numTags; i++){
                     var tag = peerTagsResults[i];
-                    output += '<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" /> \
+                    output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" /> \
                                 <label for="checkbox-'+tag.id+'">'+tag.name+' \
                                 <span class="peer-count">'+tag.votes+'</span> \
                                 </label>';
                 }
-                $("#principleReview #peerTags").append(output).trigger("create");
+                $('#principleReview #peerTags').append(output).trigger("create");
+
+                $('#principleReview .submit-guess').click(function() {
+                    var principlesArray = [];
+
+                    // iterate over all of the checked boxes and add principle names to the array
+                    $('input:checkbox:checked').each(function(index) {
+                        principlesArray.push($(this).attr("name"));
+                    });
+                    
+                    Sail.app.submitPrinciplesGuess(problem.id, principlesArray);
+                });
 
             });
 
@@ -160,7 +186,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 for (var i=0; i<numTags; i++){
                     var tag = peerEquationResults[i];
                     
-                    output += '<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" /> \
+                    output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" /> \
                         <label for="checkbox-'+tag.id+'">'+tag.name+' \
                         <span class="peer-count">'+tag.votes+'</span> \
                         </label>';
@@ -179,6 +205,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 //update formatting of equations
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+                $('#equationsReview .submit-guess').click(function() {
+                    var equationsArray = [];
+
+                    // iterate over all of the checked boxes and add principle names to the array
+                    $('input:checkbox:checked').each(function(index) {
+                        equationsArray.push($(this).attr("name"));
+                    });
+                    
+                    var problemId = "1";       // this will need to be set globally in principlesReview
+                    Sail.app.submitEquationsGuess(problemId, equationsArray);
+                });                
 
             });
 
@@ -232,16 +270,36 @@ NEOplace.Tablet.Student = (function(Tablet) {
         }
     };
 
-    /** sail event wiring (i.e. XMPP events) **/
+    /************************ OUTGOING EVENTS ******************************/
+
+    self.submitPrinciplesGuess = function(problemId, principlesArray) {
+        var sev = new Sail.Event('guess_submission', {
+            problem_id:problemId,
+            principles:principlesArray,
+        });
+        
+        Sail.app.groupchat.sendEvent(sev);
+    };
+
+    self.submitEquationsGuess = function(problemId, equationsArray) {
+        var sev = new Sail.Event('guess_submission', {
+            problem_id:problemId,
+            equations:equationsArray,
+        });
+        
+        Sail.app.groupchat.sendEvent(sev);
+    };
+
+    /************************ INCOMING EVENTS ******************************/
 
     self.events.sail = {
-        some_sail_event: function (sev) {
-
+        test_event: function(sev) {
+            alert('heard the event');
         }
     };
 
     // only users matching this filter will be shown in the account picker
-    self.userFilter = function (u) {
+    self.userFilter = function(u) {
         return u.kind === "Student";
     };
 
