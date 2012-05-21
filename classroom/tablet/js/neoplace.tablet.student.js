@@ -5,6 +5,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
     "use strict";
     var self = _.extend(Tablet);
 
+    var userData;
+    var groupData;
+
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
 
@@ -61,7 +64,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         console.log('WARNING: user has been assigned to more than one group');
                     }
                     $("#loginScreen #statusMsg").html('You have been assigned to <strong>'+data.groups[0].name+'</strong>.<br /><br />');
-                    // user's metadata is in data.metadata
+                    
+                    // TODO grab group data here
+
+                    Sail.app.groupData = ["you","joe","mike"];
+
+                    Sail.app.userData = data;
                 });
             }
 
@@ -80,7 +88,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             //
             $( '#principleReview' ).live( 'pageinit',function(event){
 
-                //TODO: part of dynamic call
+                //TODO: part of dynamic call (make global?)
                 var problem = {
                     id: "tempTODO",
                     name: "TruckAndCrate"
@@ -96,7 +104,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     {id:4, name:"Fnet = 0", votes:5}
                 ];
 
-                var numTags = peerTagsResults.length;
+                var numTags = peerTagsResults.length;                       // this checkbox-id setup is going to result in duplicate ids, no?
                 var output = "";
                 for (var i=0; i<numTags; i++){
                     var tag = peerTagsResults[i];
@@ -132,32 +140,77 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 //TODO: array needs to a result of a backend call
                 var peerTagsResults = [
-                    {id:1, name:"Newton's Second Law", submitted:[1,2]},
-                    {id:2, name:"Acceleration", submitted:[1,2,3]},
-                    {id:4, name:"Fnet = 0", submitted:[2,3]}
+                    {id:1, name:"Newton's Second Law", submitted:[]},
+                    {id:2, name:"Acceleration", submitted:[]},
+                    {id:4, name:"Fnet = 0", submitted:[]}
                 ];
 
                 var numTags = peerTagsResults.length;
-                var output = '<table>';
-                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">2</th><th width="100">3</th></tr>';
+                var output = '<table>';         // TOOD will there be groups of 2? Then must fix this
+                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">'+Sail.app.groupData[1]+'</th><th width="100">'+Sail.app.groupData[2]+'</th></tr>';
                 var yes = "✔";
                 var no = "x";
                 for (var i=0; i<numTags; i++){
                     var tag = peerTagsResults[i];
                     output += '<tr><th>'+tag.name+'</th>';
-                    output += '<td>'+'<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" ';
+                    output += '<td>'+'<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" ';
                     output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
                     output += ' /><label for="checkbox-'+tag.id+'"></label>'+'</td>';
-                    output += '<td>'
-                    output += (tag.submitted.indexOf(2) > -1) ? yes : no;
-                    output += '</td>';
-                    output += '<td>';
-                    output += (tag.submitted.indexOf(3) > -1) ? yes : no;
-                    output += '</td>';
+
+                    if (Sail.app.groupData[1]) {
+                        output += '<td id="testID" class="teammate-'+Sail.app.groupData[1]+' principle-id-'+tag.id+'">';
+                        output += no //(tag.submitted.indexOf(2) > -1) ? yes : no;
+                        output += '</td>';
+                    }
+                    if (Sail.app.groupData[2]) {
+                        output += '<td class="teammate-'+Sail.app.groupData[2]+' principle-id-'+tag.id+'">';
+                        output += no //(tag.submitted.indexOf(3) > -1) ? yes : no;
+                        output += '</td>';
+                    }
+
                     output += '</tr>';
                 }
                 output += "</table>";
                 $("#principleConsensus #peerTags").append(output).trigger("create");
+
+                $('input:checkbox').click(function() {
+                    // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
+                    // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
+
+                    var principleConsensusArray = [];
+
+                    // iterate over all of the checked boxes and add principle names to the array
+                    $('input:checkbox:checked').each(function(index) {
+                        principleConsensusArray.push($(this).attr("name"));
+                    });
+                    
+                    Sail.app.toggleCheckboxes(principleConsensusArray);      
+                });
+
+                // event to listen for updates from other tables on checkmarks for checkbox table
+                self.events.sail = {
+                    checkbox_toggled: function(ev) {
+                        if ((ev.origin === Sail.app.groupData[1]) && ev.payload.checkedCheckboxes) {
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
+                            $('.teammate-'+Sail.app.groupData[1]).text(no);
+                            _.each(ev.payload.checkedCheckboxes, function(principle) {
+                                $('.teammate-'+Sail.app.groupData[1]+'.principle-id-'+principle).text(yes);
+                            });
+                        }
+                        else if ((ev.origin === Sail.app.groupData[2]) && ev.payload.checkedCheckboxes) {
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
+                            $('.teammate-'+Sail.app.groupData[2]).text(no);
+                            _.each(ev.payload.checkedCheckboxes, function(principle) {
+                                $('.teammate-'+Sail.app.groupData[1]+'.principle-id-'+principle).text(yes);
+                            });
+                        }
+                        else {
+                            console.log('ignoring checkbox_toggled event');
+                        }
+                        
+                    }
+                };
+
 
                 //TODO: Client (not agent) will detect whether or not they are in agreement
                 //$("#principleConsensus #continueButton").css({ opacity: 1 });
@@ -277,7 +330,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
             problem_id:problemId,
             principles:principlesArray,
         });
-        
         Sail.app.groupchat.sendEvent(sev);
     };
 
@@ -286,7 +338,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
             problem_id:problemId,
             equations:equationsArray,
         });
-        
+        Sail.app.groupchat.sendEvent(sev);
+    };
+
+    self.toggleCheckboxes = function(checkedCheckboxes) {
+        var sev = new Sail.Event('checkbox_toggled', {
+            checkedCheckboxes:checkedCheckboxes,
+        });
         Sail.app.groupchat.sendEvent(sev);
     };
 
