@@ -138,7 +138,7 @@
 	{
 		"EQ_ID": 28,
 		"name": "E_{T(before)}=E_{T(after)}"
-	}
+	},
 	{
 		"EQ_ID": 29,
 		"name": "\\vec{A}_{(x/y)} = \\left |\\vec A \\right |(cos/sin)\\theta"
