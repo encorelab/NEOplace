@@ -1,0 +1,63 @@
+
+/** used in jquery.mobile.toast.js **/
+.ui-sail-loading-icon {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: #2A2A2A;
+    background-image: url("../loader-small.gif");
+    background-origin: padding-box;
+    background-position: 0 0;
+    background-repeat: repeat;
+    background-size: 46px 46px;
+    
+    border-radius: 36px 36px 36px 36px;
+    display: block;
+    height: 44px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0.5em;
+    padding: 1px;
+    width: 44px;
+}
+
+/** codiqa generated **/
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+/** teacher styles **/
+
+.teacher {
+    background: #F3D0D0;
+}
+
+.teacher .foobar {
+
+}
+
+/** student styles **/
+
+.student {
+    background: #E8F3E8;
+}
+
+.student #tagDropArea {
+    background-color: #f0f0f0;
+    border: 8px dashed #666;
+    height: 500px;
+    width: 650px;
+}
+
+/** common styles **/
+
+.footnote {
+    font-size: 0.7em;
+}
+
+.draggable {
+
+}
