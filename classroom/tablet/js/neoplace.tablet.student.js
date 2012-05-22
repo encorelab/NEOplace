@@ -6,8 +6,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
     var self = _.extend(Tablet);
 
     var userData;
-    // var groupName;
     self.groupData = {};            // why does this need to be public?!
+    var currentProblem;
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
@@ -16,6 +16,14 @@ NEOplace.Tablet.Student = (function(Tablet) {
     var foo = function () {
 
     };
+
+
+    self.escapeSelectorString = function(str) {
+        if(str)
+            return str.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1');
+        else
+            return str;
+    }    
 
     /** public function **/
     self.bar = function () {
@@ -67,7 +75,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     $("#loginScreen #statusMsg").html('You have been assigned to <strong>'+data.groups[0].name+'</strong>.<br /><br />');
 
                     Sail.app.groupData.name = data.groups[0].name;
-                    Sail.app.groupData.members = ["you","joe","mike"];              // TODO remove and wait for group_presence
+                    Sail.app.groupData.members = ["you","joe","mike", "colin"];              // TODO remove and wait for group_presence
 
                     Sail.app.userData = data;
                 });
@@ -90,7 +98,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 //TODO: part of dynamic call (make global?)
                 var problem = {
-                    id: "tempTODO",
                     name: "TruckAndCrate"
                 }
 
@@ -146,8 +153,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 ];
 
                 var numTags = peerTagsResults.length;
-                var output = '<table>';         // TODO will there be groups of 2? Then must fix this
-                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">'+Sail.app.groupData.members[1]+'</th><th width="100">'+Sail.app.groupData.members[2]+'</th></tr>';
+                var output = '<table>';
+                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">'+Sail.app.groupData.members[1]+'</th>';
+                if (Sail.app.groupData.members[2]) {
+                    output += '<th width="100">'+Sail.app.groupData.members[2]+'</th>';
+                }
+                if (Sail.app.groupData.members[3]) {
+                    output += '<th width="100">'+Sail.app.groupData.members[3]+'</th>';
+                }                
+                output += '</tr>';
                 var yes = "✔";
                 var no = "x";
                 for (var i=0; i<numTags; i++){
@@ -158,20 +172,20 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     output += ' /><label for="checkbox-'+tag.id+'"></label>'+'</td>';
 
                     if (Sail.app.groupData.members[1]) {
-                        output += '<td id="testID" class="teammate-'+Sail.app.groupData.members[1]+' principle-id-'+tag.id+'">';
+                        output += '<td data="'+Sail.app.groupData.members[1]+'-'+tag.name+'">';
                         output += no //(tag.submitted.indexOf(2) > -1) ? yes : no;
                         output += '</td>';
                     }
                     if (Sail.app.groupData.members[2]) {
-                        output += '<td class="teammate-'+Sail.app.groupData.members[2]+' principle-id-'+tag.id+'">';
+                        output += '<td data="'+Sail.app.groupData.members[2]+'-'+tag.name+'">';
                         output += no //(tag.submitted.indexOf(3) > -1) ? yes : no;
                         output += '</td>';
                     }
                     if (Sail.app.groupData.members[3]) {
-                        output += '<td class="teammate-'+Sail.app.groupData.members[3]+' principle-id-'+tag.id+'">';
+                        output += '<td data="'+Sail.app.groupData.members[3]+'-'+tag.name+'">';
                         output += no //(tag.submitted.indexOf(3) > -1) ? yes : no;
                         output += '</td>';
-                    }                    
+                    }
 
                     output += '</tr>';
                 }
@@ -194,38 +208,45 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 // event to listen for updates from other tables on checkmarks for checkbox table
                 self.events.sail = {
-                    checkbox_toggled: function(ev) {
+                    checkbox_toggled: function(ev) {     
                         if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.checkedCheckboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
                             $('.teammate-'+Sail.app.groupData.members[1]).text(no);
                             _.each(ev.payload.checkedCheckboxes, function(principle) {
-                                $('.teammate-'+Sail.app.groupData.members[1]+'.principle-id-'+principle).text(yes);
+                                //$(td value="Sail.app.groupData.members[1]+'-'+'principle'").text(yes);
+                                var dataValueStr = Sail.app.groupData.members[1] + '-' + Sail.app.escapeSelectorString(principle);
+                                $("td[data='"+dataValueStr+"']").text(yes);
                             });
                         }
                         else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.checkedCheckboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
                             $('.teammate-'+Sail.app.groupData.members[2]).text(no);
                             _.each(ev.payload.checkedCheckboxes, function(principle) {
-                                $('.teammate-'+Sail.app.groupData.members[1]+'.principle-id-'+principle).text(yes);
+                                //$('.teammate-'+Sail.app.groupData.members[1]+'.principle-id-'+principle).text(yes);
+                                var dataValueStr = Sail.app.groupData.members[2] + '-' + Sail.app.escapeSelectorString(principle);
+                                $("td[data='"+dataValueStr+"']").text(yes);
                             });
                         }
                         else if ((ev.origin === Sail.app.groupData.members[3]) && ev.payload.checkedCheckboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
                             $('.teammate-'+Sail.app.groupData.members[3]).text(no);
                             _.each(ev.payload.checkedCheckboxes, function(principle) {
-                                $('.teammate-'+Sail.app.groupData.members[3]+'.principle-id-'+principle).text(yes);
+                                //$('.teammate-'+Sail.app.groupData.members[3]+'.principle-id-'+principle).text(yes);
+                                var dataValueStr = Sail.app.groupData.members[3] + '-' + Sail.app.escapeSelectorString(principle);
+                                $("td[data='"+dataValueStr+"']").text(yes);
                             });
-                        }                        
+                        }
                         else {
-                            console.log('ignoring checkbox_toggled event');
+                            console.log('ignoring checkbox_toggled event - not relevant group member of bad payload');
                         }
                         
                     }
                 };
 
+/*                _.each($('#principleConsensus tr'), function(SOMETHING){
 
-                //TODO: Client (not agent) will detect whether or not they are in agreement
-                //$("#principleConsensus #continueButton").css({ opacity: 1 });
+                });
+                $("#principleConsensus #continueButton").css({ opacity: 1 });*/
 
             });
 
@@ -373,13 +394,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 Sail.app.groupData.members = sev.payload.members.slice();            // TODO test me!
             }
             else {
-                console.log('ignoring group presence since - other group or bad payload');
+                console.log('ignoring group_presence event - either other group or bad payload');
             }
         },
 
         problem_assignment: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
                 Sail.app.currentProblem = sev.payload.problem_name;
+            }
+            else {
+                console.log('ignoring problem_assignment event - either other group or bad payload');
             }
         }
     };
