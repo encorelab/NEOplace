@@ -237,17 +237,51 @@ NEOplace.Tablet.Student = (function(Tablet) {
                             });
                         }
                         else {
-                            console.log('ignoring checkbox_toggled event - not relevant group member of bad payload');
+                            console.log('ignoring checkbox_toggled event - not relevant group member or bad payload');
+                        }
+
+                        // is this the best place to do this? Maybe filter out by group name?
+                        var consensusReached = true;
+                        $('#principleConsensus tr').each(function(trIndex) {
+                            
+                            var checkCount = 0;
+                            // for each column
+                            // skip first column
+                            if (trIndex === 0) {
+                                return;
+                            }
+                            else {
+                                $(this).find('td').each(function(tdIndex){
+                                    if ( tdIndex === 0 ){
+                                        if ($(this).find(":checkbox").attr("checked") ){
+                                             checkCount++;
+                                        }
+                                    } else {
+                                        if ($(this).text() === yes ){
+                                             checkCount++;
+                                        }
+                                    }
+                                });
+                                if ((checkCount != 0) && (checkCount != Sail.app.groupData.members.length)) {
+                                    consensusReached = false;
+                                    return false;                         
+                                }
+                            }
+                        });
+                        if (consensusReached === true) {
+/*                            $('#principleConsensus #continueButton').removeAttr('disabled');
+                            $('#principleConsensus #continueButton').refresh();
+*/                            $('#principleConsensus #continueButton').show();
+                            alert('true');
+                        } else {
+/*                            $('#principleConsensus #continueButton').attr('disabled', 'disabled');
+                            $('#principleConsensus #continueButton').refresh();*/
+                            $('#principleConsensus #continueButton').hide();
+                            alert('false');
                         }
                         
                     }
                 };
-
-/*                _.each($('#principleConsensus tr'), function(SOMETHING){
-
-                });
-                $("#principleConsensus #continueButton").css({ opacity: 1 });*/
-
             });
 
             //equationsReview
