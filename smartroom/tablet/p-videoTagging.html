@@ -1,0 +1,65 @@
+<html> 
+<head> 
+    <title>NEOplace - Smartroom Activity</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
+    
+    <script src="js/sail.js/sail.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.student.js')
+            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+    </script>
+</head>
+<body class="student">
+
+    <!-- START videoTagging page -->
+    <div data-role="page" id="videoTagging">
+
+        <header data-theme="a" data-role="header">
+            <h1>NEOplace - In-class Activity - Step 1 of 3</h1>
+        </header>
+
+        <div data-role="content">
+
+             <div>
+                <p>Watch the video on the large display and decide if any of your principles
+                are shown. If they are drag them into the box above to attach your principle
+                to the video. If more than one of your principles is shown drag both
+                into the box.</p>
+            </div>
+
+            <ul data-role="listview" data-divider-theme="b" data-inset="true">
+                <li data-role="list-divider" role="heading">
+                    Your Theme: Newton's Laws
+                </li>
+            </ul>
+
+            <div id="draggableTags">
+                <div data-role="button" data-inline="true" class="draggable" id="drag-1">Newton's First Law</div>
+                <div data-role="button" data-inline="true" class="draggable" id="drag-2">Newton's Second Law</div>
+                <div data-role="button" data-inline="true" class="draggable" id="drag-3">Newton's Third Law</div>
+            </div>
+
+            <div>To attach a Principle to this video, drag the Principles from above into the area below.</div>
+
+            <div id="tagDropArea">
+                <div id="dragReminder">Drag here.</div>
+            </div>
+
+            <p class="text-align-center">[Instructions: When you're done tagging videos, tap the 'Save Tags' button]</p>
+            <a href="p-finishedTagging.html" data-role="button"  data-theme="b" id="continueButton">Save Tags</a>
+        </div>
+    </div>
+    <!-- END videoTagging -->
+
+</body>
+</html>

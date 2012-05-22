@@ -8,7 +8,7 @@
     <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
     <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
     <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
-
+    
     <script src="js/sail.js/sail.js" type="text/javascript"></script>
     <script type="text/javascript">
         Sail.load()
@@ -17,27 +17,22 @@
             .then('js/neoplace.tablet.js')
             .then('js/neoplace.tablet.student.js')
             //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
-            //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
             //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
     </script>
 </head>
 <body class="student">
 
-    <!-- START loginScreen page -->
-    <div id="loginScreen" data-role="page" data-theme="c">
-
-        <div data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Welcome</h1>
-        </div>
+    <!-- START finishPage -->
+    <div data-role="page" id="finishPage">
 
         <div data-role="content">
-            <p class="text-align-center"><img src="/assets/img/placeweb.png" width="248" height="52" alt="PLACE logo" /></p>
-            <p class="text-align-center">[Instructions: Your teacher has assigned you to a video board. When you get there, tap 'Scan QR Code' to begin.]</p>
-            <a href="p-qrScan.html" data-role="button"  data-theme="b" id="startButton">Scan QR Code</a>
+            <p class="text-align-center">Great work!<br /><br /><img src="/assets/img/greatwork.png" width="235" height="208" alt="Thumbs up" /></p>
+            <br /><br />
+            <p class="text-align-center">[Instructions about what they should do next]</p>
         </div>
 
     </div>
-    <!-- END loginScreen page -->
-        
+    <!-- END finishPage -->
+
 </body>
 </html>
