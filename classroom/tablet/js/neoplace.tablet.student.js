@@ -6,7 +6,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
     var self = _.extend(Tablet);
 
     var userData;
-    var groupData;
+    // var groupName;
+    self.groupData = {};            // why does this need to be public?!
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
@@ -22,13 +23,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
 
     // wiring up a test event to check sanity
-    $('.test-sail-button').click (function() {
+/*    $('.test-sail-button').click (function() {
         var sev = new Sail.Event('test_event_out', {
             name:'Colin',
             status:'working'
         });
         Sail.app.groupchat.sendEvent(sev);
-    });
+    });*/
 
     /** local event wiring **/
 
@@ -64,10 +65,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         console.log('WARNING: user has been assigned to more than one group');
                     }
                     $("#loginScreen #statusMsg").html('You have been assigned to <strong>'+data.groups[0].name+'</strong>.<br /><br />');
-                    
-                    // TODO grab group data here
 
-                    Sail.app.groupData = ["you","joe","mike"];
+                    Sail.app.groupData.name = data.groups[0].name;
+                    Sail.app.groupData.members = ["you","joe","mike"];              // TODO remove and wait for group_presence
 
                     Sail.app.userData = data;
                 });
@@ -146,8 +146,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 ];
 
                 var numTags = peerTagsResults.length;
-                var output = '<table>';         // TOOD will there be groups of 2? Then must fix this
-                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">'+Sail.app.groupData[1]+'</th><th width="100">'+Sail.app.groupData[2]+'</th></tr>';
+                var output = '<table>';         // TODO will there be groups of 2? Then must fix this
+                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">'+Sail.app.groupData.members[1]+'</th><th width="100">'+Sail.app.groupData.members[2]+'</th></tr>';
                 var yes = "✔";
                 var no = "x";
                 for (var i=0; i<numTags; i++){
@@ -157,16 +157,21 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
                     output += ' /><label for="checkbox-'+tag.id+'"></label>'+'</td>';
 
-                    if (Sail.app.groupData[1]) {
-                        output += '<td id="testID" class="teammate-'+Sail.app.groupData[1]+' principle-id-'+tag.id+'">';
+                    if (Sail.app.groupData.members[1]) {
+                        output += '<td id="testID" class="teammate-'+Sail.app.groupData.members[1]+' principle-id-'+tag.id+'">';
                         output += no //(tag.submitted.indexOf(2) > -1) ? yes : no;
                         output += '</td>';
                     }
-                    if (Sail.app.groupData[2]) {
-                        output += '<td class="teammate-'+Sail.app.groupData[2]+' principle-id-'+tag.id+'">';
+                    if (Sail.app.groupData.members[2]) {
+                        output += '<td class="teammate-'+Sail.app.groupData.members[2]+' principle-id-'+tag.id+'">';
                         output += no //(tag.submitted.indexOf(3) > -1) ? yes : no;
                         output += '</td>';
                     }
+                    if (Sail.app.groupData.members[3]) {
+                        output += '<td class="teammate-'+Sail.app.groupData.members[3]+' principle-id-'+tag.id+'">';
+                        output += no //(tag.submitted.indexOf(3) > -1) ? yes : no;
+                        output += '</td>';
+                    }                    
 
                     output += '</tr>';
                 }
@@ -190,20 +195,27 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 // event to listen for updates from other tables on checkmarks for checkbox table
                 self.events.sail = {
                     checkbox_toggled: function(ev) {
-                        if ((ev.origin === Sail.app.groupData[1]) && ev.payload.checkedCheckboxes) {
+                        if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.checkedCheckboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
-                            $('.teammate-'+Sail.app.groupData[1]).text(no);
+                            $('.teammate-'+Sail.app.groupData.members[1]).text(no);
                             _.each(ev.payload.checkedCheckboxes, function(principle) {
-                                $('.teammate-'+Sail.app.groupData[1]+'.principle-id-'+principle).text(yes);
+                                $('.teammate-'+Sail.app.groupData.members[1]+'.principle-id-'+principle).text(yes);
                             });
                         }
-                        else if ((ev.origin === Sail.app.groupData[2]) && ev.payload.checkedCheckboxes) {
+                        else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.checkedCheckboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
-                            $('.teammate-'+Sail.app.groupData[2]).text(no);
+                            $('.teammate-'+Sail.app.groupData.members[2]).text(no);
                             _.each(ev.payload.checkedCheckboxes, function(principle) {
-                                $('.teammate-'+Sail.app.groupData[1]+'.principle-id-'+principle).text(yes);
+                                $('.teammate-'+Sail.app.groupData.members[1]+'.principle-id-'+principle).text(yes);
                             });
                         }
+                        else if ((ev.origin === Sail.app.groupData.members[3]) && ev.payload.checkedCheckboxes) {
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
+                            $('.teammate-'+Sail.app.groupData.members[3]).text(no);
+                            _.each(ev.payload.checkedCheckboxes, function(principle) {
+                                $('.teammate-'+Sail.app.groupData.members[3]+'.principle-id-'+principle).text(yes);
+                            });
+                        }                        
                         else {
                             console.log('ignoring checkbox_toggled event');
                         }
@@ -353,6 +365,22 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.events.sail = {
         test_event: function(sev) {
             alert('heard the event');
+        },
+
+        // this event updates the group to include only present members (ie logged in users in group)
+        group_presence: function(sev) {
+            if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.members)) {
+                Sail.app.groupData.members = sev.payload.members.slice();            // TODO test me!
+            }
+            else {
+                console.log('ignoring group presence since - other group or bad payload');
+            }
+        },
+
+        problem_assignment: function(sev) {
+            if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
+                Sail.app.currentProblem = sev.payload.problem_name;
+            }
         }
     };
 
