@@ -18,7 +18,7 @@
             .then('js/neoplace.tablet.student.js')
             .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
-            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+            .thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
     </script>
 </head>
 <body class="student">
@@ -31,6 +31,8 @@
             <p class="text-align-center" id="statusMsg">Trying to log you in...<br /><br /><img src="/assets/img/login.gif" width="300" height="208" alt="" /></p>
             <a href="p-principleReview.html" data-role="button"  data-theme="b" id="startButton" style="display:none;">Start</a>
         </div>
+
+        <button class="test-sail-button">SEND SAIL EVENT</button>
 
     </div>
     <!-- END loginScreen -->

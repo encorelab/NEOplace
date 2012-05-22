@@ -5,8 +5,11 @@ NEOplace.Tablet.Student = (function(Tablet) {
     "use strict";
     var self = _.extend(Tablet);
 
+    var userData;
+    var groupData;
+
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
-    var UI_TESTING_ONLY = true; 
+    var UI_TESTING_ONLY = false; 
 
     /** private function **/
     var foo = function () {
@@ -17,6 +20,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.bar = function () {
 
     };
+
+    // wiring up a test event to check sanity
+    $('.test-sail-button').click (function() {
+        var sev = new Sail.Event('test_event_out', {
+            name:'Colin',
+            status:'working'
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    });
 
     /** local event wiring **/
 
@@ -47,12 +59,22 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if ( !UI_TESTING_ONLY ) {
                 Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.session.account.login+".json", "GET", {}, function(data) {
                     console.log("Authenticated user is: ", data);
-                    // user's metadata is in data.metadata
+
+                    if (data.groups[1]) {
+                        console.log('WARNING: user has been assigned to more than one group');
+                    }
+                    $("#loginScreen #statusMsg").html('You have been assigned to <strong>'+data.groups[0].name+'</strong>.<br /><br />');
+                    
+                    // TODO grab group data here
+
+                    Sail.app.groupData = ["you","joe","mike"];
+
+                    Sail.app.userData = data;
                 });
             }
 
-            //TODO: I need to know what group they are in
-            $("#loginScreen #statusMsg").html('You have been assigned to <strong>{group #2}</strong>.<br /><br />');
+
+            // Colin needs some explanation of what's intended to go on here (not sure what classroom_start event is supposed to be used for... will it contain the tag array data for tag counts?)
 
             //TODO:faked. This needs to be triggered by classroom_start event
             //setTimeout(classroomStart,5000);
@@ -66,14 +88,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
             //
             $( '#principleReview' ).live( 'pageinit',function(event){
 
-                //TODO: part of dynamic call
+                //TODO: part of dynamic call (make global?)
                 var problem = {
+                    id: "tempTODO",
                     name: "TruckAndCrate"
                 }
 
                 //$("#problem").append(output);
 
-                //TODO: array needs to a result of a backend call
+                //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
                 var peerTagsResults = [
                     {id:1, name:"Newton's Second Law", votes:2},
                     {id:2, name:"Acceleration", votes:7},
@@ -81,16 +104,27 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     {id:4, name:"Fnet = 0", votes:5}
                 ];
 
-                var numTags = peerTagsResults.length;
+                var numTags = peerTagsResults.length;                       // this checkbox-id setup is going to result in duplicate ids, no?
                 var output = "";
                 for (var i=0; i<numTags; i++){
                     var tag = peerTagsResults[i];
-                    output += '<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" /> \
+                    output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" /> \
                                 <label for="checkbox-'+tag.id+'">'+tag.name+' \
                                 <span class="peer-count">'+tag.votes+'</span> \
                                 </label>';
                 }
-                $("#principleReview #peerTags").append(output).trigger("create");
+                $('#principleReview #peerTags').append(output).trigger("create");
+
+                $('#principleReview .submit-guess').click(function() {
+                    var principlesArray = [];
+
+                    // iterate over all of the checked boxes and add principle names to the array
+                    $('input:checkbox:checked').each(function(index) {
+                        principlesArray.push($(this).attr("name"));
+                    });
+                    
+                    Sail.app.submitPrinciplesGuess(problem.id, principlesArray);
+                });
 
             });
 
@@ -106,32 +140,77 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 //TODO: array needs to a result of a backend call
                 var peerTagsResults = [
-                    {id:1, name:"Newton's Second Law", submitted:[1,2]},
-                    {id:2, name:"Acceleration", submitted:[1,2,3]},
-                    {id:4, name:"Fnet = 0", submitted:[2,3]}
+                    {id:1, name:"Newton's Second Law", submitted:[]},
+                    {id:2, name:"Acceleration", submitted:[]},
+                    {id:4, name:"Fnet = 0", submitted:[]}
                 ];
 
                 var numTags = peerTagsResults.length;
-                var output = '<table>';
-                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">2</th><th width="100">3</th></tr>';
+                var output = '<table>';         // TOOD will there be groups of 2? Then must fix this
+                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">'+Sail.app.groupData[1]+'</th><th width="100">'+Sail.app.groupData[2]+'</th></tr>';
                 var yes = "✔";
                 var no = "x";
                 for (var i=0; i<numTags; i++){
                     var tag = peerTagsResults[i];
                     output += '<tr><th>'+tag.name+'</th>';
-                    output += '<td>'+'<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" ';
+                    output += '<td>'+'<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" ';
                     output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
                     output += ' /><label for="checkbox-'+tag.id+'"></label>'+'</td>';
-                    output += '<td>'
-                    output += (tag.submitted.indexOf(2) > -1) ? yes : no;
-                    output += '</td>';
-                    output += '<td>';
-                    output += (tag.submitted.indexOf(3) > -1) ? yes : no;
-                    output += '</td>';
+
+                    if (Sail.app.groupData[1]) {
+                        output += '<td id="testID" class="teammate-'+Sail.app.groupData[1]+' principle-id-'+tag.id+'">';
+                        output += no //(tag.submitted.indexOf(2) > -1) ? yes : no;
+                        output += '</td>';
+                    }
+                    if (Sail.app.groupData[2]) {
+                        output += '<td class="teammate-'+Sail.app.groupData[2]+' principle-id-'+tag.id+'">';
+                        output += no //(tag.submitted.indexOf(3) > -1) ? yes : no;
+                        output += '</td>';
+                    }
+
                     output += '</tr>';
                 }
                 output += "</table>";
                 $("#principleConsensus #peerTags").append(output).trigger("create");
+
+                $('input:checkbox').click(function() {
+                    // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
+                    // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
+
+                    var principleConsensusArray = [];
+
+                    // iterate over all of the checked boxes and add principle names to the array
+                    $('input:checkbox:checked').each(function(index) {
+                        principleConsensusArray.push($(this).attr("name"));
+                    });
+                    
+                    Sail.app.toggleCheckboxes(principleConsensusArray);      
+                });
+
+                // event to listen for updates from other tables on checkmarks for checkbox table
+                self.events.sail = {
+                    checkbox_toggled: function(ev) {
+                        if ((ev.origin === Sail.app.groupData[1]) && ev.payload.checkedCheckboxes) {
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
+                            $('.teammate-'+Sail.app.groupData[1]).text(no);
+                            _.each(ev.payload.checkedCheckboxes, function(principle) {
+                                $('.teammate-'+Sail.app.groupData[1]+'.principle-id-'+principle).text(yes);
+                            });
+                        }
+                        else if ((ev.origin === Sail.app.groupData[2]) && ev.payload.checkedCheckboxes) {
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
+                            $('.teammate-'+Sail.app.groupData[2]).text(no);
+                            _.each(ev.payload.checkedCheckboxes, function(principle) {
+                                $('.teammate-'+Sail.app.groupData[1]+'.principle-id-'+principle).text(yes);
+                            });
+                        }
+                        else {
+                            console.log('ignoring checkbox_toggled event');
+                        }
+                        
+                    }
+                };
+
 
                 //TODO: Client (not agent) will detect whether or not they are in agreement
                 //$("#principleConsensus #continueButton").css({ opacity: 1 });
@@ -160,7 +239,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 for (var i=0; i<numTags; i++){
                     var tag = peerEquationResults[i];
                     
-                    output += '<input type="checkbox" name="checkbox-'+tag.id+'" id="checkbox-'+tag.id+'" class="custom" /> \
+                    output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" /> \
                         <label for="checkbox-'+tag.id+'">'+tag.name+' \
                         <span class="peer-count">'+tag.votes+'</span> \
                         </label>';
@@ -179,6 +258,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 //update formatting of equations
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+                $('#equationsReview .submit-guess').click(function() {
+                    var equationsArray = [];
+
+                    // iterate over all of the checked boxes and add principle names to the array
+                    $('input:checkbox:checked').each(function(index) {
+                        equationsArray.push($(this).attr("name"));
+                    });
+                    
+                    var problemId = "1";       // this will need to be set globally in principlesReview
+                    Sail.app.submitEquationsGuess(problemId, equationsArray);
+                });                
 
             });
 
@@ -232,16 +323,41 @@ NEOplace.Tablet.Student = (function(Tablet) {
         }
     };
 
-    /** sail event wiring (i.e. XMPP events) **/
+    /************************ OUTGOING EVENTS ******************************/
+
+    self.submitPrinciplesGuess = function(problemId, principlesArray) {
+        var sev = new Sail.Event('guess_submission', {
+            problem_id:problemId,
+            principles:principlesArray,
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    };
+
+    self.submitEquationsGuess = function(problemId, equationsArray) {
+        var sev = new Sail.Event('guess_submission', {
+            problem_id:problemId,
+            equations:equationsArray,
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    };
+
+    self.toggleCheckboxes = function(checkedCheckboxes) {
+        var sev = new Sail.Event('checkbox_toggled', {
+            checkedCheckboxes:checkedCheckboxes,
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    };
+
+    /************************ INCOMING EVENTS ******************************/
 
     self.events.sail = {
-        some_sail_event: function (sev) {
-
+        test_event: function(sev) {
+            alert('heard the event');
         }
     };
 
     // only users matching this filter will be shown in the account picker
-    self.userFilter = function (u) {
+    self.userFilter = function(u) {
         return u.kind === "Student";
     };
 
