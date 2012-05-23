@@ -162,6 +162,20 @@ body {
     margin-right: 20px;
 }
 
+.checklist-img-2 {
+    float: left;
+    width: 120px;
+    margin-right: 20px;
+}
+
+.checklist-img-3 {
+    float: left;
+    width: 80px;
+    margin-right: 10px;
+    overflow: hidden;
+}
+
+
 .checklist {
     float: left;
 }
@@ -172,17 +186,37 @@ body {
 }
 
 #peerEquations .ui-checkbox {
-    width: 250px;
+    width: 320px;
     margin-right: 10px;
     float: left;
+}
+
+#peerEquations .ui-checkbox label {
+    height: 65px;
 }
 
 #peerEquations .ui-checkbox, #peerEquations .ui-radio {
     clear: none;
 }
 
+#peerEquations .ui-btn-icon-left .ui-btn-inner .ui-icon, 
+#peerEquations .ui-btn-icon-right .ui-btn-inner .ui-icon {
+    margin-top: -23px;
+}
+
+.MathJax_Display {
+    margin: 0.1em 0em !important;
+    width: auto !important;
+    float: left;     
+    height: 70px !important;
+}
+
 /* override the jquery mobile styles because it ruins the checklist image float:left effect */
-#principleReview .ui-bar, #principleReview .ui-body {
+#principleReview .ui-bar, 
+#principleReview .ui-body,
+#equationsReview .ui-bar, 
+#equationsReview .ui-body 
+{
     clear: none;
 }
 
@@ -202,12 +236,62 @@ body {
     margin-left: 5px;
 }
 
+.ui-checkbox .peer-count {
+    float: right;
+}
+
+#peerEquations .ui-checkbox .peer-count {
+    margin-top: 11px;
+}
+
 .clear-floats {
     clear: both;
 }
 
-th {
+#principleConsensus table,
+#equationConsensus table {
+    border-collapse: collapse;
+}
+
+#principleConsensus th, #principleConsensus td,
+#equationConsensus th, #equationConsensus td {
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+#principleConsensus th.tag-name,
+#equationConsensus th.tag-name {
     text-align: left;
+    padding-left: 10px;
+}
+
+#principleConsensus .ui-checkbox label,
+#equationConsensus .ui-checkbox label {
+    width: 50px;
+    padding: 10px 0;
+    margin: 0 auto;
+}
+
+#principleConsensus .ui-checkbox .ui-btn-inner,
+#equationConsensus .ui-checkbox .ui-btn-inner {
+    border: none;
+}
+
+.checklist_icon {
+    width: 18px;
+    height: 18px;
+    margin: 0 auto;
+    background-image: url(images/icons-18-black.png);
+    background-repeat: no-repeat;
+}
+
+.no_icon {
+    background-position-x: -70px; 
+}
+
+.yes_icon {
+    background-position-x: -255px;
 }
 
 
