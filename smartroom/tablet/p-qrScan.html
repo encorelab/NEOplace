@@ -1,7 +1,6 @@
-<!DOCTYPE html> 
 <html> 
 <head> 
-    <title>NEOplace - Classroom Activity</title> 
+    <title>NEOplace - Smartroom Activity</title> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     
@@ -22,19 +21,26 @@
 </head>
 <body class="student">
 
-    <!-- START finishPage -->
-    <div data-role="page" id="finishPage">
+    <!-- START qrScan page -->
+    <div data-role="page" id="qrScan">
+
+        <header data-theme="a" data-role="header">
+            <h1>NEOplace - In-class Activity - Login</h1>
+        </header>
 
         <div data-role="content">
-            <h2 class="text-align-center">Great work!</h2>
-            <p class="text-align-center"><img src="/assets/img/greatwork.png" width="235" height="208" alt="Thumbs up" /></p>
-            <br /><br />
-            <p class="text-align-center">Tap the Next button to get another problem.</p>
-            <a href="p-principleReview.html" data-role="button"  data-theme="b" id="startButton">Next</a>
-        </div>
 
+            <h2>Scan in at {Board 1} using your tablet's barcode scanner.</h2>
+
+            <p class="text-align-center"><img style="width: 100%; height: 100%" src="http://assets.codiqa.com/ps/9014/d4e6f3ed1f9a2ea6barcode-scan-main-screen.png" /></p>
+
+            <p class="text-align-center">When you're done, press Submit Tags to send your selections to the shared laptop.</p>
+            <a data-role="button" data-transition="fade" data-theme="b" href="p-videoTagging.html">
+                Done
+            </a>
+        </div>
     </div>
-    <!-- END finishPage -->
+    <!-- END qrScan page -->
 
 </body>
 </html>

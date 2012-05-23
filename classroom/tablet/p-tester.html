@@ -16,24 +16,24 @@
             .then('js/jquery.mobile.toast.js')
             .then('js/neoplace.tablet.js')
             .then('js/neoplace.tablet.student.js')
-            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
-            .thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
     </script>
 </head>
 <body class="student">
 
-    <!-- START loginScreen -->
-    <div id="loginScreen" data-role="page" data-theme="c">
-
-        <div data-role="content">
-            <p class="text-align-center"><img src="/assets/img/placeweb.png" width="248" height="52" alt="PLACE logo" /></p>
-            <p class="text-align-center" id="statusMsg">Trying to log you in...<br /><br /><img src="/assets/img/login.png" width="300" height="200" alt="" /></p>
-            <a href="p-principleReview.html" data-role="button" data-theme="b" id="startButton" style="display:none;" class="ui-disabled">Start</a>
-        </div>
+    <!-- NOTE: USE THIS HTML FILE FOR ANY JQUERY MOBILE PAGES THAT YOU JUST WANT TO PROTOTYPE QUICKLY -->
+    <!-- START testScreen -->
+    <div id="testScreen" data-role="page" data-theme="c">
+        <table>
+            <tr>
+                <td data="mike-Newton's Law">Test</td>
+            </tr>
+        </table>
 
     </div>
-    <!-- END loginScreen -->
-           
+    <!-- END testScreen -->
+
 </body>
 </html>
