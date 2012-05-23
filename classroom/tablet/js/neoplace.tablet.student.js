@@ -158,7 +158,7 @@ if ( !UI_TESTING_ONLY ) {
                 output += '<tr><td width="200"></td>';
                 output += '<th width="100">&nbsp; you</th>';
                 if ( !UI_TESTING_ONLY ) {
-                    numGroupMembers = Sail.app.groupData.length;
+                    numGroupMembers = Sail.app.groupData.members.length;
                     for (var i=0; i<numGroupMembers; i++){
                         output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
                     }
@@ -221,30 +221,30 @@ if ( !UI_TESTING_ONLY ) {
                 self.events.sail = {
                     principle_checkbox_toggled: function(ev) {     
                         if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.checkedCheckboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
-                            $('.teammate-'+Sail.app.groupData.members[0]).text(no);
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                            $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
                             _.each(ev.payload.checkedCheckboxes, function(principle) {
-                                //$(td value="Sail.app.groupData.members[0]+'-'+'principle'").text(yes);
+                                //$(td value="Sail.app.groupData.members[0]+'-'+'principle'").html(YES);
                                 var dataValueStr = Sail.app.groupData.members[0] + '-' + Sail.app.escapeSelectorString(principle);
-                                $("td[data='"+dataValueStr+"']").text(yes);
+                                $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
                         else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.checkedCheckboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
-                            $('.teammate-'+Sail.app.groupData.members[1]).text(no);
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                            $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
                             _.each(ev.payload.checkedCheckboxes, function(principle) {
-                                //$('.teammate-'+Sail.app.groupData.members[0]+'.principle-id-'+principle).text(yes);
+                                //$('.teammate-'+Sail.app.groupData.members[0]+'.principle-id-'+principle).html(YES);
                                 var dataValueStr = Sail.app.groupData.members[1] + '-' + Sail.app.escapeSelectorString(principle);
-                                $("td[data='"+dataValueStr+"']").text(yes);
+                                $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
                         else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.checkedCheckboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
-                            $('.teammate-'+Sail.app.groupData.members[2]).text(no);
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                            $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
                             _.each(ev.payload.checkedCheckboxes, function(principle) {
-                                //$('.teammate-'+Sail.app.groupData.members[2]+'.principle-id-'+principle).text(yes);
+                                //$('.teammate-'+Sail.app.groupData.members[2]+'.principle-id-'+principle).html(YES);
                                 var dataValueStr = Sail.app.groupData.members[2] + '-' + Sail.app.escapeSelectorString(principle);
-                                $("td[data='"+dataValueStr+"']").text(yes);
+                                $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
                         else {
@@ -268,12 +268,12 @@ if ( !UI_TESTING_ONLY ) {
                                              checkCount++;
                                         }
                                     } else {
-                                        if ($(this).text() === yes ){
+                                        if ($(this).html() === YES ){
                                              checkCount++;
                                         }
                                     }
                                 });
-                                if ((checkCount != 0) && (checkCount != Sail.app.groupData.members.length)) {
+                                if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length + 1))) {
                                     consensusReached = false;
                                     return false;                         
                                 }
@@ -375,7 +375,7 @@ if ( !UI_TESTING_ONLY ) {
                 output += '<tr><td width="200"></td>';
                 output += '<th width="100">&nbsp; you</th>';
                 if ( !UI_TESTING_ONLY ) {
-                    numGroupMembers = Sail.app.groupData.length;
+                    numGroupMembers = Sail.app.groupData.members.length;
                     for (var i=0; i<numGroupMembers; i++){
                         output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
                     }
@@ -395,9 +395,9 @@ if ( !UI_TESTING_ONLY ) {
                     output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
                     output += ' /><label for="checkbox-'+equation.id+'"></label>'+'</td>';
 
-                    if ( !UI_TESTING_ONLY ) {
+                    if ( !UI_TESTING_ONLY ) { 
                         for (var j=0; j<numGroupMembers; j++){
-                            output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+equation.name+'">';
+                            output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+Sail.app.escapeSelectorString(equation.name)+'">';
                             output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
                             output += '</td>';
                         }
@@ -437,27 +437,27 @@ if ( !UI_TESTING_ONLY ) {
                 self.events.sail = {
                     equation_checkbox_toggled: function(ev) {     
                         if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.checkedCheckboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
-                            $('.teammate-'+Sail.app.groupData.members[0]).text(no);
-                            _.each(ev.payload.checkedCheckboxes, function(equation) {
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                            $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
+                            _.each(ev.payload.checkedCheckboxes, function(equation) { 
                                 var dataValueStr = Sail.app.groupData.members[0] + '-' + Sail.app.escapeSelectorString(equation);
-                                $("td[data='"+dataValueStr+"']").text(yes);
+                                $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
                         else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.checkedCheckboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
-                            $('.teammate-'+Sail.app.groupData.members[1]).text(no);
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                            $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
                             _.each(ev.payload.checkedCheckboxes, function(equation) {
                                 var dataValueStr = Sail.app.groupData.members[1] + '-' + Sail.app.escapeSelectorString(equation);
-                                $("td[data='"+dataValueStr+"']").text(yes);
+                                $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
                         else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.checkedCheckboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the yeses
-                            $('.teammate-'+Sail.app.groupData.members[2]).text(no);
+                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                            $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
                             _.each(ev.payload.checkedCheckboxes, function(equation) {
                                 var dataValueStr = Sail.app.groupData.members[2] + '-' + Sail.app.escapeSelectorString(equation);
-                                $("td[data='"+dataValueStr+"']").text(yes);
+                                $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
                         else {
@@ -481,12 +481,12 @@ if ( !UI_TESTING_ONLY ) {
                                              checkCount++;
                                         }
                                     } else {
-                                        if ($(this).text() === yes ){
+                                        if ($(this).html() === YES ){
                                              checkCount++;
                                         }
                                     }
                                 });
-                                if ((checkCount != 0) && (checkCount != Sail.app.groupData.members.length)) {
+                                if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length + 1))) {
                                     consensusReached = false;
                                     return false;                         
                                 }
@@ -576,6 +576,9 @@ if ( !UI_TESTING_ONLY ) {
         problem_assignment: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
                 Sail.app.currentProblem = sev.payload.problem_name;
+                // mongo call to determine tag counts
+                // grab problem from json files
+                // load page principle review
             }
             else {
                 console.log('ignoring problem_assignment event - either other group or bad payload');
