@@ -5,6 +5,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     "use strict";
     var self = _.extend(Tablet);
 
+    self.drowsyURL = "http://drowsy.badger.encorelab.org";
     self.userData;
     self.groupData = {};            // why does this need to be public?!
     var currentProblem;
@@ -18,6 +19,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
     /** private function **/
     var foo = function () {
 
+    };
+    
+    var currentDb = function () {
+      return Sail.app.run.name;  
     };
 
 
@@ -524,11 +529,21 @@ if ( !UI_TESTING_ONLY ) {
     }
 
     self.submitPrinciplesGuess = function(problemId, principlesArray) {
-        var sev = new Sail.Event('guess_submission', {
+        var obs = {
             problem_id:problemId,
-            principles:principlesArray,
+            principles:principlesArray
+        };
+        
+        var sev = new Sail.Event('guess_submission', obs);
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
         });
-        Sail.app.groupchat.sendEvent(sev);
     };
 
     self.submitEquationsGuess = function(problemId, equationsArray) {
