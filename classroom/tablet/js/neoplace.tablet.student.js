@@ -5,7 +5,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     "use strict";
     var self = _.extend(Tablet);
 
-    self.drowsyURL = "http://drowsy.badger.encorelab.org";
+    // self.drowsyURL = "http://drowsy.badger.encorelab.org";
     self.userData;
     self.groupData = {};            // why does this need to be public?!
     var currentProblem;
@@ -48,6 +48,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if ( !UI_TESTING_ONLY ) {
                 Sail.app.authenticate();
             }
+
+            Sail.app.drowsyURL = Sail.app.config.mongo.url;
         },
 
         // triggered when the UI is ready
@@ -132,7 +134,7 @@ if ( !UI_TESTING_ONLY ) {
                             principlesArray.push($(this).attr("name"));
                         });
                         
-                            Sail.app.submitPrinciplesGuess(problem.id, principlesArray);
+                            Sail.app.submitPrinciplesGuess(problem.name, principlesArray);
 
                     });
 }
@@ -350,7 +352,7 @@ if ( !UI_TESTING_ONLY ) {
                     });
                     
                     var problemId = "1";       // this will need to be set globally in principlesReview
-                    Sail.app.submitEquationsGuess(problemId, equationsArray);
+                    Sail.app.submitEquationsGuess(problem.name, equationsArray);
                 }); 
 }              
 
@@ -528,9 +530,9 @@ if ( !UI_TESTING_ONLY ) {
         Sail.app.groupchat.sendEvent(sev);
     }
 
-    self.submitPrinciplesGuess = function(problemId, principlesArray) {
+    self.submitPrinciplesGuess = function(problemName, principlesArray) {
         var obs = {
-            problem_id:problemId,
+            problem_name:problemName,
             principles:principlesArray
         };
         
@@ -546,27 +548,93 @@ if ( !UI_TESTING_ONLY ) {
         });
     };
 
-    self.submitEquationsGuess = function(problemId, equationsArray) {
-        var sev = new Sail.Event('guess_submission', {
-            problem_id:problemId,
-            equations:equationsArray,
+    self.submitEquationsGuess = function(problemName, equationsArray) {
+        var obs = {
+            problem_name:problemName,
+            equations:equationsArray
+        };
+        
+        var sev = new Sail.Event('guess_submission', obs);
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
         });
-        Sail.app.groupchat.sendEvent(sev);
     };
 
     self.togglePrincipleCheckboxes = function(checkedCheckboxes) {
-        var sev = new Sail.Event('principle_checkbox_toggled', {
-            checkedCheckboxes:checkedCheckboxes,
+        var obs = {
+            checkedCheckboxes:checkedCheckboxes
+        };
+        
+        var sev = new Sail.Event('principle_checkbox_toggled', obs);
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
         });
-        Sail.app.groupchat.sendEvent(sev);
     };
 
     self.toggleEquationCheckboxes = function(checkedCheckboxes) {
-        var sev = new Sail.Event('equation_checkbox_toggled', {
-            checkedCheckboxes:checkedCheckboxes,
+        var obs = {
+            checkedCheckboxes:checkedCheckboxes
+        };
+        
+        var sev = new Sail.Event('equation_checkbox_toggled', obs);
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
         });
-        Sail.app.groupchat.sendEvent(sev);
     };
+
+    self.submitPrinciplesQuorum = function(problemName, principlesArray) {
+        var obs = {
+            problem_name:problemName,
+            principles:principlesArray
+        };
+        
+        var sev = new Sail.Event('quorum_reached', obs);                // maybe separate these so that Armin only listens to one?
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
+        });
+    }
+
+    self.submitEquationsQuorum = function(problemName, equationsArray) {
+        var obs = {
+            problem_name:problemName,
+            equations:equationsArray
+        };
+        
+        var sev = new Sail.Event('quorum_reached', obs);                // maybe separate these so that Armin only listens to one?
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
+        });
+    };    
 
     /************************ INCOMING EVENTS ******************************/
 
