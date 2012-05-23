@@ -14,13 +14,13 @@ class ClassroomChoreographer < Sail::Agent
     @runname = 'neo-test'
     @runid = nil
     @active_users = []
+    @rollcallurl = "http://rollcall.proto.encorelab.org/"
   end
 
   def behaviour
     when_ready do
       @mongo = Mongo::Connection.new.db(config[:database])
 
-      
       join_room
       #join_log_room
     end
@@ -52,37 +52,44 @@ class ClassroomChoreographer < Sail::Agent
     # once start is received hand out first problem batch to checked in students
     event :start_classroom? do |stanza, data|
       log "Once this event is received, hand out first problem batch"
+      log "Run name #{@runname.inspect}"
       # Retrieve run id from Rollcall
-      @runid = lookup_runid (@runname)
+      @runid = lookup_runid(@runname)
 
       unless @runid == nil then
-        log "Run Id #{@runid} for run"
+        log "Run Id #{@runid} for runname #{@runname}"
       else
         log 'No runid no dice'
         return nil
       end
 
       # Retrieve groups that belong to run id from Rollcall
-      groups = lookup_groups (@runid)
-      log "Found #{groups.length} groups that fit to #{@runid} : #{groups.inspect}"
+      groups_in_run = lookup_groups(@runid)
+      log "Found #{groups_in_run.length} groups that fit to #{@runid} : #{groups_in_run.inspect}"
 
       # Retrieve all user names for 'active' groups
       @mongo.collection(:active_users).find.each do |row|
         @active_users.push(row)
       end
-
       log "Active_users array #{@active_users.inspect}"
 
       # Remove users not logged in from groups
+      groups_with_active_users = remove_inactive_users(groups_in_run, @active_users)
+      log "did groups change? #{groups_with_active_users.inspect}"
 
       # Send group presence
+      groups_with_active_users.each do |active_group|
+        log "active group name: #{active_group[0]}"
+        log "active group member ids: #{active_group[1]}"
+        #event!(:group_presence, {:group => active_group[0], :members => active_group[1]})
+      end
 
       # Send problem assignment
     end
   end
 
   def lookup_userid(username)
-    RestClient.get('http://rollcall.proto.encorelab.org/users.json'){ |response, request, result, &block|
+    RestClient.get("#{@rollcallurl}users.json") do |response, request, result, &block|
       case response.code
       when 200
         log "Result #{response.inspect}"
@@ -100,24 +107,18 @@ class ClassroomChoreographer < Sail::Agent
         response.return!(request, result, &block)
         return nil
       end
-    }
+    end
   end
 
   def lookup_runid (runname)
-    RestClient.get('http://rollcall.proto.encorelab.org/runs.json'){ |response, request, result, &block|
+    #RestClient.get('http://rollcall.proto.encorelab.org/runs/neo-test.json'){ |response, request, result, &block|
+    RestClient.get("#{@rollcallurl}runs/#{runname}.json"){ |response, request, result, &block|
       case response.code
       when 200
         log "Result #{response.inspect}"
-        runs = JSON.parse(response)
+        run = JSON.parse(response)
         
-        runs.each do |run|
-          if run['name'] == runname then
-            #log "Run #{run.inspect}"
-            return run['id']
-          end
-        end
-
-        return nil
+        return run['id']
       else
         response.return!(request, result, &block)
         return nil
@@ -126,21 +127,45 @@ class ClassroomChoreographer < Sail::Agent
   end
 
   def lookup_groups (runid)
-    RestClient.get('http://rollcall.proto.encorelab.org/groups.json'){ |response, request, result, &block|
+    #RestClient.get('http://rollcall.proto.encorelab.org/groups.json'){ |response, request, result, &block|
+    RestClient.get("#{@rollcallurl}runs/#{runid}/groups.json"){ |response, request, result, &block|
       case response.code
       when 200
         #log "Result #{response.inspect}"
         groups = JSON.parse(response)
+        groups_and_their_members = nil
+
+        groups.each do |group|
+          groups_and_their_members = {group['name'] => []}
+          group['members'].each do |member|
+            groups_and_their_members[group['name']].push('id' => member['id'])
+          end
+        end
         
         #reduce the set to the entries that fit the run_id
-        groups.delete_if { |group| group['run_id'] != runid }
+        #groups.delete_if { |group| group['run_id'] != runid }
 
-        return groups
+        return groups_and_their_members
       else
         response.return!(request, result, &block)
         return nil
       end
     }
+  end
+
+  def remove_inactive_users(groups_and_their_members, active_users)
+    active_user_ids = active_users.collect{|u| u['id']}.flatten.uniq
+
+    groups_and_their_members.keys.each do |gname|
+      active_members_in_this_group = 
+        groups_and_their_members[gname].select do |member|
+            active_user_ids.include?(member['id'])
+        end
+    
+        groups_and_their_members[gname] = active_members_in_this_group  
+    end
+
+    return groups_and_their_members
   end
 
   # def lookup_student(username, restoring = false)
