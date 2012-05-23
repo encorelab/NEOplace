@@ -104,7 +104,7 @@ class ClassroomChoreographer < Sail::Agent
 
       # Remove users not logged in from groups
       @groups_with_active_users = remove_inactive_users(groups_in_run, @active_users)
-      log "did groups change? #{groups_with_active_users.inspect}"
+      log "did groups change? #{@groups_with_active_users.inspect}"
 
       # Send group presence
       @groups_with_active_users.each do |active_group|
@@ -118,6 +118,18 @@ class ClassroomChoreographer < Sail::Agent
       end
 
       # Send problem assignment
+      @groups_with_active_users.each do |active_group|
+        # find a problem with assigned 'false'
+        next_problem = @mongo.collection(:problem_assignments).find_one('assigned' => false)
+        if next_problem then
+          log "#{next_problem.inspect}"
+          # send out problem assignment event
+          event!(:problem_assignment, {:group => active_group[0], :problem_name => next_problem['name']})
+          # set assigned to 'true' and store in MongoDB
+          next_problem['assigned'] = true
+          @mongo.collection(:problem_assignments).save(next_problem)
+        end
+      end
     end
   end
 
