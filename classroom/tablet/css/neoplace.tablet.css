@@ -158,7 +158,7 @@ body {
 
 .checklist-img {
     float: left;
-    width: 128px;
+    width: 166px;
     margin-right: 20px;
 }
 
@@ -169,6 +169,16 @@ body {
 .ui-controlgroup-vertical .ui-btn, .ui-controlgroup-vertical .ui-checkbox, .ui-controlgroup-vertical .ui-radio {
     margin-bottom: 2px;
     border-bottom-width: 1px;
+}
+
+#peerEquations .ui-checkbox {
+    width: 250px;
+    margin-right: 10px;
+    float: left;
+}
+
+#peerEquations .ui-checkbox, #peerEquations .ui-radio {
+    clear: none;
 }
 
 /* override the jquery mobile styles because it ruins the checklist image float:left effect */

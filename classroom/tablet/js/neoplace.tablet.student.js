@@ -10,7 +10,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.groupData = {};            // why does this need to be public?!
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
-    var UI_TESTING_ONLY = false; 
+    var UI_TESTING_ONLY = true; 
 
     /** private function **/
     var foo = function () {
@@ -234,15 +234,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 //TODO: array needs to a result of a backend call
                 var peerEquationResults = [
-                    {id:1, name:"d=vt + 1/2at^2", votes:1},
-                    {id:2, name:"v2 = v1 +a*t", votes:2},
-                    {id:3, name:"d = (v1+v2)/2*t", votes:4},
-                    {id:4, name:"Fnet = m*a", votes:2},
-                    {id:5, name:"W = F*d*cosΘ", votes:1},
-                    {id:6, name:"PE = m*g*h", votes:3},
-                    {id:7, name:"KE = 1/2*m*v^2", votes:1},
-                    {id:8, name:"P = W/t", votes:1},
-                    {id:9, name:"d=vt", votes:6}
+                    {name:"d=vt + 1/2at^2", votes:1},
+                    {name:"v2 = v1 +a*t", votes:2},
+                    {name:"d = (v1+v2)/2*t", votes:4},
+                    {name:"Fnet = m*a", votes:2},
+                    {name:"W = F*d*cosΘ", votes:1},
+                    {name:"PE = m*g*h", votes:3},
+                    {name:"KE = 1/2*m*v^2", votes:1},
+                    {name:"P = W/t", votes:1},
+                    {name:"d=vt", votes:6}
                 ];
 
                 var numTags = peerEquationResults.length;
@@ -251,22 +251,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 for (var i=0; i<numTags; i++){
                     var tag = peerEquationResults[i];
                     
-                    output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" /> \
-                        <label for="checkbox-'+tag.id+'">'+tag.name+' \
+                    output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.name+'" class="eq-check-label" /> \
+                        <label for="checkbox-'+tag.name+'">'+tag.name+' \
                         <span class="peer-count">'+tag.votes+'</span> \
                         </label>';
-
-                    //if halfway through list, create new column
-                    if ( i == halfway-1 ) {
-                        $("#peerEquations #eqCol1").append(output);
-                        output = "";
-                    }
                 }
-                $("#peerEquations #eqCol2").append(output)
-                $("#peerEquations").trigger("create");
+                $("#equationsReview #peerEquations").append(output);
+                $("#equationsReview #peerEquations").trigger("create");
 
-                var checkboxes = $("#peerEquations input[type='checkbox']"); //.checkboxradio("refresh");
-                checkboxes.checkboxradio("refresh");
+                //var checkboxes = $("#peerEquations input[type='checkbox']"); //.checkboxradio("refresh");
+                //checkboxes.checkboxradio("refresh");
 
                 //update formatting of equations
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
