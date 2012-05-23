@@ -7,7 +7,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
     // self.drowsyURL = "http://drowsy.badger.encorelab.org";
     self.userData;
-    self.groupData = {};            // why does this need to be public?!
+    self.groupData = {
+        members:[]
+    };            // why does this need to be public?!
     var currentProblemName;
     self.currentProblem = {};
 
@@ -81,7 +83,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     $("#startButton").css("display","block");
                 
                     Sail.app.groupData.name = data.groups[0].name;
-                    Sail.app.groupData.members = ["joe","mike","colin"];              // TODO remove and wait for group_presence
+                    //Sail.app.groupData.members = ["joe","mike","colin"];
 
                     Sail.app.userData = data;
 
@@ -516,7 +518,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitPrinciplesGuess = function(problemName, principlesArray) {
         var obs = {
-            user_name:data.account.login, data.groups[0].name,
+            user_name:Sail.app.userData.account.login,
             problem_name:problemName,
             principles:principlesArray
         };
@@ -535,7 +537,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitEquationsGuess = function(problemName, equationsArray) {
         var obs = {
-            user_name:data.account.login, data.groups[0].name,
+            user_name:Sail.app.userData.account.login,
             problem_name:problemName,
             equations:equationsArray
         };
@@ -554,7 +556,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.togglePrincipleCheckboxes = function(checkedCheckboxes) {
         var obs = {
-            user_name:data.account.login, data.groups[0].name,
+            user_name:Sail.app.userData.account.login,
             checkedCheckboxes:checkedCheckboxes
         };
         
@@ -572,7 +574,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.toggleEquationCheckboxes = function(checkedCheckboxes) {
         var obs = {
-            user_name:data.account.login, data.groups[0].name,
+            user_name:Sail.app.userData.account.login,
             checkedCheckboxes:checkedCheckboxes
         };
         
@@ -590,7 +592,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitPrinciplesQuorum = function(problemName, principlesArray) {
         var obs = {
-            user_name:data.account.login, data.groups[0].name,
+            user_name:Sail.app.userData.account.login,
             problem_name:problemName,
             principles:principlesArray
         };
@@ -609,7 +611,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitEquationsQuorum = function(problemName, equationsArray) {
         var obs = {
-            user_name:data.account.login, data.groups[0].name,
+            user_name:Sail.app.userData.account.login,
             problem_name:problemName,
             equations:equationsArray
         };
@@ -636,15 +638,16 @@ if ( !UI_TESTING_ONLY ) {
         // this event updates the group to include only present members (ie logged in users in group)
         group_presence: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.members)) {
-                Sail.app.groupData.members = sev.payload.members.slice();
-                Sail.app.groupData.members = _.without(Sail.app.groupData.members, Sail.app.userData.account.login) 
                 // change groupData.members (ids) to groupData.members (names)
-/*                Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.groupData.members[0]+".json", "GET", {}, function(data) {
-                    
-                    var temp = data.account.login;
-                });*/
-
-                $('#startButton').removeClass('ui-disabled');
+                _.each(sev.payload.members, function(memberId, i) {
+                    Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/" + memberId + ".json", "GET", {}, function(data) {
+                        Sail.app.groupData.members.push(data.account.login);
+                        if (i === sev.payload.members.length - 1) {
+                            Sail.app.groupData.members = _.without(Sail.app.groupData.members, Sail.app.userData.account.login);
+                            $('#startButton').removeClass('ui-disabled');                            
+                        }
+                    });                    
+                });
             }
             else {
                 console.log('ignoring group_presence event - either other group or bad payload');
