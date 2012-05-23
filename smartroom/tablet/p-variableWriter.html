@@ -1,0 +1,73 @@
+<html> 
+<head> 
+    <title>NEOplace - Smartroom Activity</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
+    
+    <script src="js/sail.js/sail.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.student.js')
+            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+    </script>
+</head>
+<body class="student">
+
+    <!-- START variableWriter -->
+    <div data-role="page" id="variableWriter">
+
+        <div data-theme="a" data-role="header">
+            <h1>NEOplace - In-class Activity - Step 3 of X</h1>
+        </div>
+        
+        <div data-role="content">
+            <div>
+                <h2>Pick Your Variables</h2>
+            </div>
+            <div>
+                <b>
+                    Write out any variables that you think are needed to help "solve" the
+                    challenge question
+                    <br />
+                    <br />
+                    (i.e. The speed of an object, the co-efficient of friction, the mass of
+                    an object)
+                </b>
+            </div>
+            <div data-role="fieldcontain">
+                <fieldset data-role="controlgroup">
+                    <label for="textarea3">
+                    </label>
+                    <textarea id="textarea3" placeholder="">
+                    </textarea>
+                </fieldset>
+            </div>
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <a data-role="button" id="variableHint" href="#">
+                        Give me a Hint!
+                    </a>
+                </div>
+                <div class="ui-block-b">
+                    <input type="submit" value="Submit" />
+                </div>
+            </div>
+
+
+            <a data-role="button" data-transition="fade" data-theme="b" href="p-sortVariables.html">
+                Finished Submitting Variables
+            </a>
+        </div>
+    </div>
+    <!-- END variableWriter -->
+
+</body>
+</html>

@@ -1,0 +1,155 @@
+<html> 
+<head> 
+    <title>NEOplace - Smartroom Activity</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
+    
+    <script src="js/sail.js/sail.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.student.js')
+            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+    </script>
+</head>
+<body class="student">
+
+    <!-- START problemPicker -->
+    <div data-role="page" id="problemPicker">
+
+        <div data-theme="a" data-role="header">
+            <h1>NEOplace - In-class Activity - Step 4 of X</h1>
+        </div>
+        
+        <div data-role="content">
+
+            <div class="text-align-center">
+                <img src="/assets/170aa052139c382dq1.JPG" />
+            </div>
+
+            <div data-role="collapsible-set" data-theme="a" data-content-theme="">
+                <div data-role="collapsible" data-collapsed="false">
+                    <h3>
+                        Connected Principles
+                    </h3>
+                    <ul data-role="listview" data-divider-theme="b" data-inset="false">
+                        <li data-theme="c">
+                            <a href="#page1" data-transition="slide">
+                                Newton's First Law (3)
+                            </a>
+                        </li>
+                        <li data-theme="c">
+                            <a href="#page1" data-transition="slide">
+                                Kinetic Energy (2)
+                            </a>
+                        </li>
+                        <li data-theme="c">
+                            <a href="#page1" data-transition="slide">
+                                Potential Energy (1)
+                            </a>
+                        </li>
+                        <li data-theme="c">
+                            <a href="#page1" data-transition="slide">
+                                Acceleration (1)
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div data-role="collapsible" data-collapsed="false">
+                    <h3>
+                        Connected Equations
+                    </h3>
+                    <ul data-role="listview" data-divider-theme="b" data-inset="false">
+                        <li data-theme="c">
+                            <a href="#page1" data-transition="slide">
+                                d=vt + 1/2at^2
+                            </a>
+                        </li>
+                        <li data-theme="c">
+                            <a href="#page1" data-transition="slide">
+                                W = F*d*cosΘ
+                            </a>
+                        </li>
+                        <li data-theme="c">
+                            <a href="#page1" data-transition="slide">
+                                v2 = v1 +a*t
+                            </a>
+                        </li>
+                        <li data-theme="c">
+                            <a href="#page1" data-transition="slide">
+                                P = W/t
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div data-role="collapsible" data-collapsed="false">
+                    <h3>
+                        Student Rationales
+                    </h3>
+                    <div>
+                        <span>
+                            Radicchio prairie turnip common bean dolichos bean pea sprouts mustard,
+                            zucchini turnip watercress. New Zealand Spinach wild leek rutabaga tarwi
+                            chinese artichoke melokhia courgette. Peanut ahipa taro summer purslane
+                            green bean lizard's tail daikon; onion soybean gumbo, napa cabbage. Tinda
+                            orache, tigernut water spinach new zealand spinach.
+                            <br />
+                        </span>
+                        <b>
+                            <br />
+                        </b>
+                        <b>
+                            Student Group 1
+                        </b>
+                        <b>
+                            <br />
+                        </b>
+                    </div>
+                    <div>
+                        <div>
+                            <p>
+                                Peanut lentil black-eyed pea radicchio arugula polk sierra leone bologi
+                                bok choy. Skirret canna summer purslane; kurrat chinese mallow watercress
+                                leaves celery celery cauliflower. Prussian asparagus mizuna greens black-eyed
+                                pea scallion cassava broadleaf arrowhead. Ahipa kale ulluco daikon avocado
+                                courgette tigernut cassava beet greens new zealand spinach. Chickweed,
+                                cress tomatillo. Cucumber pak choy fava bean orache bitter gourd.
+                            </p>
+                            <div>
+                                <b>
+                                    Student Group 2
+                                </b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <a data-role="button" data-transition="fade" href="#">
+                        Previous Problem
+                    </a>
+                </div>
+                <div class="ui-block-b">
+                    <a data-role="button" data-transition="fade" href="#">
+                        Next Problem
+                    </a>
+                </div>
+            </div>
+            <a data-role="button" data-transition="fade" data-theme="b" href="p-sortProblems.html">
+                Connect Problem to Video
+            </a>
+            
+        </div>
+    </div>
+    <!-- END problemPicker -->
+
+</body>
+</html>

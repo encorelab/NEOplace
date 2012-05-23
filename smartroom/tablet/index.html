@@ -1,350 +1,43 @@
 <!DOCTYPE html> 
 <html> 
 <head> 
-    <title>NEOplace - In-class Activity</title> 
+    <title>NEOplace - Smartroom Activity</title> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     
-    <link href="js/sail.js/css/sail.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="css/jquery.mobile-1.1.0.css" /> 
-    <link href="css/neoplace.tablet.css" rel="stylesheet" type="text/css" />
-    
+    <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
+
     <script src="js/sail.js/sail.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.student.js')
+            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+    </script>
 </head>
 <body class="student">
 
-    <!-- START loadingAnimation page -->
-    <div data-role="page" id="loadingAnimation">
+    <!-- START loginScreen page -->
+    <div id="loginScreen" data-role="page" data-theme="c">
 
         <div data-theme="a" data-role="header">
             <h1>NEOplace - In-class Activity - Welcome</h1>
         </div>
 
         <div data-role="content">
-            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Go+to+Video+Board+1" width="650" height="240" alt="Your assignment" /></p>
+            <p class="text-align-center"><img src="/assets/img/placeweb.png" width="248" height="52" alt="PLACE logo" /></p>
             <p class="text-align-center">[Instructions: Your teacher has assigned you to a video board. When you get there, tap 'Scan QR Code' to begin.]</p>
-            <a href="#qrScan" data-role="button"  data-theme="b" id="startButton">Scan QR Code</a>
+            <a href="p-qrScan.html" data-role="button"  data-theme="b" id="startButton">Scan QR Code</a>
         </div>
 
     </div>
-    <!-- END loadingAnimation page -->
-    
-    <!-- START qrScan page -->
-    <div data-role="page" id="qrScan">
-
-        <header data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Login</h1>
-        </header>
-
-        <div data-role="content">
-
-            <h2>Scan in at {Board 1} using your tablet's barcode scanner.</h2>
-
-            <p class="text-align-center"><img style="width: 100%; height: 100%" src="http://assets.codiqa.com/ps/9014/d4e6f3ed1f9a2ea6barcode-scan-main-screen.png" /></p>
-
-            <p class="text-align-center">When you're done, press Submit Tags to send your selections to the shared laptop.</p>
-            <a data-role="button" data-transition="fade" data-theme="b" href="#videoTagging">
-                Done
-            </a>
-        </div>
-    </div>
-    <!-- END qrScan page -->
-
-    <!-- START videoTagging page -->
-    <div data-role="page" id="videoTagging">
-
-        <header data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Step 1 of 3</h1>
-        </header>
-
-        <div data-role="content">
-
-             <div>
-                <p>Watch the video on the large display and decide if any of your principles
-                are shown. If they are drag them into the box above to attach your principle
-                to the video. If more than one of your principles is shown drag both
-                into the box.</p>
-            </div>
-
-            <ul data-role="listview" data-divider-theme="b" data-inset="true">
-                <li data-role="list-divider" role="heading">
-                    Your Theme: Newton's Laws
-                </li>
-            </ul>
-
-            <div id="draggableTags">
-                <div data-role="button" data-inline="true" class="draggable" id="drag-1">Newton's First Law</div>
-                <div data-role="button" data-inline="true" class="draggable" id="drag-2">Newton's Second Law</div>
-                <div data-role="button" data-inline="true" class="draggable" id="drag-3">Newton's Third Law</div>
-            </div>
-
-            <div>To attach a Principle to this video, drag the Principles from above into the area below.</div>
-
-            <div id="tagDropArea">
-                <div id="dragReminder">Drag here.</div>
-            </div>
-
-            <p class="text-align-center">[Instructions: When you're done tagging videos, tap the 'Save Tags' button]</p>
-            <a href="#finishedTagging" data-role="button"  data-theme="b" id="continueButton">Save Tags</a>
-        </div>
-    </div>
-    <!-- END videoTagging -->
-
-    <!-- START finishedTagging -->
-    <div data-role="page" id="finishedTagging">
-
-        <div data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Step 2 of X</h1>
-        </div>
-        <div data-role="content">
-            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Wait" width="650" height="240" alt="Done" /></p>
-            <p class="text-align-center">[Student sorting and principle filtering time. Some instructions on what they should be doing now.]</p>
-            <a data-role="button" data-transition="fade" data-theme="b" href="#variableWriter">
-                Continue
-            </a>
-        </div>
-
-    </div>
-    <!-- END finishedTagging -->
-
-    <!-- START variableWriter -->
-    <div data-role="page" id="variableWriter">
-
-        <div data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Step 3 of X</h1>
-        </div>
-        
-        <div data-role="content">
-            <div>
-                <h2>Pick Your Variables</h2>
-            </div>
-            <div>
-                <b>
-                    Write out any variables that you think are needed to help "solve" the
-                    challenge question
-                    <br />
-                    <br />
-                    (i.e. The speed of an object, the co-efficient of friction, the mass of
-                    an object)
-                </b>
-            </div>
-            <div data-role="fieldcontain">
-                <fieldset data-role="controlgroup">
-                    <label for="textarea3">
-                    </label>
-                    <textarea id="textarea3" placeholder="">
-                    </textarea>
-                </fieldset>
-            </div>
-            <div class="ui-grid-a">
-                <div class="ui-block-a">
-                    <a data-role="button" id="variableHint" href="#">
-                        Give me a Hint!
-                    </a>
-                </div>
-                <div class="ui-block-b">
-                    <input type="submit" value="Submit" />
-                </div>
-            </div>
-
-
-            <a data-role="button" data-transition="fade" data-theme="b" href="#sortVariables">
-                Finished Submitting Variables
-            </a>
-        </div>
-    </div>
-    <!-- END variableWriter -->
-
-    <!-- START sortVariables -->
-    <div data-role="page" id="sortVariables">
-
-        <div data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Step 3 of X</h1>
-        </div>
-        <div data-role="content">
-            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Wait" width="650" height="240" alt="?" /></p>
-            <p class="text-align-center">[?]</p>
-            <a data-role="button" data-transition="fade" data-theme="b" href="#problemPicker">
-                Continue
-            </a>
-        </div>
-
-    </div>
-    <!-- END sortVariables -->
-
-
-    <!-- START problemPicker -->
-    <div data-role="page" id="problemPicker">
-
-        <div data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Step 4 of X</h1>
-        </div>
-        
-        <div data-role="content">
-
-            <div class="text-align-center">
-                <img src="/assets/170aa052139c382dq1.JPG" />
-            </div>
-
-            <div data-role="collapsible-set" data-theme="a" data-content-theme="">
-                <div data-role="collapsible" data-collapsed="false">
-                    <h3>
-                        Connected Principles
-                    </h3>
-                    <ul data-role="listview" data-divider-theme="b" data-inset="false">
-                        <li data-theme="c">
-                            <a href="#page1" data-transition="slide">
-                                Newton's First Law (3)
-                            </a>
-                        </li>
-                        <li data-theme="c">
-                            <a href="#page1" data-transition="slide">
-                                Kinetic Energy (2)
-                            </a>
-                        </li>
-                        <li data-theme="c">
-                            <a href="#page1" data-transition="slide">
-                                Potential Energy (1)
-                            </a>
-                        </li>
-                        <li data-theme="c">
-                            <a href="#page1" data-transition="slide">
-                                Acceleration (1)
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div data-role="collapsible" data-collapsed="false">
-                    <h3>
-                        Connected Equations
-                    </h3>
-                    <ul data-role="listview" data-divider-theme="b" data-inset="false">
-                        <li data-theme="c">
-                            <a href="#page1" data-transition="slide">
-                                d=vt + 1/2at^2
-                            </a>
-                        </li>
-                        <li data-theme="c">
-                            <a href="#page1" data-transition="slide">
-                                W = F*d*cosΘ
-                            </a>
-                        </li>
-                        <li data-theme="c">
-                            <a href="#page1" data-transition="slide">
-                                v2 = v1 +a*t
-                            </a>
-                        </li>
-                        <li data-theme="c">
-                            <a href="#page1" data-transition="slide">
-                                P = W/t
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-                <div data-role="collapsible" data-collapsed="false">
-                    <h3>
-                        Student Rationales
-                    </h3>
-                    <div>
-                        <span>
-                            Radicchio prairie turnip common bean dolichos bean pea sprouts mustard,
-                            zucchini turnip watercress. New Zealand Spinach wild leek rutabaga tarwi
-                            chinese artichoke melokhia courgette. Peanut ahipa taro summer purslane
-                            green bean lizard's tail daikon; onion soybean gumbo, napa cabbage. Tinda
-                            orache, tigernut water spinach new zealand spinach.
-                            <br />
-                        </span>
-                        <b>
-                            <br />
-                        </b>
-                        <b>
-                            Student Group 1
-                        </b>
-                        <b>
-                            <br />
-                        </b>
-                    </div>
-                    <div>
-                        <div>
-                            <p>
-                                Peanut lentil black-eyed pea radicchio arugula polk sierra leone bologi
-                                bok choy. Skirret canna summer purslane; kurrat chinese mallow watercress
-                                leaves celery celery cauliflower. Prussian asparagus mizuna greens black-eyed
-                                pea scallion cassava broadleaf arrowhead. Ahipa kale ulluco daikon avocado
-                                courgette tigernut cassava beet greens new zealand spinach. Chickweed,
-                                cress tomatillo. Cucumber pak choy fava bean orache bitter gourd.
-                            </p>
-                            <div>
-                                <b>
-                                    Student Group 2
-                                </b>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="ui-grid-a">
-                <div class="ui-block-a">
-                    <a data-role="button" data-transition="fade" href="#">
-                        Previous Problem
-                    </a>
-                </div>
-                <div class="ui-block-b">
-                    <a data-role="button" data-transition="fade" href="#">
-                        Next Problem
-                    </a>
-                </div>
-            </div>
-            <a data-role="button" data-transition="fade" data-theme="b" href="#sortProblems">
-                Connect Problem to Video
-            </a>
-            
-        </div>
-    </div>
-    <!-- END problemPicker -->
-
-    <!-- START sortProblems -->
-    <div data-role="page" id="sortProblems">
-
-        <div data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Step 3 of X</h1>
-        </div>
-        <div data-role="content">
-            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Wait" width="650" height="240" alt="?" /></p>
-            <p class="text-align-center">[?]</p>
-            <a data-role="button" data-transition="fade" data-theme="b" href="#finishPage">
-                Continue
-            </a>
-        </div>
-
-    </div>
-    <!-- END sortProblems -->
-
-    <!-- START finishPage -->
-    <div data-role="page" id="finishPage">
-
-        <div data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Done</h1>
-        </div>
-        <div data-role="content">
-            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Done" width="650" height="240" alt="Done" /></p>
-            <p class="text-align-center">[Some instructions on what they should be doing now.]</p>
-        </div>
-
-    </div>
-    <!-- END finishPage -->
-
-
-    <script type="text/javascript">
-        Sail.load()
-            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
-            .then('js/jquery.mobile.toast.js')
-            .then('js/jquery-ui-1.8.20.dragdrop.min.js')
-            .then('js/jquery.ui.touch-punch.js')
-            .then('js/neoplace.tablet.js')
-            .then('js/neoplace.tablet.student2.js')
-            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  //TODO: put back in
-    </script>
+    <!-- END loginScreen page -->
         
 </body>
 </html>
