@@ -28,7 +28,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
     self.escapeSelectorString = function(str) {
         if(str)
-            return str.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1');
+            return str.replace(/([ !"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g,'\\\\$1');
         else
             return str;
     }    
@@ -134,7 +134,7 @@ if ( !UI_TESTING_ONLY ) {
                             principlesArray.push($(this).attr("name"));
                         });
                         
-                            Sail.app.submitPrinciplesGuess(problem.id, principlesArray);
+                            Sail.app.submitPrinciplesGuess(problem.name, principlesArray);
 
                     });
 }
@@ -352,7 +352,7 @@ if ( !UI_TESTING_ONLY ) {
                     });
                     
                     var problemId = "1";       // this will need to be set globally in principlesReview
-                    Sail.app.submitEquationsGuess(problemId, equationsArray);
+                    Sail.app.submitEquationsGuess(problem.name, equationsArray);
                 }); 
 }              
 
@@ -398,13 +398,13 @@ if ( !UI_TESTING_ONLY ) {
                 for (var i=0; i<numTags; i++){
                     var equation = equationResults[i];
                     output += '<tr><th class="tag-name">$$'+equation.name+'$$</th>';
-                    output += '<td>'+'<input type="checkbox" name="'+equation.name+'" id="checkbox-'+equation.id+'" class="custom" ';
+                    output += '<td>'+'<input type="checkbox" name="'+equation.id+'" id="checkbox-'+equation.id+'" class="custom" ';
                     output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
                     output += ' /><label for="checkbox-'+equation.id+'"></label>'+'</td>';
 
                     if ( !UI_TESTING_ONLY ) { 
                         for (var j=0; j<numGroupMembers; j++){
-                            output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+Sail.app.escapeSelectorString(equation.name)+'">';
+                            output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-eq'+equation.id+'">';
                             output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
                             output += '</td>';
                         }
@@ -412,7 +412,7 @@ if ( !UI_TESTING_ONLY ) {
                         //fake group members results
                         numGroupMembers = 3;
                         for (var j=0; j<numGroupMembers; j++){
-                            output += '<td class="teammate-mike" data="mike-\\vec{F_{net}}=m\\vec{a}">';
+                            output += '<td class="teammate-mike" data="mike-eq8">';
                             output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
                             output += '</td>';
                         }
@@ -447,7 +447,7 @@ if ( !UI_TESTING_ONLY ) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
                             _.each(ev.payload.checkedCheckboxes, function(equation) { 
-                                var dataValueStr = Sail.app.groupData.members[0] + '-' + Sail.app.escapeSelectorString(equation);
+                                var dataValueStr = Sail.app.groupData.members[0] + '-eq' + equation;
                                 $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
@@ -455,7 +455,7 @@ if ( !UI_TESTING_ONLY ) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
                             _.each(ev.payload.checkedCheckboxes, function(equation) {
-                                var dataValueStr = Sail.app.groupData.members[1] + '-' + Sail.app.escapeSelectorString(equation);
+                                var dataValueStr = Sail.app.groupData.members[1] + '-eq' + equation;
                                 $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
@@ -463,7 +463,7 @@ if ( !UI_TESTING_ONLY ) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
                             _.each(ev.payload.checkedCheckboxes, function(equation) {
-                                var dataValueStr = Sail.app.groupData.members[2] + '-' + Sail.app.escapeSelectorString(equation);
+                                var dataValueStr = Sail.app.groupData.members[2] + '-eq' + equation;
                                 $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
@@ -530,9 +530,9 @@ if ( !UI_TESTING_ONLY ) {
         Sail.app.groupchat.sendEvent(sev);
     }
 
-    self.submitPrinciplesGuess = function(problemId, principlesArray) {
+    self.submitPrinciplesGuess = function(problemName, principlesArray) {
         var obs = {
-            problem_id:problemId,
+            problem_name:problemName,
             principles:principlesArray
         };
         
@@ -548,9 +548,9 @@ if ( !UI_TESTING_ONLY ) {
         });
     };
 
-    self.submitEquationsGuess = function(problemId, equationsArray) {
+    self.submitEquationsGuess = function(problemName, equationsArray) {
         var obs = {
-            problem_id:problemId,
+            problem_name:problemName,
             equations:equationsArray
         };
         
@@ -599,6 +599,42 @@ if ( !UI_TESTING_ONLY ) {
             }
         });
     };
+
+    self.submitPrinciplesQuorum = function(problemName, principlesArray) {
+        var obs = {
+            problem_name:problemName,
+            principles:principlesArray
+        };
+        
+        var sev = new Sail.Event('quorum_reached', obs);                // maybe separate these so that Armin only listens to one?
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
+        });
+    }
+
+    self.submitEquationsQuorum = function(problemName, equationsArray) {
+        var obs = {
+            problem_name:problemName,
+            equations:equationsArray
+        };
+        
+        var sev = new Sail.Event('quorum_reached', obs);                // maybe separate these so that Armin only listens to one?
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
+        });
+    };    
 
     /************************ INCOMING EVENTS ******************************/
 
