@@ -104,7 +104,7 @@ class ClassroomChoreographer < Sail::Agent
 
       # Remove users not logged in from groups
       @groups_with_active_users = remove_inactive_users(groups_in_run, @active_users)
-      log "did groups change? #{groups_with_active_users.inspect}"
+      log "did groups change? #{@groups_with_active_users.inspect}"
 
       # Send group presence
       @groups_with_active_users.each do |active_group|
@@ -117,7 +117,28 @@ class ClassroomChoreographer < Sail::Agent
         end
       end
 
-      # Send problem assignment
+      @groups_with_active_users.each do |active_group|
+        # Send problem assignment
+        unless send_problem_assignment(active_group[0]) then
+          log "Running out of problems should not happen at start of class :("
+        end
+      end
+    end
+
+    event :quorum_reached? do |stanza, data|
+      log "Received quorum_reached #{data.inspect}"
+      payload = data['payload']
+      # group_name:Sail.app.groupData.name,
+      #       problem_name:problemName,
+      #       equations:equationsArray
+      if payload['equations'] then
+        log "Like me a good equation ;)"
+        # Send problem assignment
+        unless send_problem_assignment(payload['group_name']) then
+          log "We are out of problems now we send done message"
+          event!(:activity_end, {})
+        end
+      end
     end
   end
 
@@ -203,6 +224,23 @@ class ClassroomChoreographer < Sail::Agent
     end
 
     return groups_and_their_members
+  end
+
+  def send_problem_assignment(active_group_name)
+    # find a problem with assigned 'false'
+    next_problem = @mongo.collection(:problem_assignments).find_one('assigned' => false)
+    if next_problem then
+      log "#{next_problem.inspect}"
+      # send out problem assignment event
+      event!(:problem_assignment, {:group => active_group_name, :problem_name => next_problem['name']})
+      # set assigned to 'true' and store in MongoDB
+      next_problem['assigned'] = true
+      @mongo.collection(:problem_assignments).save(next_problem)
+      return true
+    else
+      log "Out of problems"
+      return false
+    end
   end
 
   # def lookup_student(username, restoring = false)
