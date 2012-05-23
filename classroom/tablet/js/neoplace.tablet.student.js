@@ -10,6 +10,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.groupData = {};            // why does this need to be public?!
     var currentProblemName;
     self.currentProblem = {};
+    self.principleHomeworkResults = [];
+    self.equationHomeworkResults = [];
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
@@ -51,11 +53,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
 
             Sail.app.drowsyURL = Sail.app.config.mongo.url;
-        },
-
-        // triggered when the UI is ready
-        'ui.initialized': function(ev) {
-            // set up any UI stuff here
         },
 
         // triggered when the user has authenticated but is not yet in the XMPP chat channel
@@ -103,20 +100,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 // update the page to display the problem question
                 $('#principleReview .paper').html(Sail.app.currentProblem.htmlContent);
 
-                //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
-                var peerTagsResults = [
-                    {id:1, name:"Newton's Second Law", votes:2},
-                    {id:2, name:"Acceleration", votes:7},
-                    {id:3, name:"Static Friction", votes:4},
-                    {id:4, name:"Fnet = 0", votes:5}
-                ];
-
-                var numTags = peerTagsResults.length;                       // this checkbox-id setup is going to result in duplicate ids, no?
+                var numTags = Sail.app.principleHomeworkResults.length;
                 var output = "";
                 for (var i=0; i<numTags; i++){
-                    var tag = peerTagsResults[i];
-                    output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" /> \
-                                <label for="checkbox-'+tag.id+'">'+tag.name+' \
+                    var tag = principleHomeworkResults[i];
+                    output += '<input type="checkbox" name="'+tag.name+'" id="principle-checkbox-'+i+'" /> \
+                                <label for="principle-checkbox-'+i+'">'+tag.name+' \
                                 <span class="peer-count">'+tag.votes+'</span> \
                                 </label>';
                 }
@@ -131,7 +120,7 @@ if ( !UI_TESTING_ONLY ) {
                             principlesArray.push($(this).attr("name"));
                         });
                         
-                            Sail.app.submitPrinciplesGuess(problem.name, principlesArray);
+                        Sail.app.submitPrinciplesGuess(Sail.app.currentProblem.name, principlesArray);
 
                     });
 }
@@ -174,7 +163,7 @@ if ( !UI_TESTING_ONLY ) {
                 for (var i=0; i<numTags; i++){
                     var tag = peerTagsResults[i];
                     output += '<tr><th class="tag-name">'+tag.name+'</th>';
-                    output += '<td>'+'<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" ';
+                    output += '<td>'+'<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" ';
                     output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
                     output += ' /><label for="checkbox-'+tag.id+'" ></label>'+'</td>';
 
@@ -295,32 +284,16 @@ if ( !UI_TESTING_ONLY ) {
                 // update the page to display the problem question
                 $('#equationsReview .paper').html(Sail.app.currentProblem.htmlContent);
 
-                //TODO: array needs to a result of a backend call
-                var homeworkEquationResults = [
-                    {id:1, name:"\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}", votes:1},
-                    {id:2, name:"\\vec{v}=\\vec{d}/\\Delta t", votes:2},
-                    {id:10, name:"\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}", votes:4}, //tallest
-                    {id:17, name:"\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots", votes:2}, //longest
-                    {id:5, name:"\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}", votes:1},
-                    {id:6, name:"\\vec{a}=\\vec{\\Delta v}/\\Delta{t}", votes:3}
-                ];
-
-                var numTags = homeworkEquationResults.length;
+                //output the checkboxes for each tag
+                var numTags = Sail.app.equationHomeworkResults.length;
                 var output = "";
                 for (var i=0; i<numTags; i++){
-                    var tag = homeworkEquationResults[i];
-                    
-                    // output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.name+'" class="eq-check-label" /> \
-                    //     <label for="checkbox-'+tag.name+'">'+tag.name+' \
-                    //     <span class="peer-count">'+tag.votes+'</span> \
-                    //     </label>';
-
-                    output += '<input type="checkbox" name="'+tag.id+'" id="checkbox-'+tag.id+'" class="eq-check-label" /> \
-                        <label for="checkbox-'+tag.id+'">$$'+tag.name+'$$ \
+                    var tag = equationHomeworkResults[i];
+                    output += '<input type="checkbox" name="'+tag.id+'" id="equation-checkbox-'+tag.id+'" class="eq-check-label" /> \
+                        <label for="equation-checkbox-'+tag.id+'">$$'+tag.name+'$$ \
                         <span class="peer-count">'+tag.votes+'</span> \
                         </label>';
                 }
-
                 $("#equationsReview #peerEquations").append(output).trigger("create");
 
                 //TODO: this should be a button instead
@@ -388,7 +361,7 @@ if ( !UI_TESTING_ONLY ) {
                 for (var i=0; i<numTags; i++){
                     var equation = equationResults[i];
                     output += '<tr><th class="tag-name">$$'+equation.name+'$$</th>';
-                    output += '<td>'+'<input type="checkbox" name="'+equation.id+'" id="checkbox-'+equation.id+'" class="custom" ';
+                    output += '<td>'+'<input type="checkbox" name="'+equation.id+'" id="checkbox-'+equation.id+'" ';
                     output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
                     output += ' /><label for="checkbox-'+equation.id+'"></label>'+'</td>';
 
@@ -660,6 +633,24 @@ if ( !UI_TESTING_ONLY ) {
                 Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
 
                 // mongo call to determine tag counts
+
+                //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
+                Sail.app.principleHomeworkResults = [
+                    {name:"Newton's Second Law", votes:2},
+                    {name:"Acceleration", votes:7},
+                    {name:"Static Friction", votes:4},
+                    {name:"Fnet = 0", votes:5}
+                ];
+
+                //TODO: array needs to a result of a backend call
+                Sail.app.equationHomeworkResults = [
+                    {id:1, name:"\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}", votes:1},
+                    {id:2, name:"\\vec{v}=\\vec{d}/\\Delta t", votes:2},
+                    {id:10, name:"\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}", votes:4}, //tallest
+                    {id:17, name:"\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots", votes:2}, //longest
+                    {id:5, name:"\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}", votes:1},
+                    {id:6, name:"\\vec{a}=\\vec{\\Delta v}/\\Delta{t}", votes:3}
+                ];
 
 
                 // grab problem from json files
