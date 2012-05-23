@@ -506,12 +506,8 @@ if ( !UI_TESTING_ONLY ) {
                             $('#equationConsensus #equationContinueButton').addClass('ui-disabled');
                             alert('false');
                         }
-                        
                     }
                 };
-
-
-
             });
         },
 
@@ -532,6 +528,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitPrinciplesGuess = function(problemName, principlesArray) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             problem_name:problemName,
             principles:principlesArray
         };
@@ -550,6 +547,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitEquationsGuess = function(problemName, equationsArray) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             problem_name:problemName,
             equations:equationsArray
         };
@@ -568,6 +566,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.togglePrincipleCheckboxes = function(checkedCheckboxes) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             checkedCheckboxes:checkedCheckboxes
         };
         
@@ -585,6 +584,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.toggleEquationCheckboxes = function(checkedCheckboxes) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             checkedCheckboxes:checkedCheckboxes
         };
         
@@ -602,6 +602,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitPrinciplesQuorum = function(problemName, principlesArray) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             problem_name:problemName,
             principles:principlesArray
         };
@@ -620,6 +621,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitEquationsQuorum = function(problemName, equationsArray) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             problem_name:problemName,
             equations:equationsArray
         };
@@ -648,7 +650,12 @@ if ( !UI_TESTING_ONLY ) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.members)) {
                 Sail.app.groupData.members = sev.payload.members.slice();
                 Sail.app.groupData.members = _.without(Sail.app.groupData.members, Sail.app.userData.account.login) 
-                //Sail.app.groupData.members.splice(Sail.app.userData.account.login);
+                // change groupData.members (ids) to groupData.members (names)
+/*                Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.groupData.members[0]+".json", "GET", {}, function(data) {
+                    
+                    var temp = data.account.login;
+                });*/
+
                 $('#startButton').removeClass('ui-disabled');
             }
             else {
@@ -658,7 +665,7 @@ if ( !UI_TESTING_ONLY ) {
 
         problem_assignment: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
-                Sail.app.currentProblem = sev.payload.problem_name;
+                Sail.app.currentProblem = sev.payload.problem_name;     // set state next?
                 // mongo call to determine tag counts
                 // grab problem from json files
                 // load page principle review
