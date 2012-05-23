@@ -517,6 +517,7 @@ if ( !UI_TESTING_ONLY ) {
 
         unauthenticated: function(ev) {
             console.log("User logged out!");
+            window.location.reload();
         }
     };
 
