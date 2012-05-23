@@ -134,7 +134,7 @@ if ( !UI_TESTING_ONLY ) {
                             principlesArray.push($(this).attr("name"));
                         });
                         
-                            Sail.app.submitPrinciplesGuess(problem.id, principlesArray);
+                            Sail.app.submitPrinciplesGuess(problem.name, principlesArray);
 
                     });
 }
@@ -352,7 +352,7 @@ if ( !UI_TESTING_ONLY ) {
                     });
                     
                     var problemId = "1";       // this will need to be set globally in principlesReview
-                    Sail.app.submitEquationsGuess(problemId, equationsArray);
+                    Sail.app.submitEquationsGuess(problem.name, equationsArray);
                 }); 
 }              
 
@@ -530,9 +530,9 @@ if ( !UI_TESTING_ONLY ) {
         Sail.app.groupchat.sendEvent(sev);
     }
 
-    self.submitPrinciplesGuess = function(problemId, principlesArray) {
+    self.submitPrinciplesGuess = function(problemName, principlesArray) {
         var obs = {
-            problem_id:problemId,
+            problem_name:problemName,
             principles:principlesArray
         };
         
@@ -548,9 +548,9 @@ if ( !UI_TESTING_ONLY ) {
         });
     };
 
-    self.submitEquationsGuess = function(problemId, equationsArray) {
+    self.submitEquationsGuess = function(problemName, equationsArray) {
         var obs = {
-            problem_id:problemId,
+            problem_name:problemName,
             equations:equationsArray
         };
         
@@ -599,6 +599,42 @@ if ( !UI_TESTING_ONLY ) {
             }
         });
     };
+
+    self.submitPrinciplesQuorum = function(problemName, principlesArray) {
+        var obs = {
+            problem_name:problemName,
+            principles:principlesArray
+        };
+        
+        var sev = new Sail.Event('quorum_reached', obs);                // maybe separate these so that Armin only listens to one?
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
+        });
+    }
+
+    self.submitEquationsQuorum = function(problemName, equationsArray) {
+        var obs = {
+            problem_name:problemName,
+            equations:equationsArray
+        };
+        
+        var sev = new Sail.Event('quorum_reached', obs);                // maybe separate these so that Armin only listens to one?
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
+        });
+    };    
 
     /************************ INCOMING EVENTS ******************************/
 
