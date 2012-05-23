@@ -7,5 +7,6 @@ gem 'bson_ext'
 gem 'blather'
 gem 'json'
 gem 'pidly'
+gem 'rest-client'
 
 gem 'ruby-debug19'
