@@ -79,9 +79,10 @@ class ClassroomChoreographer < Sail::Agent
 
       # Send group presence
       groups_with_active_users.each do |active_group|
-        log "active group name: #{active_group[0]}"
-        log "active group member ids: #{active_group[1]}"
-        #event!(:group_presence, {:group => active_group[0], :members => active_group[1]})
+        active_user_ids = active_group[1].collect {|user| user['id']}
+        log "Sending group_presense event with group #{active_group[0].inspect} and member ids #{active_user_ids.inspect}"
+
+        event!(:group_presence, {:group => active_group[0], :members => active_user_ids})
       end
 
       # Send problem assignment
