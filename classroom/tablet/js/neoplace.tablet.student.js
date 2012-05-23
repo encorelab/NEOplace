@@ -10,7 +10,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.groupData = {
         members:[]
     };            // why does this need to be public?!
-    var currentProblemName;
     self.currentProblem = {};
     self.principleHomeworkResults = [];
     self.equationHomeworkResults = [];
@@ -27,7 +26,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
     
     var currentDb = function () {
-      return Sail.app.run.name;  
+        return Sail.app.run.name;  
     };
 
 
@@ -211,28 +210,28 @@ if ( !UI_TESTING_ONLY ) {
                 // event to listen for updates from other tables on checkmarks for checkbox table
                 self.events.sail = {
                     principle_checkbox_toggled: function(ev) {     
-                        if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.checkedCheckboxes) {
+                        if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.principle_checked_checkboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
-                            _.each(ev.payload.checkedCheckboxes, function(principle) {
+                            _.each(ev.payload.principle_checked_checkboxes, function(principle) {
                                 //$(td value="Sail.app.groupData.members[0]+'-'+'principle'").html(YES);
                                 var dataValueStr = Sail.app.groupData.members[0] + '-' + Sail.app.escapeSelectorString(principle);
                                 $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
-                        else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.checkedCheckboxes) {
+                        else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.principle_checked_checkboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
-                            _.each(ev.payload.checkedCheckboxes, function(principle) {
+                            _.each(ev.payload.principle_checked_checkboxes, function(principle) {
                                 //$('.teammate-'+Sail.app.groupData.members[0]+'.principle-id-'+principle).html(YES);
                                 var dataValueStr = Sail.app.groupData.members[1] + '-' + Sail.app.escapeSelectorString(principle);
                                 $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
-                        else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.checkedCheckboxes) {
+                        else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.principle_checked_checkboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
-                            _.each(ev.payload.checkedCheckboxes, function(principle) {
+                            _.each(ev.payload.principle_checked_checkboxes, function(principle) {
                                 //$('.teammate-'+Sail.app.groupData.members[2]+'.principle-id-'+principle).html(YES);
                                 var dataValueStr = Sail.app.groupData.members[2] + '-' + Sail.app.escapeSelectorString(principle);
                                 $("td[data='"+dataValueStr+"']").html(YES);
@@ -408,26 +407,26 @@ if ( !UI_TESTING_ONLY ) {
 
                 self.events.sail = {
                     equation_checkbox_toggled: function(ev) {     
-                        if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.checkedCheckboxes) {
+                        if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.equation_checked_checkboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
-                            _.each(ev.payload.checkedCheckboxes, function(equation) { 
+                            _.each(ev.payload.equation_checked_checkboxes, function(equation) { 
                                 var dataValueStr = Sail.app.groupData.members[0] + '-eq' + equation;
                                 $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
-                        else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.checkedCheckboxes) {
+                        else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.equation_checked_checkboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
-                            _.each(ev.payload.checkedCheckboxes, function(equation) {
+                            _.each(ev.payload.equation_checked_checkboxes, function(equation) {
                                 var dataValueStr = Sail.app.groupData.members[1] + '-eq' + equation;
                                 $("td[data='"+dataValueStr+"']").html(YES);
                             });
                         }
-                        else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.checkedCheckboxes) {
+                        else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.equation_checked_checkboxes) {
                             // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
                             $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
-                            _.each(ev.payload.checkedCheckboxes, function(equation) {
+                            _.each(ev.payload.equation_checked_checkboxes, function(equation) {
                                 var dataValueStr = Sail.app.groupData.members[2] + '-eq' + equation;
                                 $("td[data='"+dataValueStr+"']").html(YES);
                             });
@@ -488,11 +487,12 @@ if ( !UI_TESTING_ONLY ) {
             group_name:groupName,
         });
         Sail.app.groupchat.sendEvent(sev);
-    }
+    } 
 
     self.submitPrinciplesGuess = function(problemName, principlesArray) {
         var obs = {
             user_name:Sail.app.userData.account.login,
+            group_name:Sail.app.groupData.name,
             problem_name:problemName,
             principles:principlesArray
         };
@@ -512,6 +512,7 @@ if ( !UI_TESTING_ONLY ) {
     self.submitEquationsGuess = function(problemName, equationsArray) {
         var obs = {
             user_name:Sail.app.userData.account.login,
+            group_name:Sail.app.groupData.name,
             problem_name:problemName,
             equations:equationsArray
         };
@@ -531,7 +532,8 @@ if ( !UI_TESTING_ONLY ) {
     self.togglePrincipleCheckboxes = function(checkedCheckboxes) {
         var obs = {
             user_name:Sail.app.userData.account.login,
-            checkedCheckboxes:checkedCheckboxes
+            group_name:Sail.app.groupData.name,
+            principle_checked_checkboxes:checkedCheckboxes
         };
         
         var sev = new Sail.Event('principle_checkbox_toggled', obs);
@@ -549,7 +551,8 @@ if ( !UI_TESTING_ONLY ) {
     self.toggleEquationCheckboxes = function(checkedCheckboxes) {
         var obs = {
             user_name:Sail.app.userData.account.login,
-            checkedCheckboxes:checkedCheckboxes
+            group_name:Sail.app.groupData.name,
+            equation_checked_checkboxes:checkedCheckboxes
         };
         
         var sev = new Sail.Event('equation_checkbox_toggled', obs);
@@ -567,11 +570,12 @@ if ( !UI_TESTING_ONLY ) {
     self.submitPrinciplesQuorum = function(problemName, principlesArray) {
         var obs = {
             user_name:Sail.app.userData.account.login,
+            group_name:Sail.app.groupData.name,
             problem_name:problemName,
             principles:principlesArray
         };
         
-        var sev = new Sail.Event('quorum_reached', obs);                // maybe separate these so that Armin only listens to one?
+        var sev = new Sail.Event('quorum_reached', obs);
         
         jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
             type: 'post',
@@ -586,11 +590,12 @@ if ( !UI_TESTING_ONLY ) {
     self.submitEquationsQuorum = function(problemName, equationsArray) {
         var obs = {
             user_name:Sail.app.userData.account.login,
+            group_name:Sail.app.groupData.name,
             problem_name:problemName,
             equations:equationsArray
         };
         
-        var sev = new Sail.Event('quorum_reached', obs);                // maybe separate these so that Armin only listens to one?
+        var sev = new Sail.Event('quorum_reached', obs);
         
         jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
             type: 'post',
@@ -630,8 +635,7 @@ if ( !UI_TESTING_ONLY ) {
 
         problem_assignment: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
-
-                Sail.app.currentProblemName = sev.payload.problem_name;         // set state here?
+                // set state here?
 
                 Sail.app.currentProblem.name = sev.payload.problem_name;
                 Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
