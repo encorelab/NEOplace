@@ -5,7 +5,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     "use strict";
     var self = _.extend(Tablet);
 
-    self.drowsyURL = "http://drowsy.badger.encorelab.org";
+    // self.drowsyURL = "http://drowsy.badger.encorelab.org";
     self.userData;
     self.groupData = {};            // why does this need to be public?!
     var currentProblem;
@@ -48,6 +48,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if ( !UI_TESTING_ONLY ) {
                 Sail.app.authenticate();
             }
+
+            Sail.app.drowsyURL = Sail.app.config.mongo.url;
         },
 
         // triggered when the UI is ready
@@ -547,25 +549,55 @@ if ( !UI_TESTING_ONLY ) {
     };
 
     self.submitEquationsGuess = function(problemId, equationsArray) {
-        var sev = new Sail.Event('guess_submission', {
+        var obs = {
             problem_id:problemId,
-            equations:equationsArray,
+            equations:equationsArray
+        };
+        
+        var sev = new Sail.Event('guess_submission', obs);
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
         });
-        Sail.app.groupchat.sendEvent(sev);
     };
 
     self.togglePrincipleCheckboxes = function(checkedCheckboxes) {
-        var sev = new Sail.Event('principle_checkbox_toggled', {
-            checkedCheckboxes:checkedCheckboxes,
+        var obs = {
+            checkedCheckboxes:checkedCheckboxes
+        };
+        
+        var sev = new Sail.Event('principle_checkbox_toggled', obs);
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
         });
-        Sail.app.groupchat.sendEvent(sev);
     };
 
     self.toggleEquationCheckboxes = function(checkedCheckboxes) {
-        var sev = new Sail.Event('equation_checkbox_toggled', {
-            checkedCheckboxes:checkedCheckboxes,
+        var obs = {
+            checkedCheckboxes:checkedCheckboxes
+        };
+        
+        var sev = new Sail.Event('equation_checkbox_toggled', obs);
+        
+        jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/observations', {
+            type: 'post',
+            data: obs,
+            success: function () {
+                console.log("Observation saved: ", obs);
+                Sail.app.groupchat.sendEvent(sev);
+            }
         });
-        Sail.app.groupchat.sendEvent(sev);
     };
 
     /************************ INCOMING EVENTS ******************************/
