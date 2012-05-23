@@ -12,6 +12,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
 
+    var YES = '<div class="checklist_icon yes_icon"></div>';
+    var NO = '<div class="checklist_icon no_icon"></div>';
+
     /** private function **/
     var foo = function () {
 
@@ -63,8 +66,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     if (data.groups[1]) {
                         console.log('WARNING: user has been assigned to more than one group, chosing first group in the list');
                     }
-                    $("#loginScreen #statusMsg").html('You have been assigned to <strong>'+data.groups[0].name+'</strong>.<br /><br />');
-
+                    $("#loginScreen #statusMsg").html('You have been assigned to <strong>'+data.groups[0].name+'</strong>. \
+                        <br /><br /> \
+                        <img src="/assets/img/group_gather.png" width="300" height="200" alt="group huddle" /> \
+                        <br />When your group is together and ready to go, let your teacher know.');
+                    $("#startButton").css("display","block");
+                
                     Sail.app.groupData.name = data.groups[0].name;
                     Sail.app.groupData.members = ["joe","mike","colin"];              // TODO remove and wait for group_presence
 
@@ -72,23 +79,17 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     Sail.app.submitLogin(data.account.login, data.groups[0].name);
                 });
+            }else{
+                //show start button when doing UI in order to get to next page w/o being logged in
+                $("#loginScreen #statusMsg").html('You have been assigned to <strong>{group name}</strong>. \
+                        <br /><br /> \
+                        <img src="/assets/img/group_gather.png" width="300" height="200" alt="group huddle" /> \
+                        <br />When your group is together and ready to go, let your teacher know.');
+                $("#startButton").css("display","block");
+                $('#startButton').removeClass('ui-disabled');
             }
 
-            
-
-
-
-
-            //TODO:faked. This needs to be triggered by classroom_start event
-            //setTimeout(classroomStart,5000);
-            //function classroomStart(){
-                //Note: could be better to maybe just go to the next page right away?
-                //esp if they are seeing this because they had to refresh the app
-                $("#loginScreen #statusMsg").append('<img src="/assets/img/group_gather.gif" width="300" height="208" alt="" /><br />When your group is together and ready to go, tap the Start button.');
-                $("#startButton").css("display","block");
-            //}
-
-            //
+            //PAGE: Students are working on tagging principles by themselves
             $( '#principleReview' ).live( 'pageinit',function(event){
 
                 //TODO: part of dynamic call (make global?)
@@ -117,20 +118,23 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 }
                 $('#principleReview #peerTags').append(output).trigger("create");
 
-                $('#principleReview .submit-guess').click(function() {
-                    var principlesArray = [];
+if ( !UI_TESTING_ONLY ) {
+                    $('#principleReview .submit-guess').click(function() {
+                        var principlesArray = [];
 
-                    // iterate over all of the checked boxes and add principle names to the array
-                    $('input:checkbox:checked').each(function(index) {
-                        principlesArray.push($(this).attr("name"));
+                        // iterate over all of the checked boxes and add principle names to the array
+                        $('input:checkbox:checked').each(function(index) {
+                            principlesArray.push($(this).attr("name"));
+                        });
+                        
+                            Sail.app.submitPrinciplesGuess(problem.id, principlesArray);
+
                     });
-                    
-                    Sail.app.submitPrinciplesGuess(problem.id, principlesArray);
-                });
+}
 
             });
 
-            //
+            //PAGE: Students are working on tagging principles as a group and trying to come to a consensus
             $( '#principleConsensus' ).live( 'pageinit',function(event){
 
                 //TODO: part of dynamic call
@@ -148,38 +152,46 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 ];
 
                 var numTags = peerTagsResults.length;
+                var numGroupMembers = 0;
+
                 var output = '<table>';
-                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">'+Sail.app.groupData.members[0]+'</th>';
-                if (Sail.app.groupData.members[1]) {
-                    output += '<th width="100">'+Sail.app.groupData.members[1]+'</th>';
+                output += '<tr><td width="200"></td>';
+                output += '<th width="100">&nbsp; you</th>';
+                if ( !UI_TESTING_ONLY ) {
+                    numGroupMembers = Sail.app.groupData.length;
+                    for (var i=0; i<numGroupMembers; i++){
+                        output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
+                    }
+                }else{
+                    //fake group members
+                    numGroupMembers = 3;
+                    for (var i=0; i<numGroupMembers; i++){
+                        output += '<th width="100">#'+i+'</th>';
+                    }
                 }
-                if (Sail.app.groupData.members[2]) {
-                    output += '<th width="100">'+Sail.app.groupData.members[2]+'</th>';
-                }                
                 output += '</tr>';
-                var yes = "✔";
-                var no = "x";
+
                 for (var i=0; i<numTags; i++){
                     var tag = peerTagsResults[i];
-                    output += '<tr><th>'+tag.name+'</th>';
+                    output += '<tr><th class="tag-name">'+tag.name+'</th>';
                     output += '<td>'+'<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" ';
                     output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
-                    output += ' /><label for="checkbox-'+tag.id+'"></label>'+'</td>';
+                    output += ' /><label for="checkbox-'+tag.id+'" ></label>'+'</td>';
 
-                    if (Sail.app.groupData.members[0]) {
-                        output += '<td class="teammate-'+Sail.app.groupData.members[0]+'" data="'+Sail.app.groupData.members[0]+'-'+tag.name+'">';
-                        output += no //(tag.submitted.indexOf(2) > -1) ? yes : no;
-                        output += '</td>';
-                    }
-                    if (Sail.app.groupData.members[1]) {
-                        output += '<td class="teammate-'+Sail.app.groupData.members[1]+'" data="'+Sail.app.groupData.members[1]+'-'+tag.name+'">';
-                        output += no //(tag.submitted.indexOf(3) > -1) ? yes : no;
-                        output += '</td>';
-                    }
-                    if (Sail.app.groupData.members[2]) {
-                        output += '<td class="teammate-'+Sail.app.groupData.members[2]+'" data="'+Sail.app.groupData.members[2]+'-'+tag.name+'">';
-                        output += no //(tag.submitted.indexOf(3) > -1) ? yes : no
-                        output += '</td>';
+                    if ( !UI_TESTING_ONLY ) {
+                        for (var j=0; j<numGroupMembers; j++){
+                            output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+tag.name+'">';
+                            output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                            output += '</td>';
+                        }
+                    }else{
+                        //fake group members results
+                        numGroupMembers = 3;
+                        for (var j=0; j<numGroupMembers; j++){
+                            output += '<td class="teammate-mike" data="mike-Newton\'s First Law">';
+                            output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                            output += '</td>';
+                        }
                     }
 
                     output += '</tr>';
@@ -187,19 +199,23 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 output += "</table>";
                 $("#principleConsensus #peerTags").append(output).trigger("create");
 
-                $('input:checkbox').click(function() {
-                    // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
-                    // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
+if ( !UI_TESTING_ONLY ) {
+                    $('input:checkbox').click(function() {
+                        // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
+                        // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
 
-                    var principleConsensusArray = [];
+                        var principleConsensusArray = [];
 
-                    // iterate over all of the checked boxes and add principle names to the array
-                    $('input:checkbox:checked').each(function(index) {
-                        principleConsensusArray.push($(this).attr("name"));
+                        // iterate over all of the checked boxes and add principle names to the array
+                        $('input:checkbox:checked').each(function(index) {
+                            principleConsensusArray.push($(this).attr("name"));
+                        });
+                        
+                        Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
                     });
-                    
-                    Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
-                });
+}else{
+                    $('#principleContinueButton').removeClass('ui-disabled');
+}
 
                 // event to listen for updates from other tables on checkmarks for checkbox table
                 self.events.sail = {
@@ -275,48 +291,51 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 };
             });
 
-            //equationsReview
+            //PAGE: Students are working on tagging equations by themselves
             $( '#equationsReview' ).live( 'pageinit',function(event){
 
                 //TODO: array needs to a result of a backend call
-                var peerEquationResults = [
-                    {id:1, name:"d=vt + 1/2at^2", votes:1},
-                    {id:2, name:"v2 = v1 +a*t", votes:2},
-                    {id:3, name:"d = (v1+v2)/2*t", votes:4},
-                    {id:4, name:"Fnet = m*a", votes:2},
-                    {id:5, name:"W = F*d*cosΘ", votes:1},
-                    {id:6, name:"PE = m*g*h", votes:3},
-                    {id:7, name:"KE = 1/2*m*v^2", votes:1},
-                    {id:8, name:"P = W/t", votes:1},
-                    {id:9, name:"d=vt", votes:6}
+                var homeworkEquationResults = [
+                    {id:1, name:"\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}", votes:1},
+                    {id:2, name:"\\vec{v}=\\vec{d}/\\Delta t", votes:2},
+                    {id:10, name:"\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}", votes:4}, //tallest
+                    {id:17, name:"\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots", votes:2}, //longest
+                    {id:5, name:"\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}", votes:1},
+                    {id:6, name:"\\vec{a}=\\vec{\\Delta v}/\\Delta{t}", votes:3}
                 ];
 
-                var numTags = peerEquationResults.length;
-                var halfway = Math.round(numTags/2);
+                var numTags = homeworkEquationResults.length;
                 var output = "";
                 for (var i=0; i<numTags; i++){
-                    var tag = peerEquationResults[i];
+                    var tag = homeworkEquationResults[i];
                     
-                    output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" class="custom" /> \
-                        <label for="checkbox-'+tag.id+'">'+tag.name+' \
+                    // output += '<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.name+'" class="eq-check-label" /> \
+                    //     <label for="checkbox-'+tag.name+'">'+tag.name+' \
+                    //     <span class="peer-count">'+tag.votes+'</span> \
+                    //     </label>';
+
+                    output += '<input type="checkbox" name="'+tag.id+'" id="checkbox-'+tag.id+'" class="eq-check-label" /> \
+                        <label for="checkbox-'+tag.id+'">$$'+tag.name+'$$ \
                         <span class="peer-count">'+tag.votes+'</span> \
                         </label>';
-
-                    //if halfway through list, create new column
-                    if ( i == halfway-1 ) {
-                        $("#peerEquations #eqCol1").append(output);
-                        output = "";
-                    }
                 }
-                $("#peerEquations #eqCol2").append(output)
-                $("#peerEquations").trigger("create");
 
-                var checkboxes = $("#peerEquations input[type='checkbox']"); //.checkboxradio("refresh");
-                checkboxes.checkboxradio("refresh");
+                $("#equationsReview #peerEquations").append(output).trigger("create");
+
+                //TODO: this should be a button instead
+                var output2 = '<select name="select-choice-a" id="select-choice-a" data-native-menu="false" data-icon="plus" data-iconpos="left" tabindex="-1"> \
+                        <option>Add an Equation not shown above</option> \
+                        <option value="x">$$P=\\frac{W}{\\Delta t}$$</option> \
+                        <option value="y">$$W=\\Delta E$$</option> \
+                        <option value="z">$$\\Delta E=mg\\Delta h$$</option> \
+                    </select>';
+
+                $("#equationsReview #peerEquationsMore").append(output2).trigger("create");
 
                 //update formatting of equations
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
+if ( !UI_TESTING_ONLY ) {
                 $('#equationsReview .submit-guess').click(function() {
                     var equationsArray = [];
 
@@ -327,11 +346,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     
                     var problemId = "1";       // this will need to be set globally in principlesReview
                     Sail.app.submitEquationsGuess(problemId, equationsArray);
-                });                
+                }); 
+}              
 
             });
 
-            //equationConsensus
+            //PAGE: Students are working on tagging equations as a group and trying to come to a consensus
             $( '#equationConsensus' ).live( 'pageinit',function(event){
 
                 //TODO: part of dynamic call
@@ -343,51 +363,63 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 //TODO: array needs to a result of a backend call
                 var equationResults = [
-                    {id:1, name:"d=vt + 1/2at^2", submitted:[2]},
-                    {id:2, name:"Fnet = m*a", submitted:[1,2,3]},
-                    {id:4, name:"KE = 1/2*m*v^2", submitted:[1,3]}
+                    {id:18, name:"\\vec{F_{net}}=m\\vec{a}", submitted:[2]},
+                    {id:21, name:"W=F\\Delta cos(\\theta )", submitted:[1,2,3]},
+                    {id:8, name:"\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}", submitted:[1,3]}
                 ];
 
                 var numTags = equationResults.length;
+                var numGroupMembers = 0;
+
                 var output = '<table>';
-                output += '<tr><td width="200"></td><th width="100">&nbsp; you</th><th width="100">'+Sail.app.groupData.members[0]+'</th>';
-                if (Sail.app.groupData.members[1]) {
-                    output += '<th width="100">'+Sail.app.groupData.members[1]+'</th>';
+                output += '<tr><td width="200"></td>';
+                output += '<th width="100">&nbsp; you</th>';
+                if ( !UI_TESTING_ONLY ) {
+                    numGroupMembers = Sail.app.groupData.length;
+                    for (var i=0; i<numGroupMembers; i++){
+                        output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
+                    }
+                }else{
+                    //fake group members
+                    numGroupMembers = 3;
+                    for (var i=0; i<numGroupMembers; i++){
+                        output += '<th width="100">#'+i+'</th>';
+                    }
                 }
-                if (Sail.app.groupData.members[2]) {
-                    output += '<th width="100">'+Sail.app.groupData.members[2]+'</th>';
-                }                
-                output += '</tr>';                
-                var yes = "✔";
-                var no = "x";
+                output += '</tr>';
+               
                 for (var i=0; i<numTags; i++){
                     var equation = equationResults[i];
-                    output += '<tr><th>'+equation.name+'</th>';
+                    output += '<tr><th class="tag-name">$$'+equation.name+'$$</th>';
                     output += '<td>'+'<input type="checkbox" name="'+equation.name+'" id="checkbox-'+equation.id+'" class="custom" ';
                     output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
                     output += ' /><label for="checkbox-'+equation.id+'"></label>'+'</td>';
 
-                    if (Sail.app.groupData.members[0]) {
-                        output += '<td class="teammate-'+Sail.app.groupData.members[0]+'" data="'+Sail.app.groupData.members[0]+'-'+equation.name+'">';
-                        output += no //(tag.submitted.indexOf(2) > -1) ? yes : no;
-                        output += '</td>';
-                    }
-                    if (Sail.app.groupData.members[1]) {
-                        output += '<td class="teammate-'+Sail.app.groupData.members[1]+'" data="'+Sail.app.groupData.members[1]+'-'+equation.name+'">';
-                        output += no //(tag.submitted.indexOf(3) > -1) ? yes : no;
-                        output += '</td>';
-                    }
-                    if (Sail.app.groupData.members[2]) {
-                        output += '<td class="teammate-'+Sail.app.groupData.members[2]+'" data="'+Sail.app.groupData.members[2]+'-'+equation.name+'">';
-                        output += no //(tag.submitted.indexOf(3) > -1) ? yes : nooutput
-                        output += '</td>';
+                    if ( !UI_TESTING_ONLY ) {
+                        for (var j=0; j<numGroupMembers; j++){
+                            output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+equation.name+'">';
+                            output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                            output += '</td>';
+                        }
+                     }else{
+                        //fake group members results
+                        numGroupMembers = 3;
+                        for (var j=0; j<numGroupMembers; j++){
+                            output += '<td class="teammate-mike" data="mike-\\vec{F_{net}}=m\\vec{a}">';
+                            output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                            output += '</td>';
+                        }
                     }
 
                     output += '</tr>';
                 }
                 output += "</table>";
-                $("#equationConsensus #peerTags").append(output).trigger("create");
+                $("#equationConsensus #submittedEquations").append(output).trigger("create");
 
+                //update formatting of equations
+                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+if ( !UI_TESTING_ONLY ) {
                 $('input:checkbox').click(function() {
                     var equationConsensusArray = [];
 
@@ -398,6 +430,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     
                     Sail.app.toggleEquationCheckboxes(equationConsensusArray);      
                 });
+}else{
+                $('#equationContinueButton').removeClass('ui-disabled');
+}
 
                 self.events.sail = {
                     equation_checkbox_toggled: function(ev) {     

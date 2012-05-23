@@ -1,7 +1,6 @@
-<!DOCTYPE html> 
 <html> 
 <head> 
-    <title>NEOplace - Classroom Activity</title> 
+    <title>NEOplace - Smartroom Activity</title> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     
@@ -22,19 +21,22 @@
 </head>
 <body class="student">
 
-    <!-- START finishPage -->
-    <div data-role="page" id="finishPage">
+    <!-- START finishedTagging -->
+    <div data-role="page" id="finishedTagging">
 
+        <div data-theme="a" data-role="header">
+            <h1>NEOplace - In-class Activity - Step 2 of X</h1>
+        </div>
         <div data-role="content">
-            <h2 class="text-align-center">Great work!</h2>
-            <p class="text-align-center"><img src="/assets/img/greatwork.png" width="235" height="208" alt="Thumbs up" /></p>
-            <br /><br />
-            <p class="text-align-center">Tap the Next button to get another problem.</p>
-            <a href="p-principleReview.html" data-role="button"  data-theme="b" id="startButton">Next</a>
+            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Wait" width="650" height="240" alt="Done" /></p>
+            <p class="text-align-center">[Student sorting and principle filtering time. Some instructions on what they should be doing now.]</p>
+            <a data-role="button" data-transition="fade" data-theme="b" href="p-variableWriter.html">
+                Continue
+            </a>
         </div>
 
     </div>
-    <!-- END finishPage -->
+    <!-- END finishedTagging -->
 
 </body>
 </html>

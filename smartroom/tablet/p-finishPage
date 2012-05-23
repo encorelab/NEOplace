@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html> 
 <head> 
-    <title>NEOplace - Classroom Activity</title> 
+    <title>NEOplace - Smartroom Activity</title> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     
@@ -26,11 +26,9 @@
     <div data-role="page" id="finishPage">
 
         <div data-role="content">
-            <h2 class="text-align-center">Great work!</h2>
-            <p class="text-align-center"><img src="/assets/img/greatwork.png" width="235" height="208" alt="Thumbs up" /></p>
+            <p class="text-align-center">Great work!<br /><br /><img src="/assets/img/greatwork.png" width="235" height="208" alt="Thumbs up" /></p>
             <br /><br />
-            <p class="text-align-center">Tap the Next button to get another problem.</p>
-            <a href="p-principleReview.html" data-role="button"  data-theme="b" id="startButton">Next</a>
+            <p class="text-align-center">[Instructions about what they should do next]</p>
         </div>
 
     </div>
