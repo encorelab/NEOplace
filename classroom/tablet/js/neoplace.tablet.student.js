@@ -8,7 +8,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
     // self.drowsyURL = "http://drowsy.badger.encorelab.org";
     self.userData;
     self.groupData = {};            // why does this need to be public?!
-    var currentProblem;
+    var currentProblemName;
+    self.currentProblem = {};
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
@@ -99,12 +100,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
             //PAGE: Students are working on tagging principles by themselves
             $( '#principleReview' ).live( 'pageinit',function(event){
 
-                //TODO: part of dynamic call (make global?)
-                var problem = {
-                    name: "TruckAndCrate"
-                }
-
-                //$("#problem").append(output);
+                // update the page to display the problem question
+                $('#principleReview .paper').html(Sail.app.currentProblem.htmlContent);
 
                 //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
                 var peerTagsResults = [
@@ -144,12 +141,8 @@ if ( !UI_TESTING_ONLY ) {
             //PAGE: Students are working on tagging principles as a group and trying to come to a consensus
             $( '#principleConsensus' ).live( 'pageinit',function(event){
 
-                //TODO: part of dynamic call
-                var problem = {
-                    name: "TruckAndCrate"
-                }
-
-                //$("#problem").append(output);
+                // update the page to display the problem question
+                $('#principleConsensus .paper').html(Sail.app.currentProblem.htmlContent);
 
                 //TODO: array needs to a result of a backend call
                 var peerTagsResults = [
@@ -288,10 +281,8 @@ if ( !UI_TESTING_ONLY ) {
                         });
                         if (consensusReached === true) {
                             $('#principleConsensus #principleContinueButton').removeClass('ui-disabled');
-                            alert('true');
                         } else {
                             $('#principleConsensus #principleContinueButton').addClass('ui-disabled');
-                            alert('false');
                         }
                         
                     }
@@ -300,6 +291,9 @@ if ( !UI_TESTING_ONLY ) {
 
             //PAGE: Students are working on tagging equations by themselves
             $( '#equationsReview' ).live( 'pageinit',function(event){
+
+                // update the page to display the problem question
+                $('#equationsReview .paper').html(Sail.app.currentProblem.htmlContent);
 
                 //TODO: array needs to a result of a backend call
                 var homeworkEquationResults = [
@@ -361,12 +355,8 @@ if ( !UI_TESTING_ONLY ) {
             //PAGE: Students are working on tagging equations as a group and trying to come to a consensus
             $( '#equationConsensus' ).live( 'pageinit',function(event){
 
-                //TODO: part of dynamic call
-                var problem = {
-                    name: "TruckAndCrate"
-                }
-
-                //$("#problem").append(output);
+                // update the page to display the problem question
+                $('#equationConsensus .paper').html(Sail.app.currentProblem.htmlContent);
 
                 //TODO: array needs to a result of a backend call
                 var equationResults = [
@@ -501,17 +491,11 @@ if ( !UI_TESTING_ONLY ) {
                         });
                         if (consensusReached === true) {
                             $('#equationConsensus #equationContinueButton').removeClass('ui-disabled');
-                            alert('true');
                         } else {
                             $('#equationConsensus #equationContinueButton').addClass('ui-disabled');
-                            alert('false');
                         }
-                        
                     }
                 };
-
-
-
             });
         },
 
@@ -533,6 +517,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitPrinciplesGuess = function(problemName, principlesArray) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             problem_name:problemName,
             principles:principlesArray
         };
@@ -551,6 +536,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitEquationsGuess = function(problemName, equationsArray) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             problem_name:problemName,
             equations:equationsArray
         };
@@ -569,6 +555,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.togglePrincipleCheckboxes = function(checkedCheckboxes) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             checkedCheckboxes:checkedCheckboxes
         };
         
@@ -586,6 +573,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.toggleEquationCheckboxes = function(checkedCheckboxes) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             checkedCheckboxes:checkedCheckboxes
         };
         
@@ -603,6 +591,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitPrinciplesQuorum = function(problemName, principlesArray) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             problem_name:problemName,
             principles:principlesArray
         };
@@ -621,6 +610,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitEquationsQuorum = function(problemName, equationsArray) {
         var obs = {
+            user_name:data.account.login, data.groups[0].name,
             problem_name:problemName,
             equations:equationsArray
         };
@@ -649,7 +639,12 @@ if ( !UI_TESTING_ONLY ) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.members)) {
                 Sail.app.groupData.members = sev.payload.members.slice();
                 Sail.app.groupData.members = _.without(Sail.app.groupData.members, Sail.app.userData.account.login) 
-                //Sail.app.groupData.members.splice(Sail.app.userData.account.login);
+                // change groupData.members (ids) to groupData.members (names)
+/*                Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.groupData.members[0]+".json", "GET", {}, function(data) {
+                    
+                    var temp = data.account.login;
+                });*/
+
                 $('#startButton').removeClass('ui-disabled');
             }
             else {
@@ -659,10 +654,29 @@ if ( !UI_TESTING_ONLY ) {
 
         problem_assignment: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
-                Sail.app.currentProblem = sev.payload.problem_name;
+
+                Sail.app.currentProblemName = sev.payload.problem_name;         // set state here?
+
+                Sail.app.currentProblem.name = sev.payload.problem_name;
+                Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
+
                 // mongo call to determine tag counts
+
+
                 // grab problem from json files
-                // load page principle review
+                $.ajax({
+                  url: '/assets/problems/'+Sail.app.currentProblemName+'.html',
+                  success: function(data, textStatus, jqXHR){
+
+                    //save the html for later
+                    Sail.app.currentProblem.htmlContent += data;
+
+                    // load page principle review
+                    $.mobile.changePage("p-principleReview.html");
+                  },
+                  dataType: 'html'
+                });
+                
             }
             else {
                 console.log('ignoring problem_assignment event - either other group or bad payload');

@@ -93,24 +93,21 @@ body {
     margin: 50px auto 100px auto;
 }
 
-#problem {
-    padding: 1em 50px 30px 50px;
+.paper {
+    padding: 1.5em 50px 30px 50px;
     width: 725px;
     margin: 0px auto 50px auto;
     font-size: 1.2em;
-}
-
-#problem h2 {
-    margin-top: 0;
-    text-align: center;
-}
-
-.paper {
     position: relative;
-    background: #fff url(/assets/img/paperclip.png) no-repeat 20px 0;
+    background: #fff url(/assets/img/paperclip.png) no-repeat 12px 0;
     -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
     -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
+}
+
+.paper h2 {
+    margin-top: 0;
+    text-align: center;
 }
 
 .paper:before, .paper:after {
