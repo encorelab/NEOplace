@@ -11,15 +11,44 @@ class ClassroomChoreographer < Sail::Agent
   def initialize(*args)
     super(*args)
     @students = {} # cache of Choreographer::Student objects
-    @runname = 'neo-test'
-    @runid = nil
+    @runname = ''
+    @runid = ''
     @active_users = []
-    @rollcallurl = "http://rollcall.proto.encorelab.org/"
+    @rollcallurl = ""
+    @groups_with_active_users = {}
   end
 
   def behaviour
     when_ready do
+      # Setup MongoDB connection
       @mongo = Mongo::Connection.new.db(config[:database])
+      
+      # Pull runname and Rollcall URL that came from config.json
+      @runname = config[:room]
+      @rollcallurl = config[:sail][:rollcall][:url]
+      log "runname #{@runname} rollcallurl #{@rollcallurl}"
+
+      # read problems.json and store in mongo if not existant already
+      unless @mongo.collection(:problem_assignments).find_one then
+        problems_from_file = ''
+        file = File.new("../assets/problems.json", "r")
+        while (line = file.gets)
+            problems_from_file += line
+        end
+        file.close
+
+        # Convert string to JSON
+        problems_from_file = JSON.parse(problems_from_file)
+
+        # Add a assigned field (default false) and store in MongoDB
+        problems_from_file.each do |problem|
+          problem['assigned'] = false
+          @mongo.collection(:problem_assignments).save(problem)
+        end
+        log "#{problems_from_file}"
+      else
+        log "problem_assignments already in database"
+      end
 
       join_room
       #join_log_room
@@ -74,15 +103,18 @@ class ClassroomChoreographer < Sail::Agent
       log "Active_users array #{@active_users.inspect}"
 
       # Remove users not logged in from groups
-      groups_with_active_users = remove_inactive_users(groups_in_run, @active_users)
+      @groups_with_active_users = remove_inactive_users(groups_in_run, @active_users)
       log "did groups change? #{groups_with_active_users.inspect}"
 
       # Send group presence
-      groups_with_active_users.each do |active_group|
+      @groups_with_active_users.each do |active_group|
         active_user_ids = active_group[1].collect {|user| user['id']}
-        log "Sending group_presense event with group #{active_group[0].inspect} and member ids #{active_user_ids.inspect}"
-
-        event!(:group_presence, {:group => active_group[0], :members => active_user_ids})
+        if active_user_ids.length > 0 then
+          log "Sending group_presense event with group #{active_group[0].inspect} and member ids #{active_user_ids.inspect}"
+          event!(:group_presence, {:group => active_group[0], :members => active_user_ids})
+        else
+          log "Not active members for group #{active_group.inspect}"
+        end
       end
 
       # Send problem assignment
@@ -93,7 +125,7 @@ class ClassroomChoreographer < Sail::Agent
     RestClient.get("#{@rollcallurl}users.json") do |response, request, result, &block|
       case response.code
       when 200
-        log "Result #{response.inspect}"
+        #log "Result #{response.inspect}"
         users = JSON.parse(response)
         
         users.each do |user|
@@ -116,7 +148,7 @@ class ClassroomChoreographer < Sail::Agent
     RestClient.get("#{@rollcallurl}runs/#{runname}.json"){ |response, request, result, &block|
       case response.code
       when 200
-        log "Result #{response.inspect}"
+        #log "Result #{response.inspect}"
         run = JSON.parse(response)
         
         return run['id']
@@ -134,10 +166,10 @@ class ClassroomChoreographer < Sail::Agent
       when 200
         #log "Result #{response.inspect}"
         groups = JSON.parse(response)
-        groups_and_their_members = nil
+        groups_and_their_members = {}
 
         groups.each do |group|
-          groups_and_their_members = {group['name'] => []}
+          groups_and_their_members[group['name']] = []
           group['members'].each do |member|
             groups_and_their_members[group['name']].push('id' => member['id'])
           end
@@ -162,8 +194,12 @@ class ClassroomChoreographer < Sail::Agent
         groups_and_their_members[gname].select do |member|
             active_user_ids.include?(member['id'])
         end
-    
-        groups_and_their_members[gname] = active_members_in_this_group  
+      
+        if active_members_in_this_group.length > 0 then
+          groups_and_their_members[gname] = active_members_in_this_group  
+        else
+          groups_and_their_members.delete(gname)
+        end
     end
 
     return groups_and_their_members
