@@ -368,7 +368,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         unauthenticated: function(ev) {
             console.log("User logged out!");
-            window.location.reload();
+            window.location.href = window.location.pathname.replace(/\/[^\/]*$/,'/'); // send back to index page
         }
     };
 
