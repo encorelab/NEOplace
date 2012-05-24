@@ -7,6 +7,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
     // self.drowsyURL = "http://drowsy.badger.encorelab.org";
     self.userData;
+    self.userId;
     self.groupData = {
         members:[]
     };            // why does this need to be public?!
@@ -79,13 +80,39 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         <img src="/assets/img/group_gather.png" width="300" height="200" alt="group huddle" /> \
                         <br />When your group is together and ready to go, let your teacher know.');
 
-                    //when a problem is received, page should auto-forward so there's no need for a start button
-                    //$("#startButton").css("display","block");
+                    //$.mobile.changePage("p-principleReview.html");
+                    //state = sev.payload.problem_name;
+/*                    $.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
+                        type: 'post',
+                        data: state,
+                        success: function () {
+                            console.log("State saved at problem: ", state);
+                        }
+                    });   */
+
+
+/*
+
+                $.ajax({
+                  url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
+                  success: function(data, textStatus, jqXHR){
+
+                    //save the html for later
+                    Sail.app.currentProblem.htmlContent += data;
+
+                    // load page principle review
+                    $.mobile.changePage("p-principleReview.html");
+                  },
+                  dataType: 'html'
+                });         */        
+
                 
                     Sail.app.groupData.name = data.groups[0].name;
                     //Sail.app.groupData.members = ["joe","mike","colin"];
 
                     Sail.app.userData = data;
+
+                    Sail.app.userId = data.account.for_id;
 
                     Sail.app.submitLogin(data.account.login, data.groups[0].name);
                 });
@@ -116,20 +143,17 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 }
                 $('#principleReview #peerTags').append(output).trigger("create");
 
-if ( !UI_TESTING_ONLY ) {
-                    $('#principleReview .submit-guess').click(function() {
-                        var principlesArray = [];
+                $('#principleReview .submit-guess').click(function() {
+                    var principlesArray = [];
 
-                        // iterate over all of the checked boxes and add principle names to the array
-                        $('input:checkbox:checked').each(function(index) {
-                            principlesArray.push($(this).attr("name"));
-                        });
-                        
-                        Sail.app.submitPrinciplesGuess(Sail.app.currentProblem.name, principlesArray);
-
+                    // iterate over all of the checked boxes and add principle names to the array
+                    $('input:checkbox:checked').each(function(index) {
+                        principlesArray.push($(this).attr("name"));
                     });
-}
+                    
+                    Sail.app.submitPrinciplesGuess(Sail.app.currentProblem.name, principlesArray);
 
+                });
             });
 
             //PAGE: Students are working on tagging principles as a group and trying to come to a consensus
@@ -438,7 +462,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitPrinciplesQuorum = function(problemName, principlesArray) {
         var obs = {
-            user_name:Sail.app.userData.account.login,
+            user_id:Sail.app.userId,
             group_name:Sail.app.groupData.name,
             problem_name:problemName,
             principles:principlesArray
@@ -458,7 +482,7 @@ if ( !UI_TESTING_ONLY ) {
 
     self.submitEquationsQuorum = function(problemName, equationsArray) {
         var obs = {
-            user_name:Sail.app.userData.account.login,
+            user_id:Sail.app.userId,
             group_name:Sail.app.groupData.name,
             problem_name:problemName,
             equations:equationsArray
@@ -617,7 +641,7 @@ if ( !UI_TESTING_ONLY ) {
         // this event updates the group to include only present members (ie logged in users in group)
         group_presence: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.members)) {
-                // change groupData.members (ids) to groupData.members (names)
+                // change ids to groupData.members (names)
                 _.each(sev.payload.members, function(memberId, i) {
                     Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/" + memberId + ".json", "GET", {}, function(data) {
                         Sail.app.groupData.members.push(data.account.login);
@@ -635,7 +659,15 @@ if ( !UI_TESTING_ONLY ) {
 
         problem_assignment: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
-                // set state here?
+                // saving the state
+                var state = {"problem":sev.payload.problem_name};
+                jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
+                    type: 'post',
+                    data: state,
+                    success: function () {
+                        console.log("State saved at problem: ", state);
+                    }
+                });
 
                 Sail.app.currentProblem.name = sev.payload.problem_name;
                 Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
