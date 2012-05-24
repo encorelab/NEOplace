@@ -821,7 +821,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                             }
                         }
                     });
-                    if (checkCount == Sail.app.groupData.members.length + 1)) { //members list does not include you
+                    if (checkCount == Sail.app.groupData.members.length + 1) { //members list does not include you
                         consensusReached = true;                       
                     }
                 }
