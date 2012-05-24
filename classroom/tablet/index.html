@@ -4,7 +4,7 @@
     <title>NEOplace - Classroom Activity</title> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    
+
     <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
     <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
     <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
@@ -12,6 +12,7 @@
     <script src="js/sail.js/sail.js" type="text/javascript"></script>
     <script type="text/javascript">
         Sail.load()
+            .then('js/jquery.mobile.init.js')
             .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
             .then('js/jquery.mobile.toast.js')
             .then('js/neoplace.tablet.js')
