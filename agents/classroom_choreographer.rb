@@ -44,6 +44,7 @@ class ClassroomChoreographer < Sail::Agent
         # Add a assigned field (default false) and store in MongoDB
         problems_from_file.each do |problem|
           problem['assigned'] = false
+          problem['active_user_ids'] = []
           @mongo.collection(:problem_assignments).save(problem)
         end
         log "#{problems_from_file}"
@@ -63,7 +64,7 @@ class ClassroomChoreographer < Sail::Agent
     
     # Take note of who is doing a check_in and store in mongodb
     event :login? do |stanza, data|
-      unless @classroom_started then
+      # unless @classroom_started then
         log "Received login #{data.inspect}"
         # retrieving user id from rollcall
         userid = lookup_userid(data['origin'])
@@ -77,9 +78,9 @@ class ClassroomChoreographer < Sail::Agent
             @mongo.collection(:active_users).save(user)
           end
         end
-      else
-        log "Classroom already started ignoring event login"
-      end
+      # else
+      #   log "Classroom already started ignoring event login"
+      # end
     end
     
     # once start is received hand out first problem batch to checked in students
@@ -117,17 +118,21 @@ class ClassroomChoreographer < Sail::Agent
           if active_user_ids.length > 0 then
             log "Sending group_presense event with group #{active_group[0].inspect} and member ids #{active_user_ids.inspect}"
             event!(:group_presence, {:group => active_group[0], :members => active_user_ids})
+            # Send problem assignment
+            unless send_problem_assignment(active_group[0], active_user_ids) then
+              log "Running out of problems should not happen at start of class :("
+            end
           else
             log "Not active members for group #{active_group.inspect}"
           end
         end
 
-        @groups_with_active_users.each do |active_group|
-          # Send problem assignment
-          unless send_problem_assignment(active_group[0]) then
-            log "Running out of problems should not happen at start of class :("
-          end
-        end
+        # @groups_with_active_users.each do |active_group|
+        #   # Send problem assignment
+        #   unless send_problem_assignment(active_group[0], active_group[1]) then
+        #     log "Running out of problems should not happen at start of class :("
+        #   end
+        # end
 
         @classroom_started = true
       else
@@ -136,23 +141,35 @@ class ClassroomChoreographer < Sail::Agent
     end
 
     event :quorum_reached? do |stanza, data|
-      if @classroom_started then
+      # if @classroom_started then
         log "Received quorum_reached #{data.inspect}"
         payload = data['payload']
-        # group_name:Sail.app.groupData.name,
-        #       problem_name:problemName,
-        #       equations:equationsArray
+
         if payload['equations'] then
-          log "Like me a good equation ;)"
-          # Send problem assignment
-          unless send_problem_assignment(payload['group_name']) then
-            log "We are out of problems now we send done message"
-            event!(:activity_end, {})
+          # quorum_reached with equation will be received several times so pulling problem_assignment from
+          # mongodb and deleting user_id from active_user_ids array to know when last quorum message is in
+          problem = @mongo.collection(:problem_assignments).find_one('name' => payload['problem_name'])
+          log "Problem in database #{problem.inspect}"
+          # remove current user_id from active_user_ids array
+          problem['active_user_ids'].delete_if {|user_id| payload['user_id'] == user_id }
+          log "Problem in database #{problem.inspect}"
+          # store in mongodb so we know that all users send quorum and we can assign new problem
+          @mongo.collection(:problem_assignments).save(problem)
+          
+          unless problem['active_user_ids'].length > 0
+            @groups_with_active_users.each do |active_group|
+              active_user_ids = active_group[1].collect {|user| user['id']}
+              # Send problem assignment
+              unless send_problem_assignment(payload['group_name'], active_user_ids) then
+                log "We are out of problems now we send done message"
+                event!(:activity_end, {})
+              end
+            end
           end
         end
-      else
-        log "Classroom not started, yet! Ignoring event quorum_reached"
-      end
+      # else
+      #   log "Classroom not started, yet! Ignoring event quorum_reached"
+      # end
     end
 
   end
@@ -241,7 +258,7 @@ class ClassroomChoreographer < Sail::Agent
     return groups_and_their_members
   end
 
-  def send_problem_assignment(active_group_name)
+  def send_problem_assignment(active_group_name, active_user_ids)
     # find a problem with assigned 'false'
     next_problem = @mongo.collection(:problem_assignments).find_one('assigned' => false)
     if next_problem then
@@ -250,6 +267,9 @@ class ClassroomChoreographer < Sail::Agent
       event!(:problem_assignment, {:group => active_group_name, :problem_name => next_problem['name']})
       # set assigned to 'true' and store in MongoDB
       next_problem['assigned'] = true
+      next_problem['active_user_ids'] = active_user_ids
+      log "#{active_user_ids.inspect}"
+      log "#{next_problem.inspect}"
       @mongo.collection(:problem_assignments).save(next_problem)
       return true
     else
