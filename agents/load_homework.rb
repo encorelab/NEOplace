@@ -3,6 +3,7 @@ require 'rest_client'
 require 'json'
 
 @mongo = Mongo::Connection.new.db('neo-ab')
+@mongo2 = Mongo::Connection.new.db('neo-cd')
 @homework = {}
 
 
@@ -12,13 +13,12 @@ def retrieve_homework()
     when 200
       # puts "Result #{response.inspect}"
       aggregated_homeworks = JSON.parse(response)
+      @mongo.collection(:aggregated_homework).remove()
+      @mongo2.collection(:aggregated_homework).remove()
       # puts "#{aggregated_homeworks.inspect}"
       aggregated_homeworks.each do |aggregated_homework|
-      	# @homework['problem_name'] = aggregated_homework['problemName']
-      	# @homework['principles'] = aggregated_homework['principles']
-      	# @homework['equations'] = aggregated_homework['equations']
-
       	@mongo.collection(:aggregated_homework).save(aggregated_homework)
+      	@mongo2.collection(:aggregated_homework).save(aggregated_homework)
       end
 
       return true
