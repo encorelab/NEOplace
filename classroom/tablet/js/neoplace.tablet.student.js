@@ -14,6 +14,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.principleHomeworkResults = [];
     self.equationHomeworkResults = [];
 
+
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
 
@@ -32,7 +33,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
     self.escapeSelectorString = function(str) {
         if(str)
-            return str.replace(/([ !"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g,'\\\\$1');
+            //return str.replace(/([ !"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g,'\\\\$1');
+            return str.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1');
         else
             return str;
     }    
@@ -104,7 +106,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 var numTags = Sail.app.principleHomeworkResults.length;
                 var output = "";
                 for (var i=0; i<numTags; i++){
-                    var tag = principleHomeworkResults[i];
+                    var tag = Sail.app.principleHomeworkResults[i];
                     output += '<input type="checkbox" name="'+tag.name+'" id="principle-checkbox-'+i+'" /> \
                                 <label for="principle-checkbox-'+i+'">'+tag.name+' \
                                 <span class="peer-count">'+tag.votes+'</span> \
@@ -189,94 +191,19 @@ if ( !UI_TESTING_ONLY ) {
                 output += "</table>";
                 $("#principleConsensus #peerTags").append(output).trigger("create");
 
-if ( !UI_TESTING_ONLY ) {
-                    $('input:checkbox').click(function() {
-                        // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
-                        // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
+                $('input:checkbox').click(function() {
+                    // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
+                    // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
 
-                        var principleConsensusArray = [];
+                    var principleConsensusArray = [];
 
-                        // iterate over all of the checked boxes and add principle names to the array
-                        $('input:checkbox:checked').each(function(index) {
-                            principleConsensusArray.push($(this).attr("name"));
-                        });
-                        
-                        Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
+                    // iterate over all of the checked boxes and add principle names to the array
+                    $('input:checkbox:checked').each(function(index) {
+                        principleConsensusArray.push($(this).attr("name"));
                     });
-}else{
-                    $('#principleContinueButton').removeClass('ui-disabled');
-}
-
-                // event to listen for updates from other tables on checkmarks for checkbox table
-                self.events.sail = {
-                    principle_checkbox_toggled: function(ev) {     
-                        if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.principle_checked_checkboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                            $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
-                            _.each(ev.payload.principle_checked_checkboxes, function(principle) {
-                                //$(td value="Sail.app.groupData.members[0]+'-'+'principle'").html(YES);
-                                var dataValueStr = Sail.app.groupData.members[0] + '-' + Sail.app.escapeSelectorString(principle);
-                                $("td[data='"+dataValueStr+"']").html(YES);
-                            });
-                        }
-                        else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.principle_checked_checkboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                            $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
-                            _.each(ev.payload.principle_checked_checkboxes, function(principle) {
-                                //$('.teammate-'+Sail.app.groupData.members[0]+'.principle-id-'+principle).html(YES);
-                                var dataValueStr = Sail.app.groupData.members[1] + '-' + Sail.app.escapeSelectorString(principle);
-                                $("td[data='"+dataValueStr+"']").html(YES);
-                            });
-                        }
-                        else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.principle_checked_checkboxes) {
-                            // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                            $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
-                            _.each(ev.payload.principle_checked_checkboxes, function(principle) {
-                                //$('.teammate-'+Sail.app.groupData.members[2]+'.principle-id-'+principle).html(YES);
-                                var dataValueStr = Sail.app.groupData.members[2] + '-' + Sail.app.escapeSelectorString(principle);
-                                $("td[data='"+dataValueStr+"']").html(YES);
-                            });
-                        }
-                        else {
-                            console.log('ignoring principle_checkbox_toggled event - not relevant group member or bad payload');
-                        }
-
-                        // is this the best place to do this? Maybe filter out by group name?
-                        var consensusReached = true;
-                        $('#principleConsensus tr').each(function(trIndex) {
-                            
-                            var checkCount = 0;
-                            // for each column
-                            // skip first column
-                            if (trIndex === 0) {
-                                return;
-                            }
-                            else {
-                                $(this).find('td').each(function(tdIndex){
-                                    if ( tdIndex === 0 ){
-                                        if ($(this).find(":checkbox").attr("checked") ){
-                                             checkCount++;
-                                        }
-                                    } else {
-                                        if ($(this).html() === YES ){
-                                             checkCount++;
-                                        }
-                                    }
-                                });
-                                if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length + 1))) {
-                                    consensusReached = false;
-                                    return false;                         
-                                }
-                            }
-                        });
-                        if (consensusReached === true) {
-                            $('#principleConsensus #principleContinueButton').removeClass('ui-disabled');
-                        } else {
-                            $('#principleConsensus #principleContinueButton').addClass('ui-disabled');
-                        }
-                        
-                    }
-                };
+                    
+                    Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
+                });
             });
 
             //PAGE: Students are working on tagging equations by themselves
@@ -289,7 +216,7 @@ if ( !UI_TESTING_ONLY ) {
                 var numTags = Sail.app.equationHomeworkResults.length;
                 var output = "";
                 for (var i=0; i<numTags; i++){
-                    var tag = equationHomeworkResults[i];
+                    var tag = Sail.app.equationHomeworkResults[i];
                     output += '<input type="checkbox" name="'+tag.id+'" id="equation-checkbox-'+tag.id+'" class="eq-check-label" /> \
                         <label for="equation-checkbox-'+tag.id+'">$$'+tag.name+'$$ \
                         <span class="peer-count">'+tag.votes+'</span> \
@@ -585,7 +512,7 @@ if ( !UI_TESTING_ONLY ) {
                 Sail.app.groupchat.sendEvent(sev);
             }
         });
-    }
+    };
 
     self.submitEquationsQuorum = function(problemName, equationsArray) {
         var obs = {
@@ -612,6 +539,74 @@ if ( !UI_TESTING_ONLY ) {
     self.events.sail = {
         test_event: function(sev) {
             alert('heard the event');
+        },
+
+
+        principle_checkbox_toggled: function(ev) {     
+            if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.principle_checked_checkboxes) {
+                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
+                _.each(ev.payload.principle_checked_checkboxes, function(principle) {
+                    //$(td value="Sail.app.groupData.members[0]+'-'+'principle'").html(YES);
+                    var dataValueStr = Sail.app.groupData.members[0] + '-' + Sail.app.escapeSelectorString(principle);
+                    $("td[data='"+dataValueStr+"']").html(YES);
+                });
+            }
+            else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.principle_checked_checkboxes) {
+                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
+                _.each(ev.payload.principle_checked_checkboxes, function(principle) {
+                    //$('.teammate-'+Sail.app.groupData.members[0]+'.principle-id-'+principle).html(YES);
+                    var dataValueStr = Sail.app.groupData.members[1] + '-' + Sail.app.escapeSelectorString(principle);
+                    $("td[data='"+dataValueStr+"']").html(YES);
+                });
+            }
+            else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.principle_checked_checkboxes) {
+                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
+                $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
+                _.each(ev.payload.principle_checked_checkboxes, function(principle) {
+                    //$('.teammate-'+Sail.app.groupData.members[2]+'.principle-id-'+principle).html(YES);
+                    var dataValueStr = Sail.app.groupData.members[2] + '-' + Sail.app.escapeSelectorString(principle);
+                    $("td[data='"+dataValueStr+"']").html(YES);
+                });
+            }
+            else {
+                console.log('ignoring principle_checkbox_toggled event - not relevant group member or bad payload');
+            }
+
+            // is this the best place to do this? Maybe filter out by group name?
+            var consensusReached = true;
+            $('#principleConsensus tr').each(function(trIndex) {
+                
+                var checkCount = 0;
+                // for each column
+                // skip first column
+                if (trIndex === 0) {
+                    return;
+                }
+                else {
+                    $(this).find('td').each(function(tdIndex){
+                        if ( tdIndex === 0 ){
+                            if ($(this).find(":checkbox").attr("checked") ){
+                                 checkCount++;
+                            }
+                        } else {
+                            if ($(this).html() === YES ){
+                                 checkCount++;
+                            }
+                        }
+                    });
+                    if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length + 1))) {
+                        consensusReached = false;
+                        return false;                         
+                    }
+                }
+            });
+            if (consensusReached === true) {
+                $('#principleConsensus #principleContinueButton').removeClass('ui-disabled');
+            } else {
+                $('#principleConsensus #principleContinueButton').addClass('ui-disabled');
+            }  
         },
 
         // this event updates the group to include only present members (ie logged in users in group)
@@ -663,7 +658,7 @@ if ( !UI_TESTING_ONLY ) {
 
                 // grab problem from json files
                 $.ajax({
-                  url: '/assets/problems/'+Sail.app.currentProblemName+'.html',
+                  url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
                   success: function(data, textStatus, jqXHR){
 
                     //save the html for later
