@@ -748,6 +748,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
             alert('heard the event');
         },
 
+        guess_submission: function(ev) {
+            if (ev.payload.group_name === Sail.app.groupData.name) {
+                if (ev.payload.principles) {
+
+                    $.mobile.loadPage( '#principleConsensus', {reloadPage:true, loadMsgDelay:1000} );
+                } else if (ev.payload.equations) {
+                    $.mobile.loadPage( '#equationsConsensus', {reloadPage:true, loadMsgDelay:1000} );
+                } else {
+                    console.alert('ignoring guess_submission');
+                }
+            }
+        },
+
         principle_checkbox_toggled: function(ev) {     
             if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.principle_checked_checkboxes) {
                 // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
