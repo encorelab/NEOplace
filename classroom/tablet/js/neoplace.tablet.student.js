@@ -38,7 +38,47 @@ NEOplace.Tablet.Student = (function(Tablet) {
             return str.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1');
         else
             return str;
-    }    
+    };
+
+    self.getCompletedHomeworkProblem = function(currentProblem) {
+        Sail.app.currentProblem.name = currentProblem;
+        Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
+
+        // mongo call to determine tag counts
+
+        //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
+        Sail.app.principleHomeworkResults = [
+            {name:"Newton's Second Law", votes:2},
+            {name:"Acceleration", votes:7},
+            {name:"Static Friction", votes:4},
+            {name:"Fnet = 0", votes:5}
+        ];
+
+        //TODO: array needs to a result of a backend call
+        Sail.app.equationHomeworkResults = [
+            {id:1, name:"\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}", votes:1},
+            {id:2, name:"\\vec{v}=\\vec{d}/\\Delta t", votes:2},
+            {id:10, name:"\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}", votes:4}, //tallest
+            {id:17, name:"\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots", votes:2}, //longest
+            {id:5, name:"\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}", votes:1},
+            {id:6, name:"\\vec{a}=\\vec{\\Delta v}/\\Delta{t}", votes:3}
+        ];
+
+
+        // grab problem from json files
+        $.ajax({
+          url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
+          success: function(data, textStatus, jqXHR){
+
+            //save the html for later
+            Sail.app.currentProblem.htmlContent += data;
+
+            // load page principle review
+            $.mobile.changePage("p-principleReview.html");
+          },
+          dataType: 'html'
+        });        
+    } 
 
     /** public function **/
     self.bar = function () {
@@ -82,29 +122,24 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     //$.mobile.changePage("p-principleReview.html");
                     //state = sev.payload.problem_name;
-/*                    $.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
-                        type: 'post',
-                        data: state,
-                        success: function () {
-                            console.log("State saved at problem: ", state);
-                        }
-                    });   */
+                    $.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
+                        type: 'get',
+                        success: function (results) {
+                            console.log(results);
+
+                            for (i=results.length-1;i>=0;i--) {
+                                if (results[i].group_name === data.groups[0].name) {
+                                    //Sail.app.currentProblem.name = results[i].problem;
+                                    Sail.app.getCompletedHomeworkProblem(results[i].problem);
+                                    $.mobile.changePage("p-principleReview.html");
+                                    break;
+                                }
+                            }
+                        },
+                        dataType: 'json'
+                    });
 
 
-/*
-
-                $.ajax({
-                  url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
-                  success: function(data, textStatus, jqXHR){
-
-                    //save the html for later
-                    Sail.app.currentProblem.htmlContent += data;
-
-                    // load page principle review
-                    $.mobile.changePage("p-principleReview.html");
-                  },
-                  dataType: 'html'
-                });         */        
 
                 
                     Sail.app.groupData.name = data.groups[0].name;
@@ -660,7 +695,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         problem_assignment: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
                 // saving the state
-                var state = {"problem":sev.payload.problem_name};
+                var state = {"group_name":Sail.app.groupData.name,"problem":sev.payload.problem_name};
                 jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
                     type: 'post',
                     data: state,
@@ -669,43 +704,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     }
                 });
 
-                Sail.app.currentProblem.name = sev.payload.problem_name;
-                Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
-
-                // mongo call to determine tag counts
-
-                //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
-                Sail.app.principleHomeworkResults = [
-                    {name:"Newton's Second Law", votes:2},
-                    {name:"Acceleration", votes:7},
-                    {name:"Static Friction", votes:4},
-                    {name:"Fnet = 0", votes:5}
-                ];
-
-                //TODO: array needs to a result of a backend call
-                Sail.app.equationHomeworkResults = [
-                    {id:1, name:"\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}", votes:1},
-                    {id:2, name:"\\vec{v}=\\vec{d}/\\Delta t", votes:2},
-                    {id:10, name:"\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}", votes:4}, //tallest
-                    {id:17, name:"\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots", votes:2}, //longest
-                    {id:5, name:"\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}", votes:1},
-                    {id:6, name:"\\vec{a}=\\vec{\\Delta v}/\\Delta{t}", votes:3}
-                ];
-
-
-                // grab problem from json files
-                $.ajax({
-                  url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
-                  success: function(data, textStatus, jqXHR){
-
-                    //save the html for later
-                    Sail.app.currentProblem.htmlContent += data;
-
-                    // load page principle review
-                    $.mobile.changePage("p-principleReview.html");
-                  },
-                  dataType: 'html'
-                });
+                Sail.app.getCompletedHomeworkProblem(sev.payload.problem_name);
                 
             }
             else {
