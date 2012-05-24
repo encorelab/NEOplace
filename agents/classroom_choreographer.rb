@@ -146,6 +146,7 @@ class ClassroomChoreographer < Sail::Agent
         payload = data['payload']
 
         if payload['equations'] then
+          log "Received quorum_reached for equations #{data.inspect}"
           # quorum_reached with equation will be received several times so pulling problem_assignment from
           # mongodb and deleting user_id from active_user_ids array to know when last quorum message is in
           problem = @mongo.collection(:problem_assignments).find_one('name' => payload['problem_name'])
