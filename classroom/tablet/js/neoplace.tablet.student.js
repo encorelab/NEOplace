@@ -15,6 +15,152 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.principleHomeworkResults = [];
     self.equationHomeworkResults = [];
 
+    self.allEquations = [
+    {
+        "EQ_ID": 1,
+        "name": "\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}"
+    },
+
+    {
+        "EQ_ID": 2,
+        "name": "\\vec{v}=\\vec{d}/\\Delta t"
+    },
+
+    {
+        "EQ_ID": 3,
+        "name": "v_{average}=\\Delta d_{total}/\\Delta t"
+    },
+
+    {
+        "EQ_ID": 4,
+        "name": "\\boldsymbol{f}=1/\\boldsymbol{T}"
+    },
+
+    {
+        "EQ_ID": 5,
+        "name": "\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}"
+    },
+
+    {
+        "EQ_ID": 6,
+        "name": "\\vec{a}=\\vec{\\Delta v}/\\Delta{t}"
+    },
+
+    {
+        "EQ_ID": 7,
+        "name": "\\vec{v_{2}}=\\vec{v_{1}}+\\vec{a}\\Delta{t}"
+    },
+
+    {
+        "EQ_ID": 8,
+        "name": "\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}"
+    },
+
+    {
+        "EQ_ID": 9,
+        "name": "\\vec{\\Delta d}=\\vec{v_{2}}\\Delta{t}-1/2\\vec{a}(\\Delta{t})^{2}"
+    },
+
+    {
+        "EQ_ID": 10,
+        "name": "\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}"
+    },
+
+    {
+        "EQ_ID": 11,
+        "name": "{v_{2}}^{2}={v_{1}}^{2}+2a\\Delta d"
+    },
+
+    {
+        "EQ_ID": 12,
+        "name": "{_{A}\\vec{v}_{C}} ={_{A}\\vec{v}_{B}} + {_{B}\\vec{v}_{C}}"
+    },
+
+    {
+        "EQ_ID": 13,
+        "name": "F_{g}=mg"
+    },
+
+    {
+        "EQ_ID": 14,
+        "name": "F_{g}=\\frac{Gm_{1}m_{2}}{R^{2}}"
+    },
+
+    {
+        "EQ_ID": 15,
+        "name": "F_{f}=\\mu _{k}F_{N}"
+    },
+
+    {
+        "EQ_ID": 16,
+        "name": "F_{f}=\\mu _{s}F_{N}"
+    },
+
+    {
+        "EQ_ID": 17,
+        "name": "\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots"
+    },
+
+    {
+        "EQ_ID": 18,
+        "name": "\\vec{F_{net}}=m\\vec{a}"
+    },
+
+    {
+        "EQ_ID": 19,
+        "name": "\\vec{_{A}F_{B}}=-\\vec{_{B}F_{A}}"
+    },
+
+    {
+        "EQ_ID": 20,
+        "name": "W=\\vec{F}\\cdot \\Delta \\vec{d}"
+    },
+
+    {
+        "EQ_ID": 21,
+        "name": "W=F\\Delta cos(\\theta )"
+    },
+
+    {
+        "EQ_ID": 22,
+        "name": "P=\\frac{W}{\\Delta t}"
+    },
+
+    {
+        "EQ_ID": 23,
+        "name": "W=\\Delta E"
+    },
+
+    {
+        "EQ_ID": 24,
+        "name": "\\Delta E=mg\\Delta h"
+    },
+
+    {
+        "EQ_ID": 25,
+        "name": "E_{g}=mgh"
+    },
+
+    {
+        "EQ_ID": 26,
+        "name": "E_{k}=\\frac{1}{2}mv^{2}"
+    },
+
+    {
+        "EQ_ID": 27,
+        "name": "E_{T}=E_{g}+W_{k}"
+    },
+
+    {
+        "EQ_ID": 28,
+        "name": "E_{T(before)}=E_{T(after)}"
+    },
+    {
+        "EQ_ID": 29,
+        "name": "\\vec{A}_{(x/y)} = \\left |\\vec A \\right |(cos/sin)\\theta"
+    }
+    ]
+
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
@@ -30,6 +176,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
     var currentDb = function () {
         return Sail.app.run.name;  
     };
+
+    self.returnEquationName = function(EQ_ID) {
+        return _.find(Sail.app.allEquations, function(eq) {
+            return eq.EQ_ID == EQ_ID;
+        }).name;
+    }
 
 
     self.escapeSelectorString = function(str) {
@@ -388,12 +540,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         _.each(observations, function(observation) {
                             if (observation.equations) {
                                 _.each(observation.equations, function(e) {
-                                    equationsArray.push(e);
+                                    //e.name = e.name.replace(/\\/g,'\\\\');
+                                    equationsArray.push(e.EQ_ID);
                                 });
                             }
                         });
-                        // var equationResults = _.uniq(equationsArray);
-                        var equationResults = _.uniq(equationsArray, false, function(item) { return JSON.stringify(item) });
+                        var equationResults = _.uniq(equationsArray);
+                        //var equationResults = _.uniq(equationsArray, false, function(item) { return JSON.stringify(item) });
 
 
                         var numTags = equationResults.length;
@@ -402,42 +555,28 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         var output = '<table>';
                         output += '<tr><td width="200"></td>';
                         output += '<th width="100">&nbsp; you</th>';
-                        if ( !UI_TESTING_ONLY ) {
-                            numGroupMembers = Sail.app.groupData.members.length;
-                            for (var i=0; i<numGroupMembers; i++){
-                                output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
-                            }
-                        }else{
-                            //fake group members
-                            numGroupMembers = 3;
-                            for (var i=0; i<numGroupMembers; i++){
-                                output += '<th width="100">#'+i+'</th>';
-                            }
+
+                        numGroupMembers = Sail.app.groupData.members.length;
+                        for (var i=0; i<numGroupMembers; i++){
+                            output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
                         }
+
                         output += '</tr>';
                        
                         for (var i=0; i<numTags; i++){
                             var equation = equationResults[i];
-                            output += '<tr><th class="tag-name">$$'+equation.name+'$$</th>';
-                            output += '<td>'+'<input type="checkbox" name="'+equation.EQ_ID+'" id="checkbox-'+equation.EQ_ID+'" ';
+                            output += '<tr><th class="tag-name">$$'+Sail.app.returnEquationName(equation)+'$$</th>';
+                            output += '<td>'+'<input type="checkbox" name="'+equation+'" id="checkbox-'+equation+'" ';
                             //output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
-                            output += ' /><label for="checkbox-'+equation.EQ_ID+'"></label>'+'</td>';
+                            output += ' /><label for="checkbox-'+equation+'"></label>'+'</td>';
 
-                            if ( !UI_TESTING_ONLY ) { 
-                                for (var j=0; j<numGroupMembers; j++){
-                                    output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-eq'+equation.EQ_ID+'">';
-                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                                    output += '</td>';
-                                }
-                             }else{
-                                //fake group members results
-                                numGroupMembers = 3;
-                                for (var j=0; j<numGroupMembers; j++){
-                                    output += '<td class="teammate-mike" data="mike-eq8">';
-                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                                    output += '</td>';
-                                }
+                           
+                            for (var j=0; j<numGroupMembers; j++){
+                                output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-eq'+equation+'">';
+                                output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                                output += '</td>';
                             }
+        
 
                             output += '</tr>';
                         }
@@ -607,6 +746,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.events.sail = {
         test_event: function(sev) {
             alert('heard the event');
+        },
+
+        guess_submission: function(ev) {
+            if (ev.payload.group_name === Sail.app.groupData.name) {
+                if (ev.payload.principles) {
+
+                    $.mobile.loadPage( 'p-principleConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
+                } else if (ev.payload.equations) {
+                    $.mobile.loadPage( 'p-equationConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
+                } else {
+                    console.alert('ignoring guess_submission');
+                }
+            }
         },
 
         principle_checkbox_toggled: function(ev) {     
