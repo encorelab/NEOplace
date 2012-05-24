@@ -432,9 +432,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         for (var i=0; i<numTags; i++){
                             var tag = peerTagsResults[i];
                             output += '<tr><th class="tag-name">'+tag+'</th>';
-                            output += '<td>'+'<input type="checkbox" name="'+tag+'" id="checkbox-'+i+'" ';
+                            output += '<td>'+'<input type="checkbox" name="'+tag+'" id="principleConsensusCheckbox-'+i+'" ';
                             //output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
-                            output += ' /><label for="checkbox-'+i+'" ></label>'+'</td>';
+                            output += ' /><label for="principleConsensusCheckbox-'+i+'" ></label>'+'</td>';
 
                             if ( !UI_TESTING_ONLY ) {
                                 for (var j=0; j<numGroupMembers; j++){
@@ -529,12 +529,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 // update the page to display the problem question
                 $('#equationConsensus .paper').html(Sail.app.currentProblem.htmlContent);
 
-                //TODO: array needs to a result of a backend call
-/*                var equationResults = [
-                    {id:18, name:"\\vec{F_{net}}=m\\vec{a}", submitted:[2]},
-                    {id:21, name:"W=F\\Delta cos(\\theta )", submitted:[1,2,3]},
-                    {id:8, name:"\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}", submitted:[1,3]}
-                ];*/
+                var equationConsensusArray = [];
+                $('#equationConsensus input:checkbox').live('change', function() {
+                    equationConsensusArray = $('#equationConsensus input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
+
+                    Sail.app.toggleEquationCheckboxes(equationConsensusArray);
+                });
+
 
                 $.ajax(self.drowsyURL + '/' + currentDb() + '/observations?selector={"problem_name":"'+Sail.app.currentProblem.name+'","group_name":"'+Sail.app.groupData.name+'"}', {
                     type: 'get',
@@ -590,17 +591,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         //update formatting of equations
                         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
-
-                        var equationConsensusArray = [];
-
-                        $('input:checkbox').click(function() {
-                            // iterate over all of the checked boxes and add principle names to the array
-                            $('input:checkbox:checked').each(function(index) {
-                                equationConsensusArray.push($(this).attr("name"));
-                            });
-                            
-                            Sail.app.toggleEquationCheckboxes(equationConsensusArray);      
-                        });
 
                         $('#equationContinueButton').click(function() {
                             Sail.app.submitEquationsQuorum(Sail.app.currentProblem.name, equationConsensusArray);
@@ -819,7 +809,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         }
                     });
                     if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length))) {         // +1?
-                        consensusReached = false;
+                        Sail.app.consensusReached = false;
                         return false;                         
                     }
                 }
@@ -834,15 +824,20 @@ NEOplace.Tablet.Student = (function(Tablet) {
         equation_checkbox_toggled: function(ev) {
             if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.equation_checked_checkboxes) {
                 // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
+                $('.teammate-'+Sail.app.groupData.members[0]).each(function(index) {
+                    $(this).html(NO);
+                });
+                //$('.teammate-'+Sail.app.groupData.members[0]).html(NO);
                 _.each(ev.payload.equation_checked_checkboxes, function(equation) { 
                     var dataValueStr = Sail.app.groupData.members[0] + '-eq' + equation;
                     $("td[data='"+dataValueStr+"']").html(YES);
                 });
             }
             else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.equation_checked_checkboxes) {
-                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
+                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes     
+                $('.teammate-'+Sail.app.groupData.members[1]).each(function(index) {
+                    $(this).html(NO);
+                });          
                 _.each(ev.payload.equation_checked_checkboxes, function(equation) {
                     var dataValueStr = Sail.app.groupData.members[1] + '-eq' + equation;
                     $("td[data='"+dataValueStr+"']").html(YES);
@@ -850,7 +845,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
             else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.equation_checked_checkboxes) {
                 // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
+                $('.teammate-'+Sail.app.groupData.members[2]).each(function(index) {
+                    $(this).html(NO);
+                });
                 _.each(ev.payload.equation_checked_checkboxes, function(equation) {
                     var dataValueStr = Sail.app.groupData.members[2] + '-eq' + equation;
                     $("td[data='"+dataValueStr+"']").html(YES);
