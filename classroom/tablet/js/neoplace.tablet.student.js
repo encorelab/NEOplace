@@ -15,6 +15,152 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.principleHomeworkResults = [];
     self.equationHomeworkResults = [];
 
+    self.allEquations = [
+    {
+        "EQ_ID": 1,
+        "name": "\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}"
+    },
+
+    {
+        "EQ_ID": 2,
+        "name": "\\vec{v}=\\vec{d}/\\Delta t"
+    },
+
+    {
+        "EQ_ID": 3,
+        "name": "v_{average}=\\Delta d_{total}/\\Delta t"
+    },
+
+    {
+        "EQ_ID": 4,
+        "name": "\\boldsymbol{f}=1/\\boldsymbol{T}"
+    },
+
+    {
+        "EQ_ID": 5,
+        "name": "\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}"
+    },
+
+    {
+        "EQ_ID": 6,
+        "name": "\\vec{a}=\\vec{\\Delta v}/\\Delta{t}"
+    },
+
+    {
+        "EQ_ID": 7,
+        "name": "\\vec{v_{2}}=\\vec{v_{1}}+\\vec{a}\\Delta{t}"
+    },
+
+    {
+        "EQ_ID": 8,
+        "name": "\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}"
+    },
+
+    {
+        "EQ_ID": 9,
+        "name": "\\vec{\\Delta d}=\\vec{v_{2}}\\Delta{t}-1/2\\vec{a}(\\Delta{t})^{2}"
+    },
+
+    {
+        "EQ_ID": 10,
+        "name": "\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}"
+    },
+
+    {
+        "EQ_ID": 11,
+        "name": "{v_{2}}^{2}={v_{1}}^{2}+2a\\Delta d"
+    },
+
+    {
+        "EQ_ID": 12,
+        "name": "{_{A}\\vec{v}_{C}} ={_{A}\\vec{v}_{B}} + {_{B}\\vec{v}_{C}}"
+    },
+
+    {
+        "EQ_ID": 13,
+        "name": "F_{g}=mg"
+    },
+
+    {
+        "EQ_ID": 14,
+        "name": "F_{g}=\\frac{Gm_{1}m_{2}}{R^{2}}"
+    },
+
+    {
+        "EQ_ID": 15,
+        "name": "F_{f}=\\mu _{k}F_{N}"
+    },
+
+    {
+        "EQ_ID": 16,
+        "name": "F_{f}=\\mu _{s}F_{N}"
+    },
+
+    {
+        "EQ_ID": 17,
+        "name": "\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots"
+    },
+
+    {
+        "EQ_ID": 18,
+        "name": "\\vec{F_{net}}=m\\vec{a}"
+    },
+
+    {
+        "EQ_ID": 19,
+        "name": "\\vec{_{A}F_{B}}=-\\vec{_{B}F_{A}}"
+    },
+
+    {
+        "EQ_ID": 20,
+        "name": "W=\\vec{F}\\cdot \\Delta \\vec{d}"
+    },
+
+    {
+        "EQ_ID": 21,
+        "name": "W=F\\Delta cos(\\theta )"
+    },
+
+    {
+        "EQ_ID": 22,
+        "name": "P=\\frac{W}{\\Delta t}"
+    },
+
+    {
+        "EQ_ID": 23,
+        "name": "W=\\Delta E"
+    },
+
+    {
+        "EQ_ID": 24,
+        "name": "\\Delta E=mg\\Delta h"
+    },
+
+    {
+        "EQ_ID": 25,
+        "name": "E_{g}=mgh"
+    },
+
+    {
+        "EQ_ID": 26,
+        "name": "E_{k}=\\frac{1}{2}mv^{2}"
+    },
+
+    {
+        "EQ_ID": 27,
+        "name": "E_{T}=E_{g}+W_{k}"
+    },
+
+    {
+        "EQ_ID": 28,
+        "name": "E_{T(before)}=E_{T(after)}"
+    },
+    {
+        "EQ_ID": 29,
+        "name": "\\vec{A}_{(x/y)} = \\left |\\vec A \\right |(cos/sin)\\theta"
+    }
+    ]
+
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false; 
@@ -30,6 +176,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
     var currentDb = function () {
         return Sail.app.run.name;  
     };
+
+    self.returnEquationName = function(EQ_ID) {
+        return _.find(Sail.app.allEquations, function(eq) {
+            return eq.EQ_ID == EQ_ID;
+        }).name;
+    }
 
 
     self.escapeSelectorString = function(str) {
@@ -56,18 +208,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 // I think I've got an unnecessary each in here, but brain is 1 am overloaded - look tomorrow
                 _.each(homeworkCollection, function(homework) {
-                    if (homework.problemName === currentProblem) {
-                        console.log('problem object: '+homework.problemName);
+                    if (homework.problem_name === currentProblem) {
+                        //console.log('problem object: '+homework.problem_name);
 
                         _.each(homework.principles, function(p) {
                             Sail.app.principleHomeworkResults.push({"name":p.name,"votes":p.count});
                         });
                         _.each(homework.equations, function(e) {
-                            var i;      // TODO fix me when Anto is done
-                            Sail.app.equationHomeworkResults.push({"id":i,"name":e.name,"votes":e.count});
-                            i++;
+                            Sail.app.equationHomeworkResults.push({"id":e.EQ_ID,"name":e.name,"votes":e.count});
                         });
-
                         // break;
                     }
                 });
@@ -113,77 +262,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
 
 
-/*    self.getCompletedHomeworkProblem = function(currentProblem) {
-        Sail.app.currentProblem.name = currentProblem;
-        Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
 
-        // mongo call to determine tag counts
-        // first clear the results
-        Sail.app.principleHomeworkResults = [];
-        Sail.app.equationHomeworkResults = [];
-        // then fill them from the DB
-        $.ajax(self.drowsyURL + '/' + currentDb() + '/aggregated_homework', {
-            type: 'get',
-            success: function (homeworkCollection) {
-                console.log(homeworkCollection);
-
-                // I think I've got an unnecessary each in here, but brain is 1 am overloaded - look tomorrow
-                _.each(homeworkCollection, function(homework) {
-                    if (homework.problemName === currentProblem) {
-                        console.log('problem object: '+homework.problemName);
-
-                        _.each(homework.principles, function(p) {
-                            Sail.app.principleHomeworkResults.push({"name":p.name,"votes":p.count});
-                        });
-                        _.each(homework.equations, function(e) {
-                            var i;      // TODO fix me when Anto is done
-                            Sail.app.equationHomeworkResults.push({"id":i,"name":e.name,"votes":e.count});
-                            i++;
-                        });
-
-                        // break;
-                    }
-                });
-
-            },
-            dataType: 'json'
-        }).done(function() {
-            // grab problem from json files
-            $.ajax({
-                url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
-                success: function(data, textStatus, jqXHR){
-
-                //save the html for later
-                Sail.app.currentProblem.htmlContent += data;
-
-                // load page principle review
-                $.mobile.changePage("p-principleReview.html");
-                },
-                dataType: 'html'
-            });  
-        });
-
-        //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
-        Sail.app.principleHomeworkResults = [
-            {name:"Newton's Second Law", votes:2},
-            {name:"Acceleration", votes:7},
-            {name:"Static Friction", votes:4},
-            {name:"Fnet = 0", votes:5}
-        ];
-
-        //TODO: array needs to a result of a backend call
-        Sail.app.equationHomeworkResults = [
-            {id:1, name:"\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}", votes:1},
-            {id:2, name:"\\vec{v}=\\vec{d}/\\Delta t", votes:2},
-            {id:10, name:"\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}", votes:4}, //tallest
-            {id:17, name:"\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots", votes:2}, //longest
-            {id:5, name:"\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}", votes:1},
-            {id:6, name:"\\vec{a}=\\vec{\\Delta v}/\\Delta{t}", votes:3}
-        ];
-
-
-      
-    };*/
 
     /** public function **/
     self.bar = function () {
@@ -281,9 +360,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     var principlesArray = [];
 
                     // iterate over all of the checked boxes and add principle names to the array
-                    $('input:checkbox:checked').each(function(index) {
+/*                    $('input:checkbox:checked').each(function(index) {                                TODO WITH PEARL
                         principlesArray.push($(this).attr("name"));
-                    });
+                    });*/
+                    principlesArray.push($('input:checkbox:checked').attr("name"));
                     
                     Sail.app.submitPrinciplesGuess(Sail.app.currentProblem.name, principlesArray);
 
@@ -295,82 +375,104 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 // update the page to display the problem question
                 $('#principleConsensus .paper').html(Sail.app.currentProblem.htmlContent);
+                
 
-                //TODO: array needs to a result of a backend call
-                var peerTagsResults = [
+                // Mongo call to get set of principles to display
+                //$.ajax(self.drowsyURL + '/' + currentDb() + '/observations?selector={"group_name":'Sail.app.groupData.name'}', {
+                $.ajax(self.drowsyURL + '/' + currentDb() + '/observations?selector={"problem_name":"'+Sail.app.currentProblem.name+'","group_name":"'+Sail.app.groupData.name+'"}', {
+                    type: 'get',
+                    success: function (observations) {
+                        console.log(observations);
+                        var principlesArray = [];
+                        _.each(observations, function(observation) {
+                            if (observation.principles) {
+                                _.each(observation.principles, function(p) {
+                                    principlesArray.push(p);
+                                });
+                            }
+                        });
+                        var peerTagsResults = _.uniq(principlesArray);
+
+                        var numTags = peerTagsResults.length;
+                        var numGroupMembers = 0;
+
+                        var output = '<table>';
+                        output += '<tr><td width="200"></td>';
+                        output += '<th width="100">&nbsp; you</th>';
+                        if ( !UI_TESTING_ONLY ) {
+                            numGroupMembers = Sail.app.groupData.members.length;
+                            for (var i=0; i<numGroupMembers; i++){
+                                output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
+                            }
+                        }else{
+                            //fake group members
+                            numGroupMembers = 3;
+                            for (var i=0; i<numGroupMembers; i++){
+                                output += '<th width="100">#'+i+'</th>';
+                            }
+                        }
+                        output += '</tr>';
+
+                        for (var i=0; i<numTags; i++){
+                            var tag = peerTagsResults[i];
+                            output += '<tr><th class="tag-name">'+tag+'</th>';
+                            output += '<td>'+'<input type="checkbox" name="'+tag+'" id="checkbox-'+i+'" ';
+                            //output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
+                            output += ' /><label for="checkbox-'+i+'" ></label>'+'</td>';
+
+                            if ( !UI_TESTING_ONLY ) {
+                                for (var j=0; j<numGroupMembers; j++){
+                                    output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+tag+'">';
+                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                                    output += '</td>';
+                                }
+                            }else{
+                                //fake group members results
+                                numGroupMembers = 3;
+                                for (var j=0; j<numGroupMembers; j++){
+                                    output += '<td class="teammate-mike" data="mike-Newton\'s First Law">';
+                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                                    output += '</td>';
+                                }
+                            }
+
+                            output += '</tr>';
+                        }
+                        output += "</table>";
+                        $("#principleConsensus #peerTags").append(output).trigger("create");
+
+
+                        var principleConsensusArray = [];
+
+                        $('input:checkbox').click(function() {
+                            // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
+                            // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
+
+                            // iterate over all of the checked boxes and add principle names to the array
+                            $('input:checkbox:checked').each(function(index) {
+                                principleConsensusArray.push($(this).attr("name"));
+                            });
+                            
+                            Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
+                        });
+
+                        $('#principleContinueButton').click(function() {
+                            Sail.app.submitPrinciplesQuorum(Sail.app.currentProblem.name, principleConsensusArray);
+                        });                        
+                    }
+                });
+/*                var peerTagsResults = [
                     {id:1, name:"Newton's Second Law", submitted:[]},
                     {id:2, name:"Acceleration", submitted:[]},
                     {id:4, name:"Fnet = 0", submitted:[]}
-                ];
-
-                var numTags = peerTagsResults.length;
-                var numGroupMembers = 0;
-
-                var output = '<table>';
-                output += '<tr><td width="200"></td>';
-                output += '<th width="100">&nbsp; you</th>';
-                if ( !UI_TESTING_ONLY ) {
-                    numGroupMembers = Sail.app.groupData.members.length;
-                    for (var i=0; i<numGroupMembers; i++){
-                        output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
-                    }
-                }else{
-                    //fake group members
-                    numGroupMembers = 3;
-                    for (var i=0; i<numGroupMembers; i++){
-                        output += '<th width="100">#'+i+'</th>';
-                    }
-                }
-                output += '</tr>';
-
-                for (var i=0; i<numTags; i++){
-                    var tag = peerTagsResults[i];
-                    output += '<tr><th class="tag-name">'+tag.name+'</th>';
-                    output += '<td>'+'<input type="checkbox" name="'+tag.name+'" id="checkbox-'+tag.id+'" ';
-                    output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
-                    output += ' /><label for="checkbox-'+tag.id+'" ></label>'+'</td>';
-
-                    if ( !UI_TESTING_ONLY ) {
-                        for (var j=0; j<numGroupMembers; j++){
-                            output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+tag.name+'">';
-                            output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                            output += '</td>';
-                        }
-                    }else{
-                        //fake group members results
-                        numGroupMembers = 3;
-                        for (var j=0; j<numGroupMembers; j++){
-                            output += '<td class="teammate-mike" data="mike-Newton\'s First Law">';
-                            output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                            output += '</td>';
-                        }
-                    }
-
-                    output += '</tr>';
-                }
-                output += "</table>";
-                $("#principleConsensus #peerTags").append(output).trigger("create");
-
-
-                var principleConsensusArray = [];
-
-                $('input:checkbox').click(function() {
-                    // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
-                    // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
-
-                    // iterate over all of the checked boxes and add principle names to the array
-                    $('input:checkbox:checked').each(function(index) {
-                        principleConsensusArray.push($(this).attr("name"));
-                    });
-                    
-                    Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
-                });
-
-                $('#principleContinueButton').click(function() {
-                    Sail.app.submitPrinciplesQuorum(Sail.app.currentProblem.name, principleConsensusArray);
-                });
-                
+                ];*/
             });
+
+
+
+/***********************************************************************************************************************/
+
+
 
             //PAGE: Students are working on tagging equations by themselves
             $( '#equationsReview' ).live( 'pageinit',function(event){
@@ -383,22 +485,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 var output = "";
                 for (var i=0; i<numTags; i++){
                     var tag = Sail.app.equationHomeworkResults[i];
-                    output += '<input type="checkbox" name="'+tag.id+'" id="equation-checkbox-'+tag.id+'" class="eq-check-label" /> \
+                    output += '<input type="checkbox" name="'+tag.id+'" id="equation-checkbox-'+tag.id+'" class="eq-check-label" value='+tag.name+'/> \
                         <label for="equation-checkbox-'+tag.id+'">$$'+tag.name+'$$ \
                         <span class="peer-count">'+tag.votes+'</span> \
                         </label>';
                 }
                 $("#equationsReview #peerEquations").append(output).trigger("create");
-
-                //TODO: this should be a button instead
-                var output2 = '<select name="select-choice-a" id="select-choice-a" data-native-menu="false" data-icon="plus" data-iconpos="left" tabindex="-1"> \
-                        <option>Add an Equation not shown above</option> \
-                        <option value="x">$$P=\\frac{W}{\\Delta t}$$</option> \
-                        <option value="y">$$W=\\Delta E$$</option> \
-                        <option value="z">$$\\Delta E=mg\\Delta h$$</option> \
-                    </select>';
-
-                $("#equationsReview #peerEquationsMore").append(output2).trigger("create");
 
                 //update formatting of equations
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
@@ -408,14 +500,24 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     // iterate over all of the checked boxes and add principle names to the array
                     $('input:checkbox:checked').each(function(index) {
-                        equationsArray.push($(this).attr("name"));
+                        var equation = {
+                            EQ_ID:$(this).attr("name"),
+                            name:$(this).val()
+                        }
+                        equationsArray.push(equation);
                     });
                     
-                    var problemId = "1";       // this will need to be set globally in principlesReview
-                    Sail.app.submitEquationsGuess(problem.name, equationsArray);
+                    Sail.app.submitEquationsGuess(Sail.app.currentProblem.name, equationsArray);
                 });           
 
             });
+
+
+
+/*********************************************************************************************/
+
+
+
 
             //PAGE: Students are working on tagging equations as a group and trying to come to a consensus
             $( '#equationConsensus' ).live( 'pageinit',function(event){
@@ -424,77 +526,82 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 $('#equationConsensus .paper').html(Sail.app.currentProblem.htmlContent);
 
                 //TODO: array needs to a result of a backend call
-                var equationResults = [
+/*                var equationResults = [
                     {id:18, name:"\\vec{F_{net}}=m\\vec{a}", submitted:[2]},
                     {id:21, name:"W=F\\Delta cos(\\theta )", submitted:[1,2,3]},
                     {id:8, name:"\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}", submitted:[1,3]}
-                ];
+                ];*/
 
-                var numTags = equationResults.length;
-                var numGroupMembers = 0;
+                $.ajax(self.drowsyURL + '/' + currentDb() + '/observations?selector={"problem_name":"'+Sail.app.currentProblem.name+'","group_name":"'+Sail.app.groupData.name+'"}', {
+                    type: 'get',
+                    success: function (observations) {
+                        console.log(observations);
+                        var equationsArray = [];
+                        _.each(observations, function(observation) {
+                            if (observation.equations) {
+                                _.each(observation.equations, function(e) {
+                                    //e.name = e.name.replace(/\\/g,'\\\\');
+                                    equationsArray.push(e.EQ_ID);
+                                });
+                            }
+                        });
+                        var equationResults = _.uniq(equationsArray);
+                        //var equationResults = _.uniq(equationsArray, false, function(item) { return JSON.stringify(item) });
 
-                var output = '<table>';
-                output += '<tr><td width="200"></td>';
-                output += '<th width="100">&nbsp; you</th>';
-                if ( !UI_TESTING_ONLY ) {
-                    numGroupMembers = Sail.app.groupData.members.length;
-                    for (var i=0; i<numGroupMembers; i++){
-                        output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
-                    }
-                }else{
-                    //fake group members
-                    numGroupMembers = 3;
-                    for (var i=0; i<numGroupMembers; i++){
-                        output += '<th width="100">#'+i+'</th>';
-                    }
-                }
-                output += '</tr>';
-               
-                for (var i=0; i<numTags; i++){
-                    var equation = equationResults[i];
-                    output += '<tr><th class="tag-name">$$'+equation.name+'$$</th>';
-                    output += '<td>'+'<input type="checkbox" name="'+equation.id+'" id="checkbox-'+equation.id+'" ';
-                    output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
-                    output += ' /><label for="checkbox-'+equation.id+'"></label>'+'</td>';
 
-                    if ( !UI_TESTING_ONLY ) { 
-                        for (var j=0; j<numGroupMembers; j++){
-                            output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-eq'+equation.id+'">';
-                            output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                            output += '</td>';
+                        var numTags = equationResults.length;
+                        var numGroupMembers = 0;
+
+                        var output = '<table>';
+                        output += '<tr><td width="200"></td>';
+                        output += '<th width="100">&nbsp; you</th>';
+
+                        numGroupMembers = Sail.app.groupData.members.length;
+                        for (var i=0; i<numGroupMembers; i++){
+                            output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
                         }
-                     }else{
-                        //fake group members results
-                        numGroupMembers = 3;
-                        for (var j=0; j<numGroupMembers; j++){
-                            output += '<td class="teammate-mike" data="mike-eq8">';
-                            output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                            output += '</td>';
+
+                        output += '</tr>';
+                       
+                        for (var i=0; i<numTags; i++){
+                            var equation = equationResults[i];
+                            output += '<tr><th class="tag-name">$$'+Sail.app.returnEquationName(equation)+'$$</th>';
+                            output += '<td>'+'<input type="checkbox" name="'+equation+'" id="checkbox-'+equation+'" ';
+                            //output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
+                            output += ' /><label for="checkbox-'+equation+'"></label>'+'</td>';
+
+                           
+                            for (var j=0; j<numGroupMembers; j++){
+                                output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-eq'+equation+'">';
+                                output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                                output += '</td>';
+                            }
+        
+
+                            output += '</tr>';
                         }
+                        output += "</table>";
+                        $("#equationConsensus #submittedEquations").append(output).trigger("create");
+
+                        //update formatting of equations
+                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+
+                        var equationConsensusArray = [];
+
+                        $('input:checkbox').click(function() {
+                            // iterate over all of the checked boxes and add principle names to the array
+                            $('input:checkbox:checked').each(function(index) {
+                                equationConsensusArray.push($(this).attr("name"));
+                            });
+                            
+                            Sail.app.toggleEquationCheckboxes(equationConsensusArray);      
+                        });
+
+                        $('#equationContinueButton').click(function() {
+                            Sail.app.submitEquationsQuorum(Sail.app.currentProblem.name, equationConsensusArray);
+                        });
                     }
-
-                    output += '</tr>';
-                }
-                output += "</table>";
-                $("#equationConsensus #submittedEquations").append(output).trigger("create");
-
-                //update formatting of equations
-                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
-
-                var equationConsensusArray = [];
-
-                $('input:checkbox').click(function() {
-                    // iterate over all of the checked boxes and add principle names to the array
-                    $('input:checkbox:checked').each(function(index) {
-                        equationConsensusArray.push($(this).attr("name"));
-                    });
-                    
-                    Sail.app.toggleEquationCheckboxes(equationConsensusArray);      
-                });
-
-                $('#equationContinueButton').click(function() {
-                    Sail.app.submitEquationsQuorum(Sail.app.currentProblem.name, equationConsensusArray);
                 });
 
             });
@@ -639,6 +746,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.events.sail = {
         test_event: function(sev) {
             alert('heard the event');
+        },
+
+        guess_submission: function(ev) {
+            if (ev.payload.group_name === Sail.app.groupData.name) {
+                if (ev.payload.principles) {
+
+                    $.mobile.loadPage( 'p-principleConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
+                } else if (ev.payload.equations) {
+                    $.mobile.loadPage( 'p-equationConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
+                } else {
+                    console.alert('ignoring guess_submission');
+                }
+            }
         },
 
         principle_checkbox_toggled: function(ev) {     
