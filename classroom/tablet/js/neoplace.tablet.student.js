@@ -787,16 +787,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
 
             // is this the best place to do this? Maybe filter out by group name?
-            var consensusReached = true;
+            var consensusReached = false;
+            $('#principleConsensus #principleContinueButton').addClass('ui-disabled');
+
             $('#principleConsensus tr').each(function(trIndex) {
                 
                 var checkCount = 0;
-                // for each column
-                // skip first column
+               
                 if (trIndex === 0) {
-                    return;
+                    return; //first header row so skip
                 }
                 else {
+
+                    // for each column
                     $(this).find('td').each(function(tdIndex){
                         if ( tdIndex === 0 ){
                             if ($(this).find(":checkbox").attr("checked") ){
@@ -808,17 +811,17 @@ NEOplace.Tablet.Student = (function(Tablet) {
                             }
                         }
                     });
-                    if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length))) {         // +1?
-                        Sail.app.consensusReached = false;
-                        return false;                         
+                    if (checkCount == Sail.app.groupData.members.length + 1) { //members list does not include you
+                        consensusReached = true;                       
+
                     }
                 }
             });
+
             if (consensusReached === true) {
                 $('#principleConsensus #principleContinueButton').removeClass('ui-disabled');
-            } else {
-                $('#principleConsensus #principleContinueButton').addClass('ui-disabled');           // should be addClass
-            }  
+            } 
+
         },
 
         equation_checkbox_toggled: function(ev) {
