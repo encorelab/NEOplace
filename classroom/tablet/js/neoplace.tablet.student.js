@@ -752,9 +752,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if (ev.payload.group_name === Sail.app.groupData.name) {
                 if (ev.payload.principles) {
 
-                    $.mobile.loadPage( '#principleConsensus', {reloadPage:true, loadMsgDelay:1000} );
+                    $.mobile.loadPage( 'p-principleConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
                 } else if (ev.payload.equations) {
-                    $.mobile.loadPage( '#equationsConsensus', {reloadPage:true, loadMsgDelay:1000} );
+                    $.mobile.loadPage( 'p-equationConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
                 } else {
                     console.alert('ignoring guess_submission');
                 }
