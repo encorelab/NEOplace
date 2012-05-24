@@ -78,7 +78,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         <br /><br /> \
                         <img src="/assets/img/group_gather.png" width="300" height="200" alt="group huddle" /> \
                         <br />When your group is together and ready to go, let your teacher know.');
-                    $("#startButton").css("display","block");
+
+                    //when a problem is received, page should auto-forward so there's no need for a start button
+                    //$("#startButton").css("display","block");
                 
                     Sail.app.groupData.name = data.groups[0].name;
                     //Sail.app.groupData.members = ["joe","mike","colin"];

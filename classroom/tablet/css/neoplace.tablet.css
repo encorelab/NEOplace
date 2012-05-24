@@ -294,3 +294,13 @@ body {
 
 /** common styles **/
 
+#auth-indicator {
+    z-index: 100;
+    color: #fff;
+    text-shadow: none;
+}
+
+.ui-title {
+    margin-top: 0.8em !important;
+}
+
