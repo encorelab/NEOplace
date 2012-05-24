@@ -16,6 +16,7 @@ class ClassroomChoreographer < Sail::Agent
     @active_users = []
     @rollcallurl = ""
     @groups_with_active_users = {}
+    @classroom_started = false
   end
 
   def behaviour
@@ -62,84 +63,98 @@ class ClassroomChoreographer < Sail::Agent
     
     # Take note of who is doing a check_in and store in mongodb
     event :login? do |stanza, data|
-      log "Received login #{data.inspect}"
-      # retrieving user id from rollcall
-      userid = lookup_userid(data['origin'])
-      # retrieving user name
-      if userid then
-        user = {'name' => data['origin'], "id" => userid}
-      
-        # check if user is already stored and store if not already in db
-        unless @mongo.collection(:active_users).find_one(user) then
-          log "storing #{user.inspect} in MongoDB"
-          @mongo.collection(:active_users).save(user)
-        end
-      end
+      unless @classroom_started then
+        log "Received login #{data.inspect}"
+        # retrieving user id from rollcall
+        userid = lookup_userid(data['origin'])
+        # retrieving user name
+        if userid then
+          user = {'name' => data['origin'], "id" => userid}
         
+          # check if user is already stored and store if not already in db
+          unless @mongo.collection(:active_users).find_one(user) then
+            log "storing #{user.inspect} in MongoDB"
+            @mongo.collection(:active_users).save(user)
+          end
+        end
+      else
+        log "Classroom already started ignoring event login"
+      end
     end
     
     # once start is received hand out first problem batch to checked in students
     event :start_classroom? do |stanza, data|
-      log "Once this event is received, hand out first problem batch"
-      log "Run name #{@runname.inspect}"
-      # Retrieve run id from Rollcall
-      @runid = lookup_runid(@runname)
+      unless @classroom_started then
+        log "Once this event is received, hand out first problem batch"
+        log "Run name #{@runname.inspect}"
+        # Retrieve run id from Rollcall
+        @runid = lookup_runid(@runname)
 
-      unless @runid == nil then
-        log "Run Id #{@runid} for runname #{@runname}"
-      else
-        log 'No runid no dice'
-        return nil
-      end
-
-      # Retrieve groups that belong to run id from Rollcall
-      groups_in_run = lookup_groups(@runid)
-      log "Found #{groups_in_run.length} groups that fit to #{@runid} : #{groups_in_run.inspect}"
-
-      # Retrieve all user names for 'active' groups
-      @mongo.collection(:active_users).find.each do |row|
-        @active_users.push(row)
-      end
-      log "Active_users array #{@active_users.inspect}"
-
-      # Remove users not logged in from groups
-      @groups_with_active_users = remove_inactive_users(groups_in_run, @active_users)
-      log "did groups change? #{@groups_with_active_users.inspect}"
-
-      # Send group presence
-      @groups_with_active_users.each do |active_group|
-        active_user_ids = active_group[1].collect {|user| user['id']}
-        if active_user_ids.length > 0 then
-          log "Sending group_presense event with group #{active_group[0].inspect} and member ids #{active_user_ids.inspect}"
-          event!(:group_presence, {:group => active_group[0], :members => active_user_ids})
+        unless @runid == nil then
+          log "Run Id #{@runid} for runname #{@runname}"
         else
-          log "Not active members for group #{active_group.inspect}"
+          log 'No runid no dice'
+          return nil
         end
-      end
 
-      @groups_with_active_users.each do |active_group|
-        # Send problem assignment
-        unless send_problem_assignment(active_group[0]) then
-          log "Running out of problems should not happen at start of class :("
+        # Retrieve groups that belong to run id from Rollcall
+        groups_in_run = lookup_groups(@runid)
+        log "Found #{groups_in_run.length} groups that fit to #{@runid} : #{groups_in_run.inspect}"
+
+        # Retrieve all user names for 'active' groups
+        @mongo.collection(:active_users).find.each do |row|
+          @active_users.push(row)
         end
+        log "Active_users array #{@active_users.inspect}"
+
+        # Remove users not logged in from groups
+        @groups_with_active_users = remove_inactive_users(groups_in_run, @active_users)
+        log "did groups change? #{@groups_with_active_users.inspect}"
+
+        # Send group presence
+        @groups_with_active_users.each do |active_group|
+          active_user_ids = active_group[1].collect {|user| user['id']}
+          if active_user_ids.length > 0 then
+            log "Sending group_presense event with group #{active_group[0].inspect} and member ids #{active_user_ids.inspect}"
+            event!(:group_presence, {:group => active_group[0], :members => active_user_ids})
+          else
+            log "Not active members for group #{active_group.inspect}"
+          end
+        end
+
+        @groups_with_active_users.each do |active_group|
+          # Send problem assignment
+          unless send_problem_assignment(active_group[0]) then
+            log "Running out of problems should not happen at start of class :("
+          end
+        end
+
+        @classroom_started = true
+      else
+        log "Classroom already started ignoring event start_classroom"
       end
     end
 
     event :quorum_reached? do |stanza, data|
-      log "Received quorum_reached #{data.inspect}"
-      payload = data['payload']
-      # group_name:Sail.app.groupData.name,
-      #       problem_name:problemName,
-      #       equations:equationsArray
-      if payload['equations'] then
-        log "Like me a good equation ;)"
-        # Send problem assignment
-        unless send_problem_assignment(payload['group_name']) then
-          log "We are out of problems now we send done message"
-          event!(:activity_end, {})
+      if @classroom_started then
+        log "Received quorum_reached #{data.inspect}"
+        payload = data['payload']
+        # group_name:Sail.app.groupData.name,
+        #       problem_name:problemName,
+        #       equations:equationsArray
+        if payload['equations'] then
+          log "Like me a good equation ;)"
+          # Send problem assignment
+          unless send_problem_assignment(payload['group_name']) then
+            log "We are out of problems now we send done message"
+            event!(:activity_end, {})
+          end
         end
+      else
+        log "Classroom not started, yet! Ignoring event quorum_reached"
       end
     end
+
   end
 
   def lookup_userid(username)
