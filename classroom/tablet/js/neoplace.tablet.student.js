@@ -354,16 +354,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
                                 <span class="peer-count">'+tag.votes+'</span> \
                                 </label>';
                 }
-                $('#principleReview #peerTags').append(output).trigger("create");
+                $('#principleReview #peerTags').html(output).trigger("create");
 
                 $('#principleReview .submit-guess').click(function() {
                     var principlesArray = [];
 
                     // iterate over all of the checked boxes and add principle names to the array
-/*                    $('input:checkbox:checked').each(function(index) {                                TODO WITH PEARL
-                        principlesArray.push($(this).attr("name"));
-                    });*/
-                    principlesArray.push($('input:checkbox:checked').attr("name"));
+                    var principlesArray = $('input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
+                    // for ( var c=0; c<checkedBoxes.length; c++ ) {
+                    //     principlesArray.push(checkedBoxes[i].attr("name"));
+                    // }
+
+                    //principlesArray.push($('input:checkbox:checked').attr("name"));
                     
                     Sail.app.submitPrinciplesGuess(Sail.app.currentProblem.name, principlesArray);
 
@@ -376,6 +378,20 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 // update the page to display the problem question
                 $('#principleConsensus .paper').html(Sail.app.currentProblem.htmlContent);
                 
+                var principleConsensusArray = [];
+
+                $('#principleConsensus input:checkbox').live('change', function() {
+                    // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
+                    // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
+
+                    // iterate over all of the checked boxes and add principle names to the array
+/*                            $('input:checkbox:checked').each(function(index) {
+                        principleConsensusArray.push($(this).attr("name"));
+                    });*/
+                    principleConsensusArray = $('#principleConsensus input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
+                    
+                    Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
+                });
 
                 // Mongo call to get set of principles to display
                 //$.ajax(self.drowsyURL + '/' + currentDb() + '/observations?selector={"group_name":'Sail.app.groupData.name'}', {
@@ -439,22 +455,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                             output += '</tr>';
                         }
                         output += "</table>";
-                        $("#principleConsensus #peerTags").append(output).trigger("create");
+                        $("#principleConsensus #peerTags").html(output).trigger("create");
 
 
-                        var principleConsensusArray = [];
 
-                        $('input:checkbox').click(function() {
-                            // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
-                            // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
-
-                            // iterate over all of the checked boxes and add principle names to the array
-                            $('input:checkbox:checked').each(function(index) {
-                                principleConsensusArray.push($(this).attr("name"));
-                            });
-                            
-                            Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
-                        });
 
                         $('#principleContinueButton').click(function() {
                             Sail.app.submitPrinciplesQuorum(Sail.app.currentProblem.name, principleConsensusArray);
@@ -490,7 +494,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         <span class="peer-count">'+tag.votes+'</span> \
                         </label>';
                 }
-                $("#equationsReview #peerEquations").append(output).trigger("create");
+                $("#equationsReview #peerEquations").html(output).trigger("create");
 
                 //update formatting of equations
                 MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
@@ -581,7 +585,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                             output += '</tr>';
                         }
                         output += "</table>";
-                        $("#equationConsensus #submittedEquations").append(output).trigger("create");
+                        $("#equationConsensus #submittedEquations").html(output).trigger("create");
 
                         //update formatting of equations
                         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
@@ -749,7 +753,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         },
 
         guess_submission: function(ev) {
-            if (ev.payload.group_name === Sail.app.groupData.name) {
+            if ((ev.payload.group_name === Sail.app.groupData.name) && (ev.origin != Sail.app.userData.account.login)) {
                 if (ev.payload.principles) {
 
                     $.mobile.loadPage( 'p-principleConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
@@ -815,7 +819,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                             }
                         }
                     });
-                    if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length + 1))) {
+                    if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length + 1))) {         // +1?
                         consensusReached = false;
                         return false;                         
                     }
@@ -824,7 +828,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if (consensusReached === true) {
                 $('#principleConsensus #principleContinueButton').removeClass('ui-disabled');
             } else {
-                $('#principleConsensus #principleContinueButton').addClass('ui-disabled');
+                $('#principleConsensus #principleContinueButton').addClass('ui-disabled');           // should be addClass
             }  
         },
 
