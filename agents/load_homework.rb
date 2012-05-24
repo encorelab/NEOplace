@@ -12,6 +12,7 @@ def retrieve_homework()
     case response.code
     when 200
       # puts "Result #{response.inspect}"
+      response.gsub!(/\\+'/,"'")
       aggregated_homeworks = JSON.parse(response)
       @mongo.collection(:aggregated_homework).remove()
       @mongo2.collection(:aggregated_homework).remove()
