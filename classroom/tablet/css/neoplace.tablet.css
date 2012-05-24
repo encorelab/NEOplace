@@ -304,3 +304,7 @@ body {
     margin-top: 0.8em !important;
 }
 
+.login-box {
+    min-width: 400px !important;
+}
+
