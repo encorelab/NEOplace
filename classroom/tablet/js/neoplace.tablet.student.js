@@ -45,6 +45,123 @@ NEOplace.Tablet.Student = (function(Tablet) {
         Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
 
         // mongo call to determine tag counts
+        // first clear the results
+        Sail.app.principleHomeworkResults = [];
+        Sail.app.equationHomeworkResults = [];
+        // then fill them from the DB
+        $.ajax(self.drowsyURL + '/' + currentDb() + '/aggregated_homework', {
+            type: 'get',
+            success: function (homeworkCollection) {
+                console.log(homeworkCollection);
+
+                // I think I've got an unnecessary each in here, but brain is 1 am overloaded - look tomorrow
+                _.each(homeworkCollection, function(homework) {
+                    if (homework.problemName === currentProblem) {
+                        console.log('problem object: '+homework.problemName);
+
+                        _.each(homework.principles, function(p) {
+                            Sail.app.principleHomeworkResults.push({"name":p.name,"votes":p.count});
+                        });
+                        _.each(homework.equations, function(e) {
+                            var i;      // TODO fix me when Anto is done
+                            Sail.app.equationHomeworkResults.push({"id":i,"name":e.name,"votes":e.count});
+                            i++;
+                        });
+
+                        // break;
+                    }
+                });
+
+                // grab problem from json files
+                $.ajax({
+                    url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
+                    success: function(data, textStatus, jqXHR){
+
+                    //save the html for later
+                    Sail.app.currentProblem.htmlContent += data;
+
+                    // load page principle review
+                    $.mobile.changePage("p-principleReview.html");
+                    },
+                    dataType: 'html'
+                });  
+
+            },
+            dataType: 'json'
+        });
+
+
+        //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
+/*        Sail.app.principleHomeworkResults = [
+            {name:"Newton's Second Law", votes:2},
+            {name:"Acceleration", votes:7},
+            {name:"Static Friction", votes:4},
+            {name:"Fnet = 0", votes:5}
+        ];
+
+        //TODO: array needs to a result of a backend call
+        Sail.app.equationHomeworkResults = [
+            {id:1, name:"\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}", votes:1},
+            {id:2, name:"\\vec{v}=\\vec{d}/\\Delta t", votes:2},
+            {id:10, name:"\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}", votes:4}, //tallest
+            {id:17, name:"\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots", votes:2}, //longest
+            {id:5, name:"\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}", votes:1},
+            {id:6, name:"\\vec{a}=\\vec{\\Delta v}/\\Delta{t}", votes:3}
+        ];*/
+      
+    };
+
+
+
+/*    self.getCompletedHomeworkProblem = function(currentProblem) {
+        Sail.app.currentProblem.name = currentProblem;
+        Sail.app.currentProblem.htmlContent = '<h2>Problem</h2>';
+
+        // mongo call to determine tag counts
+        // first clear the results
+        Sail.app.principleHomeworkResults = [];
+        Sail.app.equationHomeworkResults = [];
+        // then fill them from the DB
+        $.ajax(self.drowsyURL + '/' + currentDb() + '/aggregated_homework', {
+            type: 'get',
+            success: function (homeworkCollection) {
+                console.log(homeworkCollection);
+
+                // I think I've got an unnecessary each in here, but brain is 1 am overloaded - look tomorrow
+                _.each(homeworkCollection, function(homework) {
+                    if (homework.problemName === currentProblem) {
+                        console.log('problem object: '+homework.problemName);
+
+                        _.each(homework.principles, function(p) {
+                            Sail.app.principleHomeworkResults.push({"name":p.name,"votes":p.count});
+                        });
+                        _.each(homework.equations, function(e) {
+                            var i;      // TODO fix me when Anto is done
+                            Sail.app.equationHomeworkResults.push({"id":i,"name":e.name,"votes":e.count});
+                            i++;
+                        });
+
+                        // break;
+                    }
+                });
+
+            },
+            dataType: 'json'
+        }).done(function() {
+            // grab problem from json files
+            $.ajax({
+                url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
+                success: function(data, textStatus, jqXHR){
+
+                //save the html for later
+                Sail.app.currentProblem.htmlContent += data;
+
+                // load page principle review
+                $.mobile.changePage("p-principleReview.html");
+                },
+                dataType: 'html'
+            });  
+        });
 
         //TODO: array needs to a result of a backend call (are we doing this with a REST call or through an agent?)
         Sail.app.principleHomeworkResults = [
@@ -65,20 +182,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
         ];
 
 
-        // grab problem from json files
-        $.ajax({
-          url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
-          success: function(data, textStatus, jqXHR){
-
-            //save the html for later
-            Sail.app.currentProblem.htmlContent += data;
-
-            // load page principle review
-            $.mobile.changePage("p-principleReview.html");
-          },
-          dataType: 'html'
-        });        
-    } 
+      
+    };*/
 
     /** public function **/
     self.bar = function () {
@@ -120,8 +225,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         <img src="/assets/img/group_gather.png" width="300" height="200" alt="group huddle" /> \
                         <br />When your group is together and ready to go, let your teacher know.');
 
-                    //$.mobile.changePage("p-principleReview.html");
-                    //state = sev.payload.problem_name;
                     $.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
                         type: 'get',
                         success: function (results) {
@@ -131,19 +234,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
                                 if (results[i].group_name === data.groups[0].name) {
                                     //Sail.app.currentProblem.name = results[i].problem;
                                     Sail.app.getCompletedHomeworkProblem(results[i].problem);
-                                    $.mobile.changePage("p-principleReview.html");
+                                    //$.mobile.changePage("p-principleReview.html");
                                     break;
                                 }
                             }
                         },
                         dataType: 'json'
                     });
-
-
-
-                
+               
                     Sail.app.groupData.name = data.groups[0].name;
-                    //Sail.app.groupData.members = ["joe","mike","colin"];
 
                     Sail.app.userData = data;
 
