@@ -407,57 +407,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                         Sail.app.initPrincipleConsensus(principleNames, Sail.app.groupData.members);
 
-                        var output = '<table>';
-                        output += '<tr><td width="200"></td>';
-                        output += '<th width="100">&nbsp; you</th>';
-                        if ( !UI_TESTING_ONLY ) {
-                            numGroupMembers = Sail.app.groupData.members.length;
-                            for (var i=0; i<numGroupMembers; i++){
-                                output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
-                            }
-                        }else{
-                            //fake group members
-                            numGroupMembers = 3;
-                            for (var i=0; i<numGroupMembers; i++){
-                                output += '<th width="100">#'+i+'</th>';
-                            }
-                        }
-                        output += '</tr>';
-
-                        for (var i=0; i<numTags; i++){
-                            var tag = peerTagsResults[i];
-                            output += '<tr><th class="tag-name">'+tag+'</th>';
-                            output += '<td>'+'<input type="checkbox" name="'+tag+'" id="principleConsensusCheckbox-'+i+'" ';
-                            //output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
-                            output += ' /><label for="principleConsensusCheckbox-'+i+'" ></label>'+'</td>';
-
-                            if ( !UI_TESTING_ONLY ) {
-                                for (var j=0; j<numGroupMembers; j++){
-                                    output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+tag+'">';
-                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                                    output += '</td>';
-                                }
-                            }else{
-                                //fake group members results
-                                numGroupMembers = 3;
-                                for (var j=0; j<numGroupMembers; j++){
-                                    output += '<td class="teammate-mike" data="mike-Newton\'s First Law">';
-                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                                    output += '</td>';
-                                }
-                            }
-
-                            output += '</tr>';
-                        }
-                        output += "</table>";
-                        $("#principleConsensus #peerTags").html(output).trigger("create");
-
-
-
-
-                        $('#principleContinueButton').click(function() {
-                            Sail.app.submitPrinciplesQuorum(Sail.app.currentProblem.name, principleConsensusArray);
-                        });                        
+                        Sail.app.updatePrincipleConsensusUI();                   
                     }
                 });
 /*                var peerTagsResults = [
@@ -537,60 +487,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     type: 'get',
                     success: function (observations) {
                         console.log(observations);
-                        var equationsArray = [];
-                        _.each(observations, function(observation) {
-                            if (observation.equations) {
-                                _.each(observation.equations, function(e) {
-                                    //e.name = e.name.replace(/\\/g,'\\\\');
-                                    equationsArray.push(e.EQ_ID);
-                                });
-                            }
+
+                        var me = Sail.app.session.account.login;
+                        var equationIds = []
+                        equationIds = _.map(observations, function(o) {
+                            return _.map(o.equations, function (e) {
+                                return e.EQ_ID;
+                            });
                         });
-                        var equationResults = _.uniq(equationsArray);
-                        //var equationResults = _.uniq(equationsArray, false, function(item) { return JSON.stringify(item) });
+                        equationIds = _.uniq(_.flatten(equationIds));
 
+                        Sail.app.initEquationConsensus(equationIds, Sail.app.groupData.members);
 
-                        var numTags = equationResults.length;
-                        var numGroupMembers = 0;
-
-                        var output = '<table>';
-                        output += '<tr><td width="200"></td>';
-                        output += '<th width="100">&nbsp; you</th>';
-
-                        numGroupMembers = Sail.app.groupData.members.length;
-                        for (var i=0; i<numGroupMembers; i++){
-                            output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
-                        }
-
-                        output += '</tr>';
-                       
-                        for (var i=0; i<numTags; i++){
-                            var equation = equationResults[i];
-                            output += '<tr><th class="tag-name">$$'+Sail.app.returnEquationName(equation)+'$$</th>';
-                            output += '<td>'+'<input type="checkbox" name="'+equation+'" id="checkbox-'+equation+'" ';
-                            //output += (equation.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
-                            output += ' /><label for="checkbox-'+equation+'"></label>'+'</td>';
-
-                           
-                            for (var j=0; j<numGroupMembers; j++){
-                                output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-eq'+equation+'">';
-                                output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                                output += '</td>';
-                            }
-        
-
-                            output += '</tr>';
-                        }
-                        output += "</table>";
-                        $("#equationConsensus #submittedEquations").html(output).trigger("create");
-
-                        //update formatting of equations
-                        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
-
-                        $('#equationContinueButton').click(function() {
-                            Sail.app.submitEquationsQuorum(Sail.app.currentProblem.name, equationConsensusArray);
-                        });
+                        Sail.app.updateEquationConsensusUI();  
                     }
                 });
 
@@ -758,6 +667,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         Sail.app.principleConsensus[p][sev.origin] = NO;
                     });
                     Sail.app.updatePrincipleConsensusUI();
+                } else if (sev.payload.equations) {
+                    Sail.app.equationConsensus = Sail.app.equationConsensus || {};
+                    _.each(sev.payload.equations, function (e) {
+                        Sail.app.equationConsensus[e.EQ_ID] = Sail.app.equationConsensus[e.EQ_ID] || {};
+                        Sail.app.equationConsensus[e.EQ_ID][sev.origin] = NO;
+                    });
+                    Sail.app.updateEquationConsensusUI();
+                } else {
+                    console.error("Bad guess_submission payload (no .principles or .equations)!", sev.payload);
                 }
             }
         },
@@ -780,74 +698,17 @@ NEOplace.Tablet.Student = (function(Tablet) {
         },
 
         equation_checkbox_toggled: function(ev) {
-            if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.equation_checked_checkboxes) {
-                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[0]).each(function(index) {
-                    $(this).html(NO);
+            if (_.include(Sail.app.groupData.members, sev.origin) || sev.origin == Sail.app.session.account.login) {
+                _.each(Sail.app.equationConsensus, function (u, e) {
+                    Sail.app.equationConsensus[e][sev.origin] = NO;
                 });
-                //$('.teammate-'+Sail.app.groupData.members[0]).html(NO);
-                _.each(ev.payload.equation_checked_checkboxes, function(equation) { 
-                    var dataValueStr = Sail.app.groupData.members[0] + '-eq' + equation;
-                    $("td[data='"+dataValueStr+"']").html(YES);
-                });
-            }
-            else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.equation_checked_checkboxes) {
-                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes     
-                $('.teammate-'+Sail.app.groupData.members[1]).each(function(index) {
-                    $(this).html(NO);
-                });          
-                _.each(ev.payload.equation_checked_checkboxes, function(equation) {
-                    var dataValueStr = Sail.app.groupData.members[1] + '-eq' + equation;
-                    $("td[data='"+dataValueStr+"']").html(YES);
-                });
-            }
-            else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.equation_checked_checkboxes) {
-                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[2]).each(function(index) {
-                    $(this).html(NO);
-                });
-                _.each(ev.payload.equation_checked_checkboxes, function(equation) {
-                    var dataValueStr = Sail.app.groupData.members[2] + '-eq' + equation;
-                    $("td[data='"+dataValueStr+"']").html(YES);
-                });
-            }
-            else {
-                console.log('ignoring equation_checkbox_toggled event - not relevant group member or bad payload');
-            }
 
-            // is this the best place to do this? Maybe filter out by group name?
-            var consensusReached = true;
-            $('#equationConsensus tr').each(function(trIndex) {
-                
-                var checkCount = 0;
-                // for each column
-                // skip first column
-                if (trIndex === 0) {
-                    return;
-                }
-                else {
-                    $(this).find('td').each(function(tdIndex){
-                        if ( tdIndex === 0 ){
-                            if ($(this).find(":checkbox").attr("checked") ){
-                                 checkCount++;
-                            }
-                        } else {
-                            if ($(this).html() === YES ){
-                                 checkCount++;
-                            }
-                        }
-                    });
-                    if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length + 1))) {
-                        consensusReached = false;
-                        return false;                         
-                    }
-                }
-            });
-            if (consensusReached === true) {
-                $('#equationConsensus #equationContinueButton').removeClass('ui-disabled');
-            } else {
-                $('#equationConsensus #equationContinueButton').addClass('ui-disabled');
+                _.each(sev.payload.equation_checked_checkboxes, function (e) {
+                    Sail.app.equationConsensus[e] = Sail.app.equationConsensus[e] || {};
+                    Sail.app.equationConsensus[e][sev.origin] = YES;
+                });
             }
+            Sail.app.updateEquationConsensusUI(); 
         },
 
         // this event updates the group to include only present members (ie logged in users in group)
@@ -912,19 +773,45 @@ NEOplace.Tablet.Student = (function(Tablet) {
         Sail.app.updatePrincipleConsensusUI();
     };
 
+    self.initEquationConsensus = function (equationIds, members) {
+        Sail.app.equationConsensus = Sail.app.equationConsensus || {}
+
+        var me = Sail.app.session.account.login;
+        var membersWithMe = _.clone(members);
+        if (!_.include(membersWithMe, me))
+            membersWithMe.unshift(me);
+
+        _.each(equationIds, function (eqId) {
+            _.each(membersWithMe, function (m) {
+                Sail.app.equationConsensus[eqId] = Sail.app.equationConsensus[eqId] || {};
+                Sail.app.equationConsensus[eqId][m] = Sail.app.equationConsensus[eqId][m] || NO;
+            })
+        });
+        Sail.app.updateEquationConsensusUI();
+    };
+
     self.havePrincipleConsensus = function () {
         var allNo = _.all(_.flatten(_.map(_.values(Sail.app.principleConsensus), function(u) { return _.values(u) })), function(a) { return a == NO });
         if (allNo)
             return false;
 
-        _.all(Sail.app.principleConsensus, function (row, principle) {
-            if (!_.all(row, function(agree, u) {return agree === row[me]}))
-                haveIt = false;
-        });
-
         var haveIt = true;
         var me = Sail.app.session.account.login;
         _.each(Sail.app.principleConsensus, function (row, principle) {
+            if (!_.all(row, function(agree, u) {return agree === row[me]}))
+                haveIt = false;
+        });
+        return haveIt;
+    };
+
+    self.haveEquationConsensus = function () {
+        var allNo = _.all(_.flatten(_.map(_.values(Sail.app.equationConsensus), function(u) { return _.values(u) })), function(a) { return a == NO });
+        if (allNo)
+            return false;
+
+        var haveIt = true;
+        var me = Sail.app.session.account.login;
+        _.each(Sail.app.equationConsensus, function (row, eqId) {
             if (!_.all(row, function(agree, u) {return agree === row[me]}))
                 haveIt = false;
         });
@@ -989,6 +876,69 @@ NEOplace.Tablet.Student = (function(Tablet) {
             $('#principleConsensus #principleContinueButton').removeClass('ui-disabled');
         } else {
             $('#principleConsensus #principleContinueButton').addClass('ui-disabled');           // should be addClass
+        }
+    };
+
+    self.updateEquationConsensusUI = function () {
+        var table = $('<table />');
+
+        var usernameRow = $('<tr><th /></tr>');
+
+
+        var me = Sail.app.session.account.login;
+        var members = _.uniq(Sail.app.groupData.members);
+        if (!_.include(members, me)) 
+            members.unshift(me);
+        
+        _.each(members, function (username) {
+            if (username == me)
+                usernameRow.append("<th data-username='"+username+"'>me</th>");
+            else
+                usernameRow.append("<th data-username='"+username+"'>"+username+"</th>");
+        });
+        table.append(usernameRow);
+
+
+        _.each(Sail.app.equationConsensus, function (u, eqId) {
+            var eqRow = $('<tr id="'+eqId+'">');
+            var eqTh = $('<th class="tag-name" />');
+            eqTh.text('$$'+Sail.app.returnEquationName(eqId)+'$$');
+
+            eqRow.append(eqTh);
+
+            _.each(members, function (username) {
+                var agree = Sail.app.equationConsensus[eqId][username] || NO;
+                if (username == me) {
+                    var td = $("<td />");
+                    var label = $("<label />");
+                    var chbox = $("<input type='checkbox' />");
+                    chbox.attr('name', escape(eqId));
+                    if (agree == YES)
+                        chbox.attr('checked', 'checked');
+                    label.append(chbox);
+                    td.append(label);
+                    eqRow.append(td);
+                } else {
+                    eqRow.append("<td>"+agree+"</td>");
+                }
+            })
+
+            eqRow.trigger('create');
+            table.append(eqRow);
+        });
+
+        
+        
+        $("#equationConsensus #submittedEquations table")
+            .replaceWith(table)
+            .trigger("create");
+
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+        if (Sail.app.haveEquationConsensus()) {
+            $('#equationConsensus #equationContinueButton').removeClass('ui-disabled');
+        } else {
+            $('#equationConsensus #equationContinueButton').addClass('ui-disabled');           // should be addClass
         }
     };
 
