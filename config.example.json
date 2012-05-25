@@ -1,15 +1,15 @@
 {
 "xmpp": {
-    "domain": "proto.encorelab.org",
+    "domain": "aardvark.encorelab.org",
     "port": 5222
   },
 "rollcall": {
-    "url": "http://rollcall.proto.encorelab.org/"
+    "url": "http://rollcall.aardvark.encorelab.org/"
   },
 "bosh": {
-    "url": "http://proto.encorelab.org:5280/http-bind/"
+    "url": "http://aardvark.encorelab.org:5280/http-bind/"
   },
 "mongo": {
-    "url": "http://proto.encorelab.org:27080"
+    "url": "http://drowsy.aardvark.encorelab.org/"
   }
 }
