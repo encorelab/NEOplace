@@ -159,11 +159,13 @@ class ClassroomChoreographer < Sail::Agent
           
           unless problem['active_user_ids'].length > 0
             @groups_with_active_users.each do |active_group|
-              active_user_ids = active_group[1].collect {|user| user['id']}
-              # Send problem assignment
-              unless send_problem_assignment(payload['group_name'], active_user_ids) then
-                log "We are out of problems now we send done message"
-                event!(:activity_end, {})
+              if payload['group_name'] == active_group[0] then
+                active_user_ids = active_group[1].collect {|user| user['id']}
+                # Send problem assignment
+                unless send_problem_assignment(payload['group_name'], active_user_ids) then
+                  log "We are out of problems now we send done message"
+                  event!(:activity_end, {})
+                end
               end
             end
           end
