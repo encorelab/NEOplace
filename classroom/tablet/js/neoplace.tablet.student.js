@@ -399,70 +399,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     type: 'get',
                     success: function (observations) {
                         console.log(observations);
-                        var principlesArray = [];
-                        _.each(observations, function(observation) {
-                            if (observation.principles) {
-                                _.each(observation.principles, function(p) {
-                                    principlesArray.push(p);
-                                });
-                            }
+
+                        var me = Sail.app.session.account.login;
+                        var principleNames = []
+                        principleNames = _.map(observations, function(o) {
+                            return _.map(o.principles, function (p) {
+                                return p;
+                            });
                         });
-                        var peerTagsResults = _.uniq(principlesArray);
+                        principleNames = _.uniq(_.flatten(principleNames));
 
-                        var numTags = peerTagsResults.length;
-                        var numGroupMembers = 0;
+                        Sail.app.initPrincipleConsensus(principleNames, Sail.app.groupData.members);
 
-                        var output = '<table>';
-                        output += '<tr><td width="200"></td>';
-                        output += '<th width="100">&nbsp; you</th>';
-                        if ( !UI_TESTING_ONLY ) {
-                            numGroupMembers = Sail.app.groupData.members.length;
-                            for (var i=0; i<numGroupMembers; i++){
-                                output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
-                            }
-                        }else{
-                            //fake group members
-                            numGroupMembers = 3;
-                            for (var i=0; i<numGroupMembers; i++){
-                                output += '<th width="100">#'+i+'</th>';
-                            }
-                        }
-                        output += '</tr>';
-
-                        for (var i=0; i<numTags; i++){
-                            var tag = peerTagsResults[i];
-                            output += '<tr><th class="tag-name">'+tag+'</th>';
-                            output += '<td>'+'<input type="checkbox" name="'+tag+'" id="checkbox-'+i+'" ';
-                            //output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
-                            output += ' /><label for="checkbox-'+i+'" ></label>'+'</td>';
-
-                            if ( !UI_TESTING_ONLY ) {
-                                for (var j=0; j<numGroupMembers; j++){
-                                    output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+tag+'">';
-                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                                    output += '</td>';
-                                }
-                            }else{
-                                //fake group members results
-                                numGroupMembers = 3;
-                                for (var j=0; j<numGroupMembers; j++){
-                                    output += '<td class="teammate-mike" data="mike-Newton\'s First Law">';
-                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
-                                    output += '</td>';
-                                }
-                            }
-
-                            output += '</tr>';
-                        }
-                        output += "</table>";
-                        $("#principleConsensus #peerTags").html(output).trigger("create");
-
-
-
-
-                        $('#principleContinueButton').click(function() {
-                            Sail.app.submitPrinciplesQuorum(Sail.app.currentProblem.name, principleConsensusArray);
-                        });                        
+                        Sail.app.updatePrincipleConsensusUI();                     
                     }
                 });
 /*                var peerTagsResults = [
@@ -540,15 +489,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     type: 'get',
                     success: function (observations) {
                         console.log(observations);
-                        var equationsArray = [];
-                        _.each(observations, function(observation) {
-                            if (observation.equations) {
-                                _.each(observation.equations, function(e) {
-                                    //e.name = e.name.replace(/\\/g,'\\\\');
-                                    equationsArray.push(e.EQ_ID);
-                                });
-                            }
+
+                        Sail.app.equationIds = [];
+                        
+                        equationIds = _.map(observations, function(o) {
+                            return _.map(o.equations, function (e) {
+                                return e.EQ_ID;
+                            });
                         });
+
+                        Sail.app.equationIds = _.uniq(_.flatten(equationIds));
+
+                        
                         var equationResults = _.uniq(equationsArray);
                         //var equationResults = _.uniq(equationsArray, false, function(item) { return JSON.stringify(item) });
 
@@ -752,84 +704,45 @@ NEOplace.Tablet.Student = (function(Tablet) {
             alert('heard the event');
         },
 
-        guess_submission: function(ev) {
-            if ((ev.payload.group_name === Sail.app.groupData.name) && (ev.origin != Sail.app.userData.account.login)) {
-                if (ev.payload.principles) {
+        guess_submission: function(sev) {
+            console.log(sev)
+            if ((sev.payload.group_name === Sail.app.groupData.name) && (sev.origin != Sail.app.userData.account.login)) {
+            //     if (ev.payload.principles) {
 
-                    $.mobile.loadPage( 'p-principleConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
-                } else if (ev.payload.equations) {
-                    $.mobile.loadPage( 'p-equationConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
-                } else {
-                    console.alert('ignoring guess_submission');
+            //         $.mobile.loadPage( 'p-principleConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
+            //     } else if (ev.payload.equations) {
+            //         $.mobile.loadPage( 'p-equationConsensus.html', {reloadPage:true, loadMsgDelay:1000} );
+            //     } else {
+            //         console.alert('ignoring guess_submission');
+            //     }
+
+
+                if (sev.payload.principles) {
+                    Sail.app.principleConsensus = Sail.app.principleConsensus || {};
+                    _.each(sev.payload.principles, function (p) {
+                        Sail.app.principleConsensus[p] = Sail.app.principleConsensus[p] || {};
+                        Sail.app.principleConsensus[p][sev.origin] = NO;
+                    });
+                    Sail.app.updatePrincipleConsensusUI();
                 }
             }
         },
 
-        principle_checkbox_toggled: function(ev) {     
-            if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.principle_checked_checkboxes) {
-                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
-                _.each(ev.payload.principle_checked_checkboxes, function(principle) {
-                    //$(td value="Sail.app.groupData.members[0]+'-'+'principle'").html(YES);
-                    var dataValueStr = Sail.app.groupData.members[0] + '-' + Sail.app.escapeSelectorString(principle);
-                    $("td[data='"+dataValueStr+"']").html(YES);
+        principle_checkbox_toggled: function(sev) {
+            // make sure event is from one of my group members
+            if (_.include(Sail.app.groupData.members, sev.origin) || sev.origin == Sail.app.session.account.login) {
+                _.each(Sail.app.principleConsensus, function (u, p) {
+                    p = unescape(p);
+                    Sail.app.principleConsensus[p][sev.origin] = NO;
                 });
-            }
-            else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.principle_checked_checkboxes) {
-                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
-                _.each(ev.payload.principle_checked_checkboxes, function(principle) {
-                    //$('.teammate-'+Sail.app.groupData.members[0]+'.principle-id-'+principle).html(YES);
-                    var dataValueStr = Sail.app.groupData.members[1] + '-' + Sail.app.escapeSelectorString(principle);
-                    $("td[data='"+dataValueStr+"']").html(YES);
-                });
-            }
-            else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.principle_checked_checkboxes) {
-                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
-                _.each(ev.payload.principle_checked_checkboxes, function(principle) {
-                    //$('.teammate-'+Sail.app.groupData.members[2]+'.principle-id-'+principle).html(YES);
-                    var dataValueStr = Sail.app.groupData.members[2] + '-' + Sail.app.escapeSelectorString(principle);
-                    $("td[data='"+dataValueStr+"']").html(YES);
-                });
-            }
-            else {
-                console.log('ignoring principle_checkbox_toggled event - not relevant group member or bad payload');
-            }
 
-            // is this the best place to do this? Maybe filter out by group name?
-            var consensusReached = true;
-            $('#principleConsensus tr').each(function(trIndex) {
-                
-                var checkCount = 0;
-                // for each column
-                // skip first column
-                if (trIndex === 0) {
-                    return;
-                }
-                else {
-                    $(this).find('td').each(function(tdIndex){
-                        if ( tdIndex === 0 ){
-                            if ($(this).find(":checkbox").attr("checked") ){
-                                 checkCount++;
-                            }
-                        } else {
-                            if ($(this).html() === YES ){
-                                 checkCount++;
-                            }
-                        }
-                    });
-                    if ((checkCount != 0) && (checkCount != (Sail.app.groupData.members.length + 1))) {         // +1?
-                        consensusReached = false;
-                        return false;                         
-                    }
-                }
-            });
-            if (consensusReached === true) {
-                $('#principleConsensus #principleContinueButton').removeClass('ui-disabled');
-            } else {
-                $('#principleConsensus #principleContinueButton').addClass('ui-disabled');           // should be addClass
-            }  
+                _.each(sev.payload.principle_checked_checkboxes, function (p) {
+                    p = unescape(p);
+                    Sail.app.principleConsensus[p] = Sail.app.principleConsensus[p] || {};
+                    Sail.app.principleConsensus[p][sev.origin] = YES;
+                });
+            }
+            Sail.app.updatePrincipleConsensusUI();  
         },
 
         equation_checkbox_toggled: function(ev) {
@@ -939,6 +852,103 @@ NEOplace.Tablet.Student = (function(Tablet) {
     // only users matching this filter will be shown in the account picker
     self.userFilter = function(u) {
         return u.kind === "Student";
+    };
+
+    self.initPrincipleConsensus = function (principles, members) {
+        Sail.app.principleConsensus = Sail.app.principleConsensus || {}
+
+        var me = Sail.app.session.account.login;
+        var membersWithMe = _.clone(members);
+        if (!_.include(membersWithMe, me))
+            membersWithMe.unshift(me);
+
+        _.each(principles, function (p) {
+            _.each(membersWithMe, function (m) {
+                Sail.app.principleConsensus[p] = Sail.app.principleConsensus[p] || {};
+                Sail.app.principleConsensus[p][m] = Sail.app.principleConsensus[p][m] || NO;
+            })
+        });
+        Sail.app.updatePrincipleConsensusUI();
+    };
+
+    self.havePrincipleConsensus = function () {
+        var allNo = _.all(_.flatten(_.map(_.values(Sail.app.principleConsensus), function(u) { return _.values(u) })), function(a) { return a == NO });
+        if (allNo)
+            return false;
+
+        _.all(Sail.app.principleConsensus, function (row, principle) {
+            if (!_.all(row, function(agree, u) {return agree === row[me]}))
+                haveIt = false;
+        });
+
+        var haveIt = true;
+        var me = Sail.app.session.account.login;
+        _.each(Sail.app.principleConsensus, function (row, principle) {
+            if (!_.all(row, function(agree, u) {return agree === row[me]}))
+                haveIt = false;
+        });
+        return haveIt;
+    };
+
+    self.updatePrincipleConsensusUI = function () {
+        var table = $('<table />');
+
+        var usernameRow = $('<tr><th /></tr>');
+
+
+        var me = Sail.app.session.account.login;
+        var members = _.uniq(Sail.app.groupData.members);
+        if (!_.include(members, me)) 
+            members.unshift(me);
+        
+        _.each(members, function (username) {
+            if (username == me)
+                usernameRow.append("<th data-username='"+username+"'>me</th>");
+            else
+                usernameRow.append("<th data-username='"+username+"'>"+username+"</th>");
+        });
+        table.append(usernameRow);
+
+
+        _.each(Sail.app.principleConsensus, function (u, p) {
+            var principleRow = $('<tr id="'+escape(p)+'">');
+            var principleTh = $('<th class="tag-name" />');
+            principleTh.text(p);
+
+            principleRow.append(principleTh);
+
+            _.each(members, function (username) {
+                var agree = Sail.app.principleConsensus[p][username] || NO;
+                if (username == me) {
+                    var td = $("<td />");
+                    var label = $("<label />");
+                    var chbox = $("<input type='checkbox' />");
+                    chbox.attr('name', escape(p));
+                    if (agree == YES)
+                        chbox.attr('checked', 'checked');
+                    label.append(chbox);
+                    td.append(label);
+                    principleRow.append(td);
+                } else {
+                    principleRow.append("<td>"+agree+"</td>");
+                }
+            })
+
+            principleRow.trigger('create');
+            table.append(principleRow);
+        });
+        
+        $("#principleConsensus #peerTags table")
+            .replaceWith(table)
+            .trigger("create");
+
+
+
+        if (Sail.app.havePrincipleConsensus()) {
+            $('#principleConsensus #principleContinueButton').removeClass('ui-disabled');
+        } else {
+            $('#principleConsensus #principleContinueButton').addClass('ui-disabled');           // should be addClass
+        }
     };
 
     //TODO: remove, for testing only without authenticating
