@@ -880,9 +880,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
 
     self.updateEquationConsensusUI = function () {
-        var table = $('<table />');
+        var table = $('#equationConsensus #submittedEquations table');
 
-        var usernameRow = $('<tr><th /></tr>');
+        var thead = table.find('thead');
+        if (thead.length == 0) {
+            thead = $("<thead></thead>");
+            table.append(thead);
+        }
+         
+        var usernameRow = thead.find('tr');
+        if (usernameRow.length == 0) {
+            usernameRow = $('<tr><th /></tr>');
+            thead.append(usernameRow);
+        }
 
 
         var me = Sail.app.session.account.login;
@@ -891,13 +901,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
             members.unshift(me);
         
         _.each(members, function (username) {
-            if (username == me)
-                usernameRow.append("<th data-username='"+username+"'>me</th>");
-            else
-                usernameRow.append("<th data-username='"+username+"'>"+username+"</th>");
+            if (usernameRow.find('th.user-'+username).length == 0) {
+                if (username === me)
+                    usernameRow.append("<th class='user-"+username+"'>me</th>");
+                else
+                    usernameRow.append("<th class='user-"+username+"'>"+username+"</th>");
+            }
         });
-        table.append(usernameRow);
 
+        table.find('tbody').html("");
+        var tbody = $("<tbody></tbody>");
 
         _.each(Sail.app.equationConsensus, function (u, eqId) {
             var eqRow = $('<tr id="'+eqId+'">');
@@ -924,15 +937,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
             })
 
             eqRow.trigger('create');
-            table.append(eqRow);
+            tbody.append(eqRow);
         });
 
-        
-        
-        $("#equationConsensus #submittedEquations table")
-            .replaceWith(table)
-            .trigger("create");
+        table.append(tbody);
 
+        table.trigger("create");
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
         if (Sail.app.haveEquationConsensus()) {
