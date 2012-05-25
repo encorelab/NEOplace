@@ -20,8 +20,6 @@ def clear_data()
   @mongo.collection(:problem_assignments).remove()
   puts "Clearing active_users"
   @mongo.collection(:active_users).remove()
-  puts "Clearing aggregated_homework"
-  @mongo.collection(:aggregated_homework).remove()
 end
 
 clear_data()
