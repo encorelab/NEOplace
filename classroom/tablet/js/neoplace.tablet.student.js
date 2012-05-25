@@ -380,14 +380,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 
                 var principleConsensusArray = [];
 
+                $('#principleConsensus input:checkbox').die();
                 $('#principleConsensus input:checkbox').live('change', function() {
                     // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
                     // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
-
-                    // iterate over all of the checked boxes and add principle names to the array
-/*                            $('input:checkbox:checked').each(function(index) {
-                        principleConsensusArray.push($(this).attr("name"));
-                    });*/
                     principleConsensusArray = $('#principleConsensus input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
                     
                     Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
@@ -411,7 +407,57 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                         Sail.app.initPrincipleConsensus(principleNames, Sail.app.groupData.members);
 
-                        Sail.app.updatePrincipleConsensusUI();                     
+                        var output = '<table>';
+                        output += '<tr><td width="200"></td>';
+                        output += '<th width="100">&nbsp; you</th>';
+                        if ( !UI_TESTING_ONLY ) {
+                            numGroupMembers = Sail.app.groupData.members.length;
+                            for (var i=0; i<numGroupMembers; i++){
+                                output += '<th width="100">'+Sail.app.groupData.members[i]+'</th>';
+                            }
+                        }else{
+                            //fake group members
+                            numGroupMembers = 3;
+                            for (var i=0; i<numGroupMembers; i++){
+                                output += '<th width="100">#'+i+'</th>';
+                            }
+                        }
+                        output += '</tr>';
+
+                        for (var i=0; i<numTags; i++){
+                            var tag = peerTagsResults[i];
+                            output += '<tr><th class="tag-name">'+tag+'</th>';
+                            output += '<td>'+'<input type="checkbox" name="'+tag+'" id="principleConsensusCheckbox-'+i+'" ';
+                            //output += (tag.submitted.indexOf(1) > -1) ? 'checked="checked"' : '';
+                            output += ' /><label for="principleConsensusCheckbox-'+i+'" ></label>'+'</td>';
+
+                            if ( !UI_TESTING_ONLY ) {
+                                for (var j=0; j<numGroupMembers; j++){
+                                    output += '<td class="teammate-'+Sail.app.groupData.members[j]+'" data="'+Sail.app.groupData.members[j]+'-'+tag+'">';
+                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                                    output += '</td>';
+                                }
+                            }else{
+                                //fake group members results
+                                numGroupMembers = 3;
+                                for (var j=0; j<numGroupMembers; j++){
+                                    output += '<td class="teammate-mike" data="mike-Newton\'s First Law">';
+                                    output += NO //(tag.submitted.indexOf(j) > -1) ? YES : NO;
+                                    output += '</td>';
+                                }
+                            }
+
+                            output += '</tr>';
+                        }
+                        output += "</table>";
+                        $("#principleConsensus #peerTags").html(output).trigger("create");
+
+
+
+
+                        $('#principleContinueButton').click(function() {
+                            Sail.app.submitPrinciplesQuorum(Sail.app.currentProblem.name, principleConsensusArray);
+                        });                        
                     }
                 });
 /*                var peerTagsResults = [
@@ -478,29 +524,28 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 // update the page to display the problem question
                 $('#equationConsensus .paper').html(Sail.app.currentProblem.htmlContent);
 
-                //TODO: array needs to a result of a backend call
-/*                var equationResults = [
-                    {id:18, name:"\\vec{F_{net}}=m\\vec{a}", submitted:[2]},
-                    {id:21, name:"W=F\\Delta cos(\\theta )", submitted:[1,2,3]},
-                    {id:8, name:"\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}", submitted:[1,3]}
-                ];*/
+                var equationConsensusArray = [];
+                $('#equationConsensus input:checkbox').die();
+                $('#equationConsensus input:checkbox').live('change', function() {
+                    equationConsensusArray = $('#equationConsensus input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
+
+                    Sail.app.toggleEquationCheckboxes(equationConsensusArray);
+                });
+
 
                 $.ajax(self.drowsyURL + '/' + currentDb() + '/observations?selector={"problem_name":"'+Sail.app.currentProblem.name+'","group_name":"'+Sail.app.groupData.name+'"}', {
                     type: 'get',
                     success: function (observations) {
                         console.log(observations);
-
-                        Sail.app.equationIds = [];
-                        
-                        equationIds = _.map(observations, function(o) {
-                            return _.map(o.equations, function (e) {
-                                return e.EQ_ID;
-                            });
+                        var equationsArray = [];
+                        _.each(observations, function(observation) {
+                            if (observation.equations) {
+                                _.each(observation.equations, function(e) {
+                                    //e.name = e.name.replace(/\\/g,'\\\\');
+                                    equationsArray.push(e.EQ_ID);
+                                });
+                            }
                         });
-
-                        Sail.app.equationIds = _.uniq(_.flatten(equationIds));
-
-                        
                         var equationResults = _.uniq(equationsArray);
                         //var equationResults = _.uniq(equationsArray, false, function(item) { return JSON.stringify(item) });
 
@@ -542,17 +587,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         //update formatting of equations
                         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
-
-                        var equationConsensusArray = [];
-
-                        $('input:checkbox').click(function() {
-                            // iterate over all of the checked boxes and add principle names to the array
-                            $('input:checkbox:checked').each(function(index) {
-                                equationConsensusArray.push($(this).attr("name"));
-                            });
-                            
-                            Sail.app.toggleEquationCheckboxes(equationConsensusArray);      
-                        });
 
                         $('#equationContinueButton').click(function() {
                             Sail.app.submitEquationsQuorum(Sail.app.currentProblem.name, equationConsensusArray);
@@ -748,15 +782,20 @@ NEOplace.Tablet.Student = (function(Tablet) {
         equation_checkbox_toggled: function(ev) {
             if ((ev.origin === Sail.app.groupData.members[0]) && ev.payload.equation_checked_checkboxes) {
                 // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[0]).html(NO);
+                $('.teammate-'+Sail.app.groupData.members[0]).each(function(index) {
+                    $(this).html(NO);
+                });
+                //$('.teammate-'+Sail.app.groupData.members[0]).html(NO);
                 _.each(ev.payload.equation_checked_checkboxes, function(equation) { 
                     var dataValueStr = Sail.app.groupData.members[0] + '-eq' + equation;
                     $("td[data='"+dataValueStr+"']").html(YES);
                 });
             }
             else if ((ev.origin === Sail.app.groupData.members[1]) && ev.payload.equation_checked_checkboxes) {
-                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[1]).html(NO);
+                // for this teammate, set all the boxes to no, then traverse the array and find all the YESes     
+                $('.teammate-'+Sail.app.groupData.members[1]).each(function(index) {
+                    $(this).html(NO);
+                });          
                 _.each(ev.payload.equation_checked_checkboxes, function(equation) {
                     var dataValueStr = Sail.app.groupData.members[1] + '-eq' + equation;
                     $("td[data='"+dataValueStr+"']").html(YES);
@@ -764,7 +803,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
             else if ((ev.origin === Sail.app.groupData.members[2]) && ev.payload.equation_checked_checkboxes) {
                 // for this teammate, set all the boxes to no, then traverse the array and find all the YESes
-                $('.teammate-'+Sail.app.groupData.members[2]).html(NO);
+                $('.teammate-'+Sail.app.groupData.members[2]).each(function(index) {
+                    $(this).html(NO);
+                });
                 _.each(ev.payload.equation_checked_checkboxes, function(equation) {
                     var dataValueStr = Sail.app.groupData.members[2] + '-eq' + equation;
                     $("td[data='"+dataValueStr+"']").html(YES);
