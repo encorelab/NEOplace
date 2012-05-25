@@ -398,7 +398,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 $('#principleConsensus input:checkbox').live('change', function() {
                     // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
                     // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
-                    principleConsensusArray = $('#principleConsensus input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
+                    principleConsensusArray = $('#principleConsensus input:checkbox:checked').map(function() {return unescape($(this).attr('name'))}).toArray();
                     
                     Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
                 });
@@ -684,6 +684,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 if (sev.payload.principles) {
                     Sail.app.principleConsensus = Sail.app.principleConsensus || {};
                     _.each(sev.payload.principles, function (p) {
+                        p = unescape(p);
                         Sail.app.principleConsensus[p] = Sail.app.principleConsensus[p] || {};
                         Sail.app.principleConsensus[p][sev.origin] = NO;
                     });
@@ -773,8 +774,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     }
                 });
 
+                Sail.app.principleConsensus = {};
+                Sail.app.equationConsensus = {};
+
                 Sail.app.getCompletedHomeworkProblem(sev.payload.problem_name);
-                
             }
             else {
                 console.log('ignoring problem_assignment event - either other group or bad payload');
@@ -940,20 +943,26 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
         });
 
-        table.find('tbody').html("");
-        var tbody = $("<tbody></tbody>");
+        
+        var tbody = table.find('tbody');
+        if (tbody.length == 0)
+            tbody = $("<tbody></tbody>");
 
         _.each(Sail.app.equationConsensus, function (u, eqId) {
-            var eqRow = $('<tr id="'+eqId+'">');
-            var eqTh = $('<th class="tag-name" />');
-            eqTh.text('$$'+Sail.app.returnEquationName(eqId)+'$$');
+            var eqRow = tbody.find('tr.eq-'+eqId);
+            if (eqRow.length == 0) {
+                eqRow = $('<tr class="eq-'+eqId+'">');
+                var eqTh = $('<th class="tag-name" />');
+                eqTh.text('$$'+Sail.app.returnEquationName(eqId)+'$$');
+                eqRow.append(eqTh);
+            }
 
-            eqRow.append(eqTh);
+            eqRow.find('td.eq-checkbox').remove();
 
             _.each(members, function (username) {
                 var agree = Sail.app.equationConsensus[eqId][username] || NO;
                 if (username == me) {
-                    var td = $("<td />");
+                    var td = $("<td class='eq-checkbox' />");
                     var label = $("<label />");
                     var chbox = $("<input type='checkbox' />");
                     chbox.attr('name', escape(eqId));
@@ -963,7 +972,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     td.append(label);
                     eqRow.append(td);
                 } else {
-                    eqRow.append("<td>"+agree+"</td>");
+                    eqRow.append("<td class='eq-checkbox'>"+agree+"</td>");
                 }
             })
 
