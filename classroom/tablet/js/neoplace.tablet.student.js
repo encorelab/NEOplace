@@ -410,6 +410,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         Sail.app.updatePrincipleConsensusUI();                   
                     }
                 });
+                $('#principleContinueButton').click(function() {
+                    Sail.app.submitPrinciplesQuorum(Sail.app.currentProblem, principleConsensusArray);
+                });                
 /*                var peerTagsResults = [
                     {id:1, name:"Newton's Second Law", submitted:[]},
                     {id:2, name:"Acceleration", submitted:[]},
@@ -457,7 +460,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     });
                     
                     Sail.app.submitEquationsGuess(Sail.app.currentProblem.name, equationsArray);
-                });           
+                });   
+
 
             });
 
@@ -502,6 +506,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         Sail.app.updateEquationConsensusUI();  
                     }
                 });
+                $('#equationContinueButton').click(function() {
+                    Sail.app.submitEquationsQuorum(Sail.app.currentProblem, equationConsensusArray);
+                });                  
 
             });
         },
@@ -604,7 +611,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         var obs = {
             user_id:Sail.app.userId,
             group_name:Sail.app.groupData.name,
-            problem_name:problemName,
+            problem_name:problemName.name,
             principles:principlesArray
         };
         
@@ -624,7 +631,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         var obs = {
             user_id:Sail.app.userId,
             group_name:Sail.app.groupData.name,
-            problem_name:problemName,
+            problem_name:problemName.name,
             equations:equationsArray
         };
         
