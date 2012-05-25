@@ -380,14 +380,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 
                 var principleConsensusArray = [];
 
+                $('#principleConsensus input:checkbox').die();
                 $('#principleConsensus input:checkbox').live('change', function() {
                     // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
                     // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
-
-                    // iterate over all of the checked boxes and add principle names to the array
-/*                            $('input:checkbox:checked').each(function(index) {
-                        principleConsensusArray.push($(this).attr("name"));
-                    });*/
                     principleConsensusArray = $('#principleConsensus input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
                     
                     Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
@@ -530,6 +526,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 $('#equationConsensus .paper').html(Sail.app.currentProblem.htmlContent);
 
                 var equationConsensusArray = [];
+                $('#equationConsensus input:checkbox').die();
                 $('#equationConsensus input:checkbox').live('change', function() {
                     equationConsensusArray = $('#equationConsensus input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
 
