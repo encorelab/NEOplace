@@ -327,7 +327,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                             for (i=results.length-1;i>=0;i--) {
                                 if (results[i].group_name === data.groups[0].name) {
-                                    Sail.app.groupData.members = results[i].group_members;
+                                    //Sail.app.groupData.members = results[i].group_members;
+                                    _.each(results[i].group_members, function(memberId, index) {
+                                        Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/" + memberId + ".json", "GET", {}, function(data) {
+                                            Sail.app.groupData.members.push(data.account.login);
+                                            if (index === sev.payload.members.length - 1) {
+                                                Sail.app.groupData.members = _.without(Sail.app.groupData.members, Sail.app.userData.account.login);
+                                                // $('#startButton').removeClass('ui-disabled');                            
+                                            }
+                                        });                    
+                                    });
                                     break;
                                 }
                             }
