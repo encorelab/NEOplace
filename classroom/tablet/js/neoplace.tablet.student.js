@@ -304,7 +304,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         <img src="/assets/img/group_gather.png" width="300" height="200" alt="group huddle" /> \
                         <br />When your group is together and ready to go, let your teacher know.');
 
-                    $.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
+                    $.ajax(self.drowsyURL + '/' + currentDb() + '/states?selector={"problem":{"$exists":true}}', {
                         type: 'get',
                         success: function (results) {
                             console.log(results);
@@ -320,6 +320,20 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         },
                         dataType: 'json'
                     });
+                    $.ajax(self.drowsyURL + '/' + currentDb() + '/states?selector={"group_members":{"$exists":true}}', {
+                        type: 'get',
+                        success: function (results) {
+                            console.log(results);
+
+                            for (i=results.length-1;i>=0;i--) {
+                                if (results[i].group_name === data.groups[0].name) {
+                                    Sail.app.groupData.members = results[i].group_members;
+                                    break;
+                                }
+                            }
+                        },
+                        dataType: 'json'
+                    });                    
                
                     Sail.app.groupData.name = data.groups[0].name;
 
@@ -732,6 +746,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         }
                     });                    
                 });
+
+                var group_state = {"group_name":Sail.app.groupData.name,"group_members":sev.payload.members};
+                jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
+                    type: 'post',
+                    data: group_state,
+                    success: function () {
+                        console.log("State saved at problem: ", group_state);
+                    }
+                });
+
             }
             else {
                 console.log('ignoring group_presence event - either other group or bad payload');
@@ -741,10 +765,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
         problem_assignment: function(sev) {
             if ((sev.payload.group === Sail.app.groupData.name) && (sev.payload.problem_name)) {
                 // saving the state
-                var state = {"group_name":Sail.app.groupData.name,"problem":sev.payload.problem_name};
+                var problem_state = {"group_name":Sail.app.groupData.name,"problem":sev.payload.problem_name};
                 jQuery.ajax(self.drowsyURL + '/' + currentDb() + '/states', {
                     type: 'post',
-                    data: state,
+                    data: problem_state,
                     success: function () {
                         console.log("State saved at problem: ", state);
                     }
