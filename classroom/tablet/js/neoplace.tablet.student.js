@@ -948,7 +948,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     td.append(label);
                     eqRow.append(td);
                 } else {
-                    eqRow.append("<td>"+agree+"</td>");
+                    eqRow.append("<td class='eq-checkbox'>"+agree+"</td>");
                 }
             })
 
