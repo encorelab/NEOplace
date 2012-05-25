@@ -384,7 +384,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 $('#principleConsensus input:checkbox').live('change', function() {
                     // this isn't the most efficient way to do this, but the line below wouldn't work, so... does someone else have a suggestion?
                     // Sail.app.toggleCheckbox($(this).attr("name"), $(this).attr("value"));
-                    principleConsensusArray = $('#principleConsensus input:checkbox:checked').map(function() {return $(this).attr('name')}).toArray();
+                    principleConsensusArray = $('#principleConsensus input:checkbox:checked').map(function() {return unescape($(this).attr('name'))}).toArray();
                     
                     Sail.app.togglePrincipleCheckboxes(principleConsensusArray);      
                 });
