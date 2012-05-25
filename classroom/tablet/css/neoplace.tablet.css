@@ -30,7 +30,7 @@ body {
 }
 .auth-box {
     position: absolute;
-    top: 40% !important;
+    top: 14% !important;
     left: 10%;
     right: 10%;
     padding: 0 20px 20px 20px !important;
@@ -38,7 +38,7 @@ body {
 
 
 #connecting {
-    top: 60% !important;
+    top: 190px !important;
 }
 
 
@@ -90,7 +90,7 @@ body {
 
 #loginScreen #statusMsg {
     font-size: 1.2em;
-    margin: 50px auto 100px auto;
+    margin: 370px auto 100px auto;
 }
 
 .paper {
@@ -304,7 +304,13 @@ body {
     margin-top: 0.8em !important;
 }
 
-.login-box {
-    min-width: 400px !important;
+
+#login-box.auth-box {
+    min-width: 400px;
+    max-width: 500px;
+    margin: 0 auto;
+    left: 0 !important;
+    right: 0 !important;
+    top: 135px !important;
 }
 
