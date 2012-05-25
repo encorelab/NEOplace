@@ -670,6 +670,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 if (sev.payload.principles) {
                     Sail.app.principleConsensus = Sail.app.principleConsensus || {};
                     _.each(sev.payload.principles, function (p) {
+                        p = unescape(p);
                         Sail.app.principleConsensus[p] = Sail.app.principleConsensus[p] || {};
                         Sail.app.principleConsensus[p][sev.origin] = NO;
                     });
