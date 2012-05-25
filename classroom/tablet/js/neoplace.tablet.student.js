@@ -749,8 +749,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     }
                 });
 
+                Sail.app.principleConsensus = {};
+                Sail.app.equationConsensus = {};
+
                 Sail.app.getCompletedHomeworkProblem(sev.payload.problem_name);
-                
             }
             else {
                 console.log('ignoring problem_assignment event - either other group or bad payload');
