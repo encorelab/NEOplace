@@ -410,6 +410,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         Sail.app.updatePrincipleConsensusUI();                   
                     }
                 });
+                $('#principleContinueButton').click(function() {
+                    Sail.app.submitPrinciplesQuorum(Sail.app.currentProblem, principleConsensusArray);
+                });                
 /*                var peerTagsResults = [
                     {id:1, name:"Newton's Second Law", submitted:[]},
                     {id:2, name:"Acceleration", submitted:[]},
@@ -457,7 +460,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     });
                     
                     Sail.app.submitEquationsGuess(Sail.app.currentProblem.name, equationsArray);
-                });           
+                });   
+
 
             });
 
@@ -502,6 +506,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         Sail.app.updateEquationConsensusUI();  
                     }
                 });
+                $('#equationContinueButton').click(function() {
+                    Sail.app.submitEquationsQuorum(Sail.app.currentProblem, equationConsensusArray);
+                });                  
 
             });
         },
@@ -604,7 +611,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         var obs = {
             user_id:Sail.app.userId,
             group_name:Sail.app.groupData.name,
-            problem_name:problemName,
+            problem_name:problemName.name,
             principles:principlesArray
         };
         
@@ -624,7 +631,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         var obs = {
             user_id:Sail.app.userId,
             group_name:Sail.app.groupData.name,
-            problem_name:problemName,
+            problem_name:problemName.name,
             equations:equationsArray
         };
         
@@ -880,9 +887,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
 
     self.updateEquationConsensusUI = function () {
-        var table = $('<table />');
+        var table = $('#equationConsensus #submittedEquations table');
 
-        var usernameRow = $('<tr><th /></tr>');
+        var thead = table.find('thead');
+        if (thead.length == 0) {
+            thead = $("<thead></thead>");
+            table.append(thead);
+        }
+         
+        var usernameRow = thead.find('tr');
+        if (usernameRow.length == 0) {
+            usernameRow = $('<tr><th /></tr>');
+            thead.append(usernameRow);
+        }
 
 
         var me = Sail.app.session.account.login;
@@ -891,13 +908,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
             members.unshift(me);
         
         _.each(members, function (username) {
-            if (username == me)
-                usernameRow.append("<th data-username='"+username+"'>me</th>");
-            else
-                usernameRow.append("<th data-username='"+username+"'>"+username+"</th>");
+            if (usernameRow.find('th.user-'+username).length == 0) {
+                if (username === me)
+                    usernameRow.append("<th class='user-"+username+"'>me</th>");
+                else
+                    usernameRow.append("<th class='user-"+username+"'>"+username+"</th>");
+            }
         });
-        table.append(usernameRow);
 
+        table.find('tbody').html("");
+        var tbody = $("<tbody></tbody>");
 
         _.each(Sail.app.equationConsensus, function (u, eqId) {
             var eqRow = $('<tr id="'+eqId+'">');
@@ -924,15 +944,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
             })
 
             eqRow.trigger('create');
-            table.append(eqRow);
+            tbody.append(eqRow);
         });
 
-        
-        
-        $("#equationConsensus #submittedEquations table")
-            .replaceWith(table)
-            .trigger("create");
+        table.append(tbody);
 
+        table.trigger("create");
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
         if (Sail.app.haveEquationConsensus()) {
