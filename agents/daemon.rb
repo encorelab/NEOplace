@@ -28,7 +28,7 @@ ENV['ROLLCALL_URL'] = @daemon.config[:rollcall][:url]
 require 'classroom_choreographer'
 
 RUNS.each do |run|
-  #@daemon << EventLogger.new(:room => run, :password => AGENT_PASSWORD, :database => run)
+  @daemon << EventLogger.new(:room => run, :password => AGENT_PASSWORD, :database => run)
   @daemon << ClassroomChoreographer.new(:room => run, :password => AGENT_PASSWORD, :database => run)
   #@daemon << Choreographer.new(:room => run, :password => AGENT_PASSWORD, :database => run)
 end
