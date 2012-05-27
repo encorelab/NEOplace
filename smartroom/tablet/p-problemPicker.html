@@ -7,25 +7,30 @@
     <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
     <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
     <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
-    
+
     <script src="js/sail.js/sail.js" type="text/javascript"></script>
     <script type="text/javascript">
         Sail.load()
+            .then('js/jquery.mobile.init.js')
             .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
             .then('js/jquery.mobile.toast.js')
+            .then('js/jquery-ui-1.8.20.dragdrop.min.js')
+            .then('js/jquery.ui.touch-punch.js')
             .then('js/neoplace.tablet.js')
             .then('js/neoplace.tablet.student.js')
-            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
             //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
     </script>
 </head>
 <body class="student">
 
     <!-- START problemPicker -->
-    <div data-role="page" id="problemPicker">
+    <div id="problemPicker" data-role="page" data-theme="c">
 
-        <div data-theme="a" data-role="header">
-            <h1>NEOplace - In-class Activity - Step 4 of X</h1>
+        <div data-role="header" data-theme="a" >
+            <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
+            <h1>NEOplace - Hollywood Physics</h1>
         </div>
         
         <div data-role="content">

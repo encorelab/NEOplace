@@ -5,17 +5,39 @@ NEOplace.Tablet.Student = (function(Tablet) {
     "use strict";
     var self = _.extend(Tablet);
 
-    //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
-    var UI_TESTING_ONLY = true; 
-
-    /** private function **/
-    var foo = function () {
-
+    self.userData;
+    self.userId;
+    self.groupData = {
+        members:[]
     };
 
-    /** public function **/
-    self.bar = function () {
+    //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
+    var UI_TESTING_ONLY = true;
+    console.log( "ATTN: UI_TESTING_ONLY is set to " + !UI_TESTING_ONLY );
 
+    var YES = '<div class="checklist_icon yes_icon"></div>';
+    var NO = '<div class="checklist_icon no_icon"></div>';
+
+    /** private functions **/
+
+    var currentDb = function () {
+        return Sail.app.run.name;  
+    };
+
+    /** public functions **/
+
+    // self.returnEquationName = function(EQ_ID) {
+    //     return _.find(Sail.app.allEquations, function(eq) {
+    //         return eq.EQ_ID == EQ_ID;
+    //     }).name;
+    // }
+
+    self.escapeSelectorString = function(str) {
+        if(str)
+            //return str.replace(/([ !"#$%&'()*+,.\/:;<=>?@[\\\]^`{|}~])/g,'\\\\$1');
+            return str.replace(/([ #;&,.+*~\':"!^$[\]()=>|\/@])/g,'\\$1');
+        else
+            return str;
     };
 
     /** local event wiring **/
@@ -23,16 +45,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.events = {
         // triggered when Sail.app.init() is done
         initialized: function(ev) {
+
             // we're initialized sto start the authentication process
-            console.log( "test: " + !UI_TESTING_ONLY );
             if ( !UI_TESTING_ONLY ) {
                 Sail.app.authenticate();
             }
-        },
 
-        // triggered when the UI is ready
-        'ui.initialized': function(ev) {
-            // set up any UI stuff here
+            Sail.app.drowsyURL = Sail.app.config.mongo.url;
         },
 
         // triggered when the user has authenticated but is not yet in the XMPP chat channel
@@ -43,26 +62,79 @@ NEOplace.Tablet.Student = (function(Tablet) {
         // triggered when the user has authenticated and connected to the XMPP chat channel
         connected: function(ev) {
 
-            // request detailed data about current user from Rollcall
-            if ( !UI_TESTING_ONLY ) {
-                Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.session.account.login+".json", "GET", {}, function(data) {
-                    console.log("Authenticated user is: ", data);
-                    // user's metadata is in data.metadata
-                });
-            }
+            // ****************
+            //PAGE: By default, on login screen ('#loginScreen')
+            $( '#loginScreen' ).live( 'pageinit',function(event){
+                console.log("#loginScreen pageinit");
+                if ( !UI_TESTING_ONLY ) {
+                    // request detailed data about current user from Rollcall
+                    Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.session.account.login+".json", "GET", {}, function(data) {
+                        console.log("Authenticated user is: ", data);
 
-            //show the first screen
-            jQuery("#startButton").css("display","block");
-            console.log("start");
+                        if (data.groups[1]) {
+                            console.log('WARNING: user has been assigned to more than one group, chosing first group in the list');
+                        }
 
-            //
-            // jQuery( '#groupPrincipleReview' ).live( 'pageinit',function(event){
-            // });
+                        // Update the group name and their biggie concept
+                        // then automatically goto the next page
+                        $("#videoBoardAssignment .groupname").html(data.groups[0].name);
+                        //$("#videoBoardAssignment .biggie-concept").html(data.metadata.biggie); //where will this come from??
+                        $.mobile.loadPage( 'p-videoBoardAssignment.html');
 
-            //
-            jQuery( '#videoTagging' ).live( 'pageinit',function(event){
-                jQuery("#videoTagging .draggable").draggable();
-                jQuery("#tagDropArea").droppable({
+                    });
+                }else{
+                    $("#loginScreen #signInStartButton").css("display","block");
+                }
+            });
+
+            // ****************
+            // PAGE: Students have logged in and have been assigned to a group/videoboard
+            // They are being asked to gather in front of board and check in
+            $( '#videoBoardAssignment' ).live( 'pageinit',function(event){
+                console.log("#videoBoardAssignment pageinit");
+                if ( !UI_TESTING_ONLY ) {
+                    //TODO: When everyone in the group has checked in, using the teacher tablet, autoforward to the next screen
+                    $.mobile.loadPage( 'p-videoTagging.html');
+                }else{
+                    $("#videoBoardAssignment #boardAssignmentContinueButton").css("display","block");
+                }
+            });
+
+            // ****************
+            // PAGE: Students are asked to watch the video on the smartboard
+            // Individually they drag and drop related principles on the tablet
+            // (but negotiate final principles together on the smartboard)
+            $( '#videoTagging' ).live( 'pageinit',function(event){
+                console.log("#videoTagging pageinit");
+
+                if ( !UI_TESTING_ONLY ) {
+                    var ajaxUrl = self.drowsyURL + '/' + currentDb() + '/states'; //TODO: is this from the db or from the agent?
+
+                }else{
+                    var ajaxUrl = "/assets/fakedata/principles.json";
+                    $("#videoTagging #videoTaggingContinueButton").css("display","block");
+                }
+
+                // $.ajax( ajaxUrl, {
+                //     type: 'get',
+                //     data: null,
+                //     success: function () {
+                //         $("#tagDropArea").css("display","block");
+
+                            var tempPrinciples = ["Newton's First Law", "Newton's Second Law", "Newton's Third Law"];
+
+                            var output = '';
+                            _.each(tempPrinciples, function(principleName){ 
+                                output += '<div data-role="button" data-inline="true" class="draggable" id="drag-1">' 
+                                    + principleName +'</div>';
+                            });
+                            $("#videoTagging #draggableTags").html(output).trigger("create");
+                //     }, 
+                //     dataType: 'json'
+                // });
+                
+                $("#videoTagging .draggable").draggable();
+                $("#tagDropArea").droppable({
                     drop: function( event, ui ) {
                       $( this )
                         .addClass( "ui-state-highlight" )
@@ -70,6 +142,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
                           .html( "Dropped!" );
                     }
                 });
+
+                
             });
             
         },
@@ -79,20 +153,28 @@ NEOplace.Tablet.Student = (function(Tablet) {
         }
     };
 
-    /** sail event wiring (i.e. XMPP events) **/
+    /************************ OUTGOING EVENTS ******************************/
+
+    self.submitLogin = function(userName, groupName) {
+        var sev = new Sail.Event('login', {
+            user_name:userName,
+            group_name:groupName,
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    } 
+
+    /************************ INCOMING EVENTS ******************************/
 
     self.events.sail = {
-        some_sail_event: function (sev) {
 
+        // testing event for debugging
+        test_event: function(sev) {
+            alert('heard the event');
         }
+
     };
 
-    // only users matching this filter will be shown in the account picker
-    self.userFilter = function (u) {
-        return u.kind === "Student";
-    };
-
-    //TODO: remove, for testing only without authenticating
+    // For testing only, without authenticating
     if ( UI_TESTING_ONLY ) {
         self.events.connected();
     }
