@@ -44,9 +44,9 @@ NEOplace.Tablet = (function() {
                 'get', null, 
                 function (runs) {
                     if (runs.length > 1) {
-                        console.warn("'"+Sail.app.session.account.login+"' belongs to more than one run! Will use the first one...");
+                        console.warn("'"+data.account.login+"' belongs to more than one run! Will use the first one...");
                     } else if (runs.length < 1) {
-                        err = "'"+Sail.app.session.account.login+"' does not belong to any runs!";
+                        var err = "'"+data.account.login+"' does not belong to any runs!";
                         console.error(err);
                         alert(err);
                     } else {
