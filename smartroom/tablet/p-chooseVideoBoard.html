@@ -1,0 +1,57 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>NEOplace - Smartroom Activity</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
+
+    <script src="js/sail.js/sail.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/jquery.mobile.init.js')
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/jquery-ui-1.8.20.dragdrop.min.js')
+            .then('js/jquery.ui.touch-punch.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.student.js')
+            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+    </script>
+</head>
+<body class="student">
+
+    <!-- START chooseVideoBoard page -->
+    <div id="chooseVideoBoard" data-role="page" data-theme="c">
+
+        <div data-role="header" data-theme="a" >
+            <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
+            <h1>NEOplace - Hollywood Physics</h1>
+        </div>
+
+        <div data-role="content">
+            <div class="text-align-center">
+                <p class="message">Walk over to any video board.</p>
+                <p><img src="/assets/img/choose_videoboard.png" width="300" height="200" alt="student in front of smartboard" /></p>
+            </div>
+
+            <div class="text-align-center">
+                <p>Sign in by tapping on the appropriate button below:</p>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="1">Video Board #1</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="2">Video Board #2</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="3">Video Board #3</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="4">Video Board #4</a>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- END chooseVideoBoard page -->
+        
+</body>
+</html>
