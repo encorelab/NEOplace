@@ -30,7 +30,7 @@ body {
 }
 .auth-box {
     position: absolute;
-    top: 40% !important;
+    top: 14% !important;
     left: 10%;
     right: 10%;
     padding: 0 20px 20px 20px !important;
@@ -38,7 +38,7 @@ body {
 
 
 #connecting {
-    top: 60% !important;
+    top: 190px !important;
 }
 
 
@@ -90,27 +90,24 @@ body {
 
 #loginScreen #statusMsg {
     font-size: 1.2em;
-    margin: 50px auto 100px auto;
-}
-
-#problem {
-    padding: 1em 50px 30px 50px;
-    width: 725px;
-    margin: 0px auto 50px auto;
-    font-size: 1.2em;
-}
-
-#problem h2 {
-    margin-top: 0;
-    text-align: center;
+    margin: 370px auto 100px auto;
 }
 
 .paper {
+    padding: 1.5em 50px 30px 50px;
+    width: 725px;
+    margin: 0px auto 50px auto;
+    font-size: 1.2em;
     position: relative;
-    background: #fff url(/assets/img/paperclip.png) no-repeat 20px 0;
+    background: #fff url(/assets/img/paperclip.png) no-repeat 12px 0;
     -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
     -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
+}
+
+.paper h2 {
+    margin-top: 0;
+    text-align: center;
 }
 
 .paper:before, .paper:after {
@@ -158,9 +155,23 @@ body {
 
 .checklist-img {
     float: left;
-    width: 128px;
+    width: 166px;
     margin-right: 20px;
 }
+
+.checklist-img-2 {
+    float: left;
+    width: 120px;
+    margin-right: 20px;
+}
+
+.checklist-img-3 {
+    float: left;
+    width: 80px;
+    margin-right: 10px;
+    overflow: hidden;
+}
+
 
 .checklist {
     float: left;
@@ -171,8 +182,38 @@ body {
     border-bottom-width: 1px;
 }
 
+#peerEquations .ui-checkbox {
+    width: 320px;
+    margin-right: 10px;
+    float: left;
+}
+
+#peerEquations .ui-checkbox label {
+    height: 65px;
+}
+
+#peerEquations .ui-checkbox, #peerEquations .ui-radio {
+    clear: none;
+}
+
+#peerEquations .ui-btn-icon-left .ui-btn-inner .ui-icon, 
+#peerEquations .ui-btn-icon-right .ui-btn-inner .ui-icon {
+    margin-top: -23px;
+}
+
+.MathJax_Display {
+    margin: 0.1em 0em !important;
+    width: auto !important;
+    float: left;     
+    height: 70px !important;
+}
+
 /* override the jquery mobile styles because it ruins the checklist image float:left effect */
-#principleReview .ui-bar, #principleReview .ui-body {
+#principleReview .ui-bar, 
+#principleReview .ui-body,
+#equationsReview .ui-bar, 
+#equationsReview .ui-body 
+{
     clear: none;
 }
 
@@ -192,17 +233,199 @@ body {
     margin-left: 5px;
 }
 
+.ui-checkbox .peer-count {
+    float: right;
+}
+
+#peerEquations .ui-checkbox .peer-count {
+    margin-top: 11px;
+}
+
 .clear-floats {
     clear: both;
 }
 
-th {
-    text-align: left;
+#principleConsensus table,
+#equationConsensus table {
+    border-collapse: collapse;
 }
 
-.student #tagDropArea {
-    background-color: #f0f0f0;
-    border: 8px dashed #666;
-    height: 500px;
-    width: 650px;
+#principleConsensus th, #principleConsensus td,
+#equationConsensus th, #equationConsensus td {
+    text-align: center;
+    border: 1px solid #ccc;
+    padding: 5px;
 }
+
+#principleConsensus th.tag-name,
+#equationConsensus th.tag-name {
+    text-align: left;
+    padding-left: 10px;
+}
+
+#principleConsensus .ui-checkbox label,
+#equationConsensus .ui-checkbox label {
+    width: 50px;
+    padding: 10px 0;
+    margin: 0 auto;
+}
+
+#principleConsensus .ui-checkbox .ui-btn-inner,
+#equationConsensus .ui-checkbox .ui-btn-inner {
+    border: none;
+}
+
+.checklist_icon {
+    width: 18px;
+    height: 18px;
+    margin: 0 auto;
+    background-image: url(images/icons-18-black.png);
+    background-repeat: no-repeat;
+}
+
+.no_icon {
+    background-position-x: -70px; 
+}
+
+.yes_icon {
+    background-position-x: -255px;
+}
+
+
+/** common styles **/
+
+#auth-indicator {
+    z-index: 100;
+    color: #fff;
+    text-shadow: none;
+}
+
+.ui-title {
+    margin-top: 0.8em !important;
+}
+
+
+#login-box.auth-box {
+    min-width: 400px;
+    max-width: 500px;
+    margin: 0 auto;
+    left: 0 !important;
+    right: 0 !important;
+    top: 135px !important;
+}
+
+/* Styles exclusively for: p-videoTagging.html */
+table#principleDragging {
+    margin: 0 auto;
+    border-collapse: collapse;
+    border-top: 1px dashed #ccc;
+    border-bottom: 1px dashed #ccc;
+}
+
+#principleDragging th {
+    text-align: center;
+    
+}
+
+#principleDragging td, #principleDragging th {
+    /*border: 1px solid red;*/
+    padding: 20px 0;
+    font-weight: normal;
+}
+
+#principleDragging #draggableTags {
+    margin-top: -35px;
+}
+
+#principleDragging #tagDropArea {
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
+}
+
+#principleDragging .droparea-label {
+    padding-top: 65px;
+    padding-left: 5px;
+    text-align: center;
+    font-size: 1.3em;
+    letter-spacing: 0.2em;
+    color: #c9e4f6;
+    text-shadow: none;
+}
+
+.circle {
+    height: 150px;
+    width: 150px;
+    background-color: #9dcae6;
+    -moz-border-radius: 75px;
+    -webkit-border-radius: 75px;
+    border-radius: 75px;
+    text-transform: uppercase;
+}
+
+@-webkit-keyframes portalPulse {
+    from { background-color: #9dcae6; -webkit-box-shadow:: 0 0 9px #333; }
+    50% { background-color: #c9e4f6; -webkit-box-shadow:: 0 0 18px #c9e4f6; }
+    to { background-color: #9dcae6; -webkit-box-shadow:: 0 0 9px #333; }
+}
+
+.idle {
+   /* -webkit-animation-name: portalPulse;
+    -webkit-animation-duration: 6s;
+    -webkit-animation-iteration-count: infinite;*/
+}
+
+.attention {
+    -webkit-animation-name: portalPulse;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: infinite;
+}
+
+@-webkit-keyframes dropShrink {
+    0% {
+        opacity: 1;
+        -webkit-transform: scale(1); 
+        visibility: visible;
+    }
+    100%{
+        opacity: 0;
+        -webkit-transform: scale(0); 
+        visibility: hidden;
+    }
+}
+
+.dropped {
+    -webkit-animation-name: dropShrink;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-fill-mode: forwards; /* need this otherwise button comes back into view */
+}
+/* END Styles exclusively for: p-videoTagging.html */
+
+/* Styles exclusively for: p-finishedTagging.html */
+
+/* END Styles exclusively for: p-finishedTagging.html */
+
+/* Styles exclusively for: p-videoBoardAssignment.html */
+#videoBoardAssignment .message {
+    margin-top: 40px;
+}
+
+#videoBoardAssignment .board-assignment {
+    font-weight: bold; 
+    position: absolute; 
+    top: 135px; 
+    left: 50%; 
+    width: 300px;
+}
+
+#videoBoardAssignment .board-assignment p {
+    position: relative; 
+    left: -145px;
+    text-align: center;
+}
+
+#videoBoardAssignment .board-number {
+    font-size: 1.5em;
+}
+/* END Styles exclusively for: p-videoBoardAssignment.html */

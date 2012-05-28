@@ -1,3 +1,4 @@
+<!DOCTYPE html> 
 <html> 
 <head> 
     <title>NEOplace - Smartroom Activity</title> 
@@ -24,25 +25,33 @@
     </script>
 </head>
 <body class="student">
-    
-    <!-- START sortVariables -->
-    <div id="sortVariables" data-role="page" data-theme="c">
+
+    <!-- START chooseVideoBoard page -->
+    <div id="chooseVideoBoard" data-role="page" data-theme="c">
 
         <div data-role="header" data-theme="a" >
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
             <h1>NEOplace - Hollywood Physics</h1>
         </div>
-        
+
         <div data-role="content">
-            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Wait" width="650" height="240" alt="?" /></p>
-            <p class="text-align-center">[?]</p>
-            <a data-role="button" data-transition="fade" data-theme="b" href="p-problemPicker.html">
-                Continue
-            </a>
+            <div class="text-align-center">
+                <p class="message">Walk over to any video board.</p>
+                <p><img src="/assets/img/choose_videoboard.png" width="300" height="200" alt="student in front of smartboard" /></p>
+            </div>
+
+            <div class="text-align-center">
+                <p>Sign in by tapping on the appropriate button below:</p>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="1">Video Board #1</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="2">Video Board #2</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="3">Video Board #3</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="4">Video Board #4</a>
+            </div>
+
         </div>
 
     </div>
-    <!-- END sortVariables -->
-
+    <!-- END chooseVideoBoard page -->
+        
 </body>
 </html>

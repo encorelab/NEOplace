@@ -1,147 +1,31 @@
-[
-
-	{
-		"EQ_ID": 1,
-		"name": "\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}"
-	},
-
-	{
-		"EQ_ID": 2,
-		"name": "\\vec{v}=\\vec{d}/\\Delta t"
-	},
-
-	{
-		"EQ_ID": 3,
-		"name": "v_{average}=\\Delta d_{total}/\\Delta t"
-	},
-
-	{
-		"EQ_ID": 4,
-		"name": "\\boldsymbol{f}=1/\\boldsymbol{T}"
-	},
-
-	{
-		"EQ_ID": 5,
-		"name": "\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}"
-	},
-
-	{
-		"EQ_ID": 6,
-		"name": "\\vec{a}=\\vec{\\Delta v}/\\Delta{t}"
-	},
-
-	{
-		"EQ_ID": 7,
-		"name": "\\vec{v_{2}}=\\vec{v_{1}}+\\vec{a}\\Delta{t}"
-	},
-
-	{
-		"EQ_ID": 8,
-		"name": "\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}"
-	},
-
-	{
-		"EQ_ID": 9,
-		"name": "\\vec{\\Delta d}=\\vec{v_{2}}\\Delta{t}-1/2\\vec{a}(\\Delta{t})^{2}"
-	},
-
-	{
-		"EQ_ID": 10,
-		"name": "\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}"
-	},
-
-	{
-		"EQ_ID": 11,
-		"name": "{v_{2}}^{2}={v_{1}}^{2}+2a\\Delta d"
-	},
-
-	{
-		"EQ_ID": 12,
-		"name": "{_{A}\\vec{v}_{C}} ={_{A}\\vec{v}_{B}} + {_{B}\\vec{v}_{C}}"
-	},
-
-	{
-		"EQ_ID": 13,
-		"name": "F_{g}=mg"
-	},
-
-	{
-		"EQ_ID": 14,
-		"name": "F_{g}=\\frac{Gm_{1}m_{2}}{R^{2}}"
-	},
-
-	{
-		"EQ_ID": 15,
-		"name": "F_{f}=\\mu _{k}F_{N}"
-	},
-
-	{
-		"EQ_ID": 16,
-		"name": "F_{f}=\\mu _{s}F_{N}"
-	},
-
-	{
-		"EQ_ID": 17,
-		"name": "\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots"
-	},
-
-	{
-		"EQ_ID": 18,
-		"name": "\\vec{F_{net}}=m\\vec{a}"
-	},
-
-	{
-		"EQ_ID": 19,
-		"name": "\\vec{_{A}F_{B}}=-\\vec{_{B}F_{A}}"
-	},
-
-	{
-		"EQ_ID": 20,
-		"name": "W=\\vec{F}\\cdot \\Delta \\vec{d}"
-	},
-
-	{
-		"EQ_ID": 21,
-		"name": "W=F\\Delta cos(\\theta )"
-	},
-
-	{
-		"EQ_ID": 22,
-		"name": "P=\\frac{W}{\\Delta t}"
-	},
-
-	{
-		"EQ_ID": 23,
-		"name": "W=\\Delta E"
-	},
-
-	{
-		"EQ_ID": 24,
-		"name": "\\Delta E=mg\\Delta h"
-	},
-
-	{
-		"EQ_ID": 25,
-		"name": "E_{g}=mgh"
-	},
-
-	{
-		"EQ_ID": 26,
-		"name": "E_{k}=\\frac{1}{2}mv^{2}"
-	},
-
-	{
-		"EQ_ID": 27,
-		"name": "E_{T}=E_{g}+W_{k}"
-	},
-
-	{
-		"EQ_ID": 28,
-		"name": "E_{T(before)}=E_{T(after)}"
-	},
-	{
-		"EQ_ID": 29,
-		"name": "\\vec{A}_{(x/y)} = \\left |\\vec A \\right |(cos/sin)\\theta"
-	}
-
-]
+{
+	"1":  {"name": "\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}"},
+	"2":  {"name": "\\vec{v}=\\vec{d}/\\Delta t"},
+	"3":  {"name": "v_{average}=\\Delta d_{total}/\\Delta t"},
+	"4":  {"name": "\\boldsymbol{f}=1/\\boldsymbol{T}"},
+	"5":  {"name": "\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}"},
+	"6":  {"name": "\\vec{a}=\\vec{\\Delta v}/\\Delta{t}"},
+	"7":  {"name": "\\vec{v_{2}}=\\vec{v_{1}}+\\vec{a}\\Delta{t}"},
+	"8":  {"name": "\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}"},
+	"9":  {"name": "\\vec{\\Delta d}=\\vec{v_{2}}\\Delta{t}-1/2\\vec{a}(\\Delta{t})^{2}"},
+	"10": {"name": "\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}"},
+	"11": {"name": "{v_{2}}^{2}={v_{1}}^{2}+2a\\Delta d"},
+	"12": {"name": "{_{A}\\vec{v}_{C}} ={_{A}\\vec{v}_{B}} + {_{B}\\vec{v}_{C}}"},
+	"13": {"name": "F_{g}=mg"},
+	"14": {"name": "F_{g}=\\frac{Gm_{1}m_{2}}{R^{2}}"},
+	"15": {"name": "F_{f}=\\mu _{k}F_{N}"},
+	"16": {"name": "F_{f}=\\mu _{s}F_{N}"},
+	"17": {"name": "\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots"},
+	"18": {"name": "\\vec{F_{net}}=m\\vec{a}"},
+	"19": {"name": "\\vec{_{A}F_{B}}=-\\vec{_{B}F_{A}}"},
+	"20": {"name": "W=\\vec{F}\\cdot \\Delta \\vec{d}"},
+	"21": {"name": "W=F\\Delta cos(\\theta )"},
+	"22": {"name": "P=\\frac{W}{\\Delta t}"},
+	"23": {"name": "W=\\Delta E"},
+	"24": {"name": "\\Delta E=mg\\Delta h"},
+	"25": {"name": "E_{g}=mgh"},
+	"26": {"name": "E_{k}=\\frac{1}{2}mv^{2}" },
+	"27": {"name": "E_{T}=E_{g}+W_{k}" },
+	"28": {"name": "E_{T(before)}=E_{T(after)}" },
+	"29": {"name": "\\vec{A}_{(x/y)} = \\left |\\vec A \\right |(cos/sin)\\theta" }
+}
