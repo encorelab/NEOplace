@@ -19,7 +19,14 @@ def create_results()
   puts "Principle events #{principle_events.inspect}"
   puts "Events with principles size #{principle_events.length}"
   equation_events = @mongo.collection(:events).find("eventType" => "quorum_reached", "payload.equations" => {'$exists' => true}).to_a
+  puts "Principle events #{equation_events.inspect}"
   puts "Events with equations size #{equation_events.length}"
+
+  aggregated_principles = {}
+  principle_events.each |principle| do
+    aggregated_principles[principle['payload']['problem_name']] = {'principles' => principle['payload']['principles']}
+  end
+  puts "aggregated_principles: #{aggregated_principles.inspect}"
 end
 
 create_results()
