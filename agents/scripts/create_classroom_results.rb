@@ -17,12 +17,12 @@ def create_results()
 
   puts "Reading quorum_reached events with principles"
   principle_events = @mongo.collection(:events).find("eventType" => "quorum_reached", "payload.principles" => {'$exists' => true}).to_a
-  puts "Principle events #{principle_events.inspect}"
+  #puts "Principle events #{principle_events.inspect}"
   puts "Events with principles size #{principle_events.length}"
 
   puts "Reading quorum_reached events with equations"
   equation_events = @mongo.collection(:events).find("eventType" => "quorum_reached", "payload.equations" => {'$exists' => true}).to_a
-  puts "Principle events #{equation_events.inspect}"
+  #puts "Equation events #{equation_events.inspect}"
   puts "Events with equations size #{equation_events.length}"
 
   aggregated_principles = {}
@@ -36,7 +36,7 @@ def create_results()
 
   aggregated_equations = {}
   equation_events.each do |equation|
-    if equation['payload']['principles'].length > 0 then
+    if equation['payload']['equations'].length > 0 then
       aggregated_equations[equation['payload']['problem_name']] = {'equations' => equation['payload']['equations']}
     end
   end
