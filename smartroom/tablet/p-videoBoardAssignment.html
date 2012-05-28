@@ -1,3 +1,4 @@
+<!DOCTYPE html> 
 <html> 
 <head> 
     <title>NEOplace - Smartroom Activity</title> 
@@ -24,25 +25,38 @@
     </script>
 </head>
 <body class="student">
-    
-    <!-- START sortVariables -->
-    <div id="sortVariables" data-role="page" data-theme="c">
+
+    <!-- START videoBoardAssignment page -->
+    <div id="videoBoardAssignment" data-role="page" data-theme="c">
 
         <div data-role="header" data-theme="a" >
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
             <h1>NEOplace - Hollywood Physics</h1>
         </div>
-        
+
         <div data-role="content">
-            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Wait" width="650" height="240" alt="?" /></p>
-            <p class="text-align-center">[?]</p>
-            <a data-role="button" data-transition="fade" data-theme="b" href="p-problemPicker.html">
-                Continue
-            </a>
+            <div class="board-assignment">
+                <p>Board<br /><span class="board-number">{#}</span></p>
+            </div>
+            <div class="text-align-center message">
+                <p>You have been assigned to a group and a video board.</p>
+                <p><img src="/assets/img/smartboard_gather.png" width="300" height="200" alt="student in front of smartboard" /></p>
+                
+            </div>
+
+            <div class="text-align-center" id="signInInstructions">
+                <p>Tap the 'Sign In' button when you are there.</p>
+                <a href="#" data-role="button" data-theme="b" id="boardAssignmentSignInButton">Sign In</a>
+            </div>
+
+            <div class="text-align-center">
+                <p>Once your entire group is there, you can tap 'Continue' for instructions for the next step.</p>
+                <a href="p-sortPrinciples.html" data-role="button" data-theme="b" id="boardAssignmentContinueButton" class="ui-disabled">Continue</a>
+            </div>
         </div>
 
     </div>
-    <!-- END sortVariables -->
-
+    <!-- END videoBoardAssignment page -->
+        
 </body>
 </html>

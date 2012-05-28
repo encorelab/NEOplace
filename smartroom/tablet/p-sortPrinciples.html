@@ -24,25 +24,32 @@
     </script>
 </head>
 <body class="student">
-    
-    <!-- START sortVariables -->
-    <div id="sortVariables" data-role="page" data-theme="c">
+
+    <!-- START sortPrinciples -->
+    <div id="sortPrinciples" data-role="page" data-theme="c">
 
         <div data-role="header" data-theme="a" >
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
             <h1>NEOplace - Hollywood Physics</h1>
         </div>
-        
+
         <div data-role="content">
-            <p class="text-align-center"><img src="http://placehold.it/650x250&amp;text=Wait" width="650" height="240" alt="?" /></p>
-            <p class="text-align-center">[?]</p>
-            <a data-role="button" data-transition="fade" data-theme="b" href="p-problemPicker.html">
-                Continue
-            </a>
+            <div class="text-align-center">
+                <img src="/assets/img/principle_sorting.png" />
+
+                <p>Work with your group to sort the principles, found in the Negotiation Field in the bottom left, that were submitted by your peers during the last step.<p>
+
+                <p>Drag the principles your group feels are connected to the video into the GREEN area of the Negotiation Field, and drag those you feel are not connected to the video into the RED area.</p>
+
+                <p>Once your are finished your sort click on the "Done Sorting" button at the bottom of the Field.</p>
+            </div>
+
+            <!-- for UI_TESTING_ONLY -->
+            <a href="p-problemPicker.html" data-role="button" data-theme="b" id="doneSortingPrinciplesButton" style="display:none;">Continue</a>
         </div>
 
     </div>
-    <!-- END sortVariables -->
+    <!-- END sortPrinciples -->
 
 </body>
 </html>
