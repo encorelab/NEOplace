@@ -5,11 +5,14 @@ NEOplace.Tablet.Student = (function(Tablet) {
     "use strict";
     var self = _.extend(Tablet);
 
-    self.userData;
-    self.userId;
-    self.groupData = {
+    self.userData = {
+        name:null,
+        id:null,
+        group:null,
         members:[]
-    };
+    }
+
+    self.currentBoard = null;
 
     var TOTAL_VIDEO_BOARDS = 4;
     self.visitedVideoBoards = []; //nb: current video board is visitedVideoBoards[ visitedVideoBoards.length-1 ];
@@ -19,7 +22,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.problemSet = [];
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
-    var UI_TESTING_ONLY = true;
+    var UI_TESTING_ONLY = false;
     console.log( "ATTN: UI_TESTING_ONLY is set to " + !UI_TESTING_ONLY );
 
     var YES = '<div class="checklist_icon yes_icon"></div>';
@@ -28,7 +31,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
     /** private functions **/
 
     var currentDb = function () {
-        return Sail.app.run.name;  
+        if ( !UI_TESTING_ONLY ) {
+            return Sail.app.run.name;    
+           }
     };
 
     /** public functions **/
@@ -61,7 +66,22 @@ NEOplace.Tablet.Student = (function(Tablet) {
     //                     },
     //                     dataType: 'html'
     //                 });
-    }
+    };
+
+    self.restoreState = function() {
+        // set Sail.app.visitedVideoBoards to stored visitedboards (from Rollcall)
+        var selector = {"user_name":self.userData.name};
+        $.ajax(self.drowsyURL + '/' + currentDb() + '/states_completed_boards', {        // might want to limit this more (different types of states?)
+            type: 'get',
+            data: { selector: JSON.stringify(selector) },
+            success: function (boards) {
+                console.log(boards);
+                Sail.app.visitedVideoBoards = _.map(boards, function(i) { return i.board });
+                $.mobile.loadPage('p-chooseVideoBoard.html');
+            }
+        });
+
+    };
 
     /** local event wiring **/
 
@@ -87,34 +107,44 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
             // ****************
             //PAGE: By default, on login screen ('#loginScreen')
-            $( '#loginScreen' ).live( 'pageinit',function(event){
-                console.log("#loginScreen pageinit");
-                if ( !UI_TESTING_ONLY ) {
-                    // request detailed data about current user from Rollcall
-                    Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.session.account.login+".json", "GET", {}, function(data) {
-                        console.log("Authenticated user is: ", data);
+            //$( '#loginScreen' ).live( 'pageinit',function(event){             // this shouldbe commented out right,? Not sure how .live would be triggered?
+            console.log("#loginScreen pageinit");
+            if ( !UI_TESTING_ONLY ) {
+                // request detailed data about current user from Rollcall
+                Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.session.account.login+".json", "GET", {}, function(data) {
+                    console.log("Authenticated user is: ", data);
 
-                        if (data.groups[1]) {
-                            console.log('WARNING: user has been assigned to more than one group, chosing first group in the list');
-                        }
+                    if (data.groups[1]) {
+                        console.log('WARNING: user has been assigned to more than one group, chosing first group in the list');
+                    }
 
-                        //save their principles for videoTagging page
-                        self.studentPrinciples = data.metadata.principles;
+                    // save their principles for videoTagging page
+                    self.studentPrinciples = JSON.parse(data.metadata.principles);
 
-                        // automatically goto the next page
-                        $.mobile.loadPage( 'p-chooseVideoBoard.html');
+                    self.userData.name = data.account.login;
+                    self.userData.id = data.account.id;              // is this the right id? Do we even need id?
 
-                    });
-                }else{
+                    // restore state
+                    self.restoreState();
 
-                    //dummy principles for videoTagging page
-                    self.studentPrinciples = ["Newton's First Law", "Newton's Second Law", "Newton's Third Law"];
-                    
-                    //start button for testing only
+                    // automatically goto the next page
+                    // $.mobile.loadPage( 'p-chooseVideoBoard.html');              // moved in to restoreState
                     $("#loginScreen #signInStartButton").css("display","block");
-                }
-            });
 
+                });
+            }else{
+
+                //dummy principles for videoTagging page
+                self.studentPrinciples = ["Newton's First Law", "Newton's Second Law", "Newton's Third Law"];
+                self.userData.name = "Colin";
+                self.userData.id = 23;
+
+                self.restoreState();
+                
+                //start button for testing only
+                $("#loginScreen #signInStartButton").css("display","block");
+            }
+            //});
 
             // ****************
             // PAGE: Students have logged in
@@ -160,16 +190,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     }else{
                         $(this).bind('click', function(event,ui) {
                             //console.log( "clicked ", $(this).attr("value") );
-                            var currentBoard = parseInt( $(this).attr("value") );
-                            self.visitedVideoBoards.push( currentBoard );
+                            self.currentBoard = parseInt( $(this).attr("value") );
+                            // self.visitedVideoBoards.push( currentBoard );                // this should be done onClick videoTaggingDoneButton, right? What if they crash before the video is done?
+                                                                                            // Have made currentBoard a global for now to access it in #videoTagging
 
                             //deactivate all the buttons while backend call is happening
                             $(this).addClass("ui-disabled");
                             $("#chooseVideoBoard .videoBoardSignInButton").die();
 
                             if ( !UI_TESTING_ONLY ) {
-                                //TODO: backend call
-                                Sail.app.submitVideoBoardLogin(data.account.login, currentBoard);
+                                // send out check_in (which sends to wait screen)
+                                // go to wait screen
+                                Sail.app.submitCheckIn(self.userData, self.currentBoard);
                             }else{
                                 //fake it
                                 self.events.sail.video_board_checkin();
@@ -197,10 +229,25 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 $('#videoTagging #videoTaggingDoneButton').die();
                 $('#videoTagging #videoTaggingDoneButton').live("click", function(){
-                    $.mobile.changePage(nextPage);
+                    self.visitedVideoBoards.push(self.currentBoard);
+
+                    // writing the array to Mongo to allow future restores
+                    var boards = {
+                        user_name:self.userData.name,
+                        board:self.currentBoard
+                    }
+
+                    $.ajax(self.drowsyURL + '/' + currentDb() + '/states_completed_boards', {
+                        type: 'post',
+                        data: boards,
+                        success: function () {
+                            console.log("Observation saved: ", boards);
+                        }
+                    });
+                    $.mobile.changePage(nextPage);              // should this go inside the success?
                 });
 
-                //output draggable buttons onto the videoTagging page
+                //output draggable buttons onto the videoTagging page... need to use for loop here (see Colin for expl.)
                 var output = '';
                 _.each( self.studentPrinciples, function(principleName){ 
                     output += '<div data-role="button" data-inline="true" class="draggable" \
@@ -210,6 +257,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         + principleName 
                         +'</div>';
                 });
+
                 $("#videoTagging #draggableTags").html(output).trigger("create");
                 $("#videoTagging #draggableTags .draggable").draggable({containment:"#principleDragging"});
                 $("#tagDropArea").droppable();
@@ -282,7 +330,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     if ( !UI_TESTING_ONLY ) {
                         //TODO: backend call
-                        Sail.app.submitVideoBoardLogin(data.account.login, currentBoard);
+                        Sail.app.submitVideoBoardLogin(data.account.login, self.currentBoard);
                     }else{
                         //fake it
                         self.events.sail.group_video_board_checkin();
@@ -340,21 +388,23 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
     /************************ OUTGOING EVENTS ******************************/
 
-    self.submitLogin = function(userName, groupName) {
+    self.submitLogin = function(userData) {
         var sev = new Sail.Event('login', {
-            user_name:userName,
-            group_name:groupName,
+            user_name:userData.name,
+            group_name:userData.group,
         });
         Sail.app.groupchat.sendEvent(sev);
     }
 
-    self.submitVideoBoardLogin = function(userName, videoBoard) {
-        //TODO: test this
-        var sev = new Sail.Event('checkin', {
-            user_name:userName,
-            video_board:videoBoard
+    self.submitCheckIn = function(userData, videoBoard) {
+        var sev = new Sail.Event('check_in', {
+            user_name:userData.name,
+            group_name:userData.group,
+            location:videoBoard
         });
         Sail.app.groupchat.sendEvent(sev);
+
+        $.mobile.changePage('p-wait-screen.html');
     }
 
     self.getProblemSetRelatedToVideo = function(userName, videoBoard) {
@@ -375,9 +425,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
             alert('heard the event');
         },
 
-        video_board_checkin: function(sev) {
-            //TODO: 
-            $.mobile.changePage('p-videoTagging.html');
+        // will always be trigger by teacher (while tablet is sitting on wait screen)
+        activity_started: function(sev) {
+            if (sev.payload.activity_name === "video_tagging") {
+
+                $.mobile.changePage('p-videoTagging.html');
+            } else if (sev.payload.activity_name === "principle_sorting") {
+                // do something, go somewhere
+            } else if (sev.payload.activity_name === "equation_adding") {
+                // do something, go somewhere else
+            } else {
+                console.log('ignoring activity_started, wrong activity');
+            }
         },
 
         classmates_done_tagging: function(sev) {
@@ -414,7 +473,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
     // For testing only, without authenticating
     if ( UI_TESTING_ONLY ) {
         self.events.connected();
+
     }
+
+    // self.restoreState = restoreState;
     
     return self;
 })(NEOplace.Tablet);
