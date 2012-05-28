@@ -23,10 +23,11 @@ def create_results()
   puts "Events with equations size #{equation_events.length}"
 
   aggregated_principles = {}
-  principle_events.each |principle| do
+  principle_events.each do |principle|
     aggregated_principles[principle['payload']['problem_name']] = {'principles' => principle['payload']['principles']}
   end
   puts "aggregated_principles: #{aggregated_principles.inspect}"
+  puts "Length of aggregated_principles #{aggregated_principles.length}"
 end
 
 create_results()
