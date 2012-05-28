@@ -314,52 +314,43 @@ body {
     top: 135px !important;
 }
 
-/* Styles exclusively for: p-videoBoardAssignment.html */
-#videoBoardAssignment .message {
-    margin-top: 40px;
-}
-
-#videoBoardAssignment .board-assignment {
-    font-weight: bold; 
-    position: absolute; 
-    top: 140px; 
-    left: 50%; 
-    width: 120px;
-}
-
-#videoBoardAssignment .board-assignment p {
-    position: relative; 
-    left: -15px;
-    text-align: center;
-}
-
-#videoBoardAssignment .board-number {
-    font-size: 1.5em;
-}
-/* END Styles exclusively for: p-videoBoardAssignment.html */
-
-
 /* Styles exclusively for: p-videoTagging.html */
-#principleDragging {
-    width: 80%;
+table#principleDragging {
     margin: 0 auto;
+    border-collapse: collapse;
+    border-top: 1px dashed #ccc;
+    border-bottom: 1px dashed #ccc;
 }
 
-#principleDragging > div {
-    float: left;
+#principleDragging th {
+    text-align: center;
+    
 }
 
-#principleDragging .dragArea {
-    width: 50%;
+#principleDragging td, #principleDragging th {
+    /*border: 1px solid red;*/
+    padding: 20px 0;
+    font-weight: normal;
+}
+
+#principleDragging #draggableTags {
+    margin-top: -35px;
 }
 
 #principleDragging #tagDropArea {
-    border: 6px solid #aaa;
-    margin: 0 auto;
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
+}
+
+#principleDragging .droparea-label {
+    padding-top: 65px;
+    padding-left: 5px;
     text-align: center;
-    padding-top: 60px;
-    font-size: 1.5em;
-    color: #fff;
+    font-size: 1.3em;
+    letter-spacing: 0.2em;
+    color: #c9e4f6;
+    text-shadow: none;
 }
 
 .circle {
@@ -378,20 +369,63 @@ body {
     to { background-color: #9dcae6; -webkit-box-shadow:: 0 0 9px #333; }
 }
 
-.idle-glowing {
-    -webkit-animation-name: portalPulse;
+.idle {
+   /* -webkit-animation-name: portalPulse;
     -webkit-animation-duration: 6s;
-    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-iteration-count: infinite;*/
 }
 
-.attention-glowing {
+.attention {
     -webkit-animation-name: portalPulse;
-    -webkit-animation-duration: 2s;
+    -webkit-animation-duration: 1s;
     -webkit-animation-iteration-count: infinite;
 }
 
-#principleDragging #doneDraggingInstructions {
-    width: 30%;
-    padding: 30px 0 0 25px;
+@-webkit-keyframes dropShrink {
+    0% {
+        opacity: 1;
+        -webkit-transform: scale(1); 
+        visibility: visible;
+    }
+    100%{
+        opacity: 0;
+        -webkit-transform: scale(0); 
+        visibility: hidden;
+    }
 }
-/* Styles exclusively for: p-videoTagging.html */
+
+.dropped {
+    -webkit-animation-name: dropShrink;
+    -webkit-animation-duration: 1s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-fill-mode: forwards; /* need this otherwise button comes back into view */
+}
+/* END Styles exclusively for: p-videoTagging.html */
+
+/* Styles exclusively for: p-finishedTagging.html */
+
+/* END Styles exclusively for: p-finishedTagging.html */
+
+/* Styles exclusively for: p-videoBoardAssignment.html */
+#videoBoardAssignment .message {
+    margin-top: 40px;
+}
+
+#videoBoardAssignment .board-assignment {
+    font-weight: bold; 
+    position: absolute; 
+    top: 135px; 
+    left: 50%; 
+    width: 300px;
+}
+
+#videoBoardAssignment .board-assignment p {
+    position: relative; 
+    left: -145px;
+    text-align: center;
+}
+
+#videoBoardAssignment .board-number {
+    font-size: 1.5em;
+}
+/* END Styles exclusively for: p-videoBoardAssignment.html */
