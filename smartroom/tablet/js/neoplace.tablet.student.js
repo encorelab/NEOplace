@@ -378,6 +378,31 @@ NEOplace.Tablet.Student = (function(Tablet) {
             });
 
             
+            // ****************
+            // PAGE: Students have logged in and have been assigned to a group/videoboard
+            // They are being asked to gather in front of board and check in
+            $( '#videoBoardAssignment2' ).live( 'pageinit',function(event){
+                console.log("#videoBoardAssignment2 pageinit");
+
+                $("#videoBoardAssignment2 .boardSignInButton").die();
+                $("#videoBoardAssignment2 .boardSignInButton").live('click', function(){
+                    $(this).addClass("ui-disabled");
+                    $("#videoBoardAssignment2 .signInInstructions").css("opacity","0.3");
+
+                    if ( !UI_TESTING_ONLY ) {
+                        //TODO: backend call
+                        //Sail.app.submitVideoBoardLogin(data.account.login, currentBoard);
+                    }else{
+                        //fake it
+                        //self.events.sail.group_video_board_checkin();
+
+                        $("#videoBoardAssignment .doneButton").removeClass("ui-disabled");
+                        
+                    }
+                });
+
+
+            });
             
         },
 
