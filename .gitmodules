@@ -7,3 +7,9 @@
 [submodule "smartroom/tablet/js/sail.js"]
 	path = smartroom/tablet/js/sail.js
 	url = git@github.com:educoder/sail.js.git
+[submodule "smartroom/sideboard/js/sail.js"]
+	path = smartroom/sideboard/js/sail.js
+	url = git@github.com:educoder/sail.js.git
+[submodule "smartroom/frontboard-2/js/sail.js"]
+	path = smartroom/frontboard-2/js/sail.js
+	url = git@github.com:educoder/sail.js.git
