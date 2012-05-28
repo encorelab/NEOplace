@@ -15,8 +15,10 @@ def create_results()
   puts "Homework problems #{homework_problems.inspect}"
   puts "Homework size #{homework_problems.length}"
 
-  events = @mongo.collection(:events).find("eventType" => "quorum_reached").to_a
-  puts "Events size #{events.length}"
+  principle_events = @mongo.collection(:events).find("eventType" => "quorum_reached", "payload.principles" => {"$exists":true}).to_a
+  puts "Events with principles size #{principle_events.length}"
+  equation_events = @mongo.collection(:events).find("eventType" => "quorum_reached", "payload.equations" => {"$exists":true}).to_a
+  puts "Events with equations size #{equation_events.length}"
 end
 
 create_results()
