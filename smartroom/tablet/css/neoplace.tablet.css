@@ -324,7 +324,6 @@ table#principleDragging {
 
 #principleDragging th {
     text-align: center;
-    
 }
 
 #principleDragging td, #principleDragging th {
@@ -429,3 +428,21 @@ table#principleDragging {
     font-size: 1.5em;
 }
 /* END Styles exclusively for: p-videoBoardAssignment.html */
+
+/* Styles exclusively for: p-problemPicker.html */
+
+#problemPicker .ui-grid-b h2 {
+    margin-top: 0.7em;
+}
+
+#problemPicker .paper {
+    background-image: none;
+}
+
+#problemPicker #connected-tags ul {
+    width: 46%;
+    margin: 0 2%;
+    float: left;
+}
+
+/* END Styles exclusively for: p-problemPicker.html */

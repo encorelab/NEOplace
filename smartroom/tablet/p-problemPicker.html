@@ -35,66 +35,99 @@
         
         <div data-role="content">
 
-            <div class="paper">
-                <h2>Problem #{#}</h2>
-                {htmlContent}
-            </div>
-
-            <div data-role="collapsible-set" data-theme="c" data-content-theme="c">
-                <div data-role="collapsible" data-collapsed="true">
-                    <h3>
-                        Connected Principles
-                    </h3>
-                    <ul data-role="listview">
-                        <li data-theme="c">
-                                Newton's First Law (3)
-                        </li>
-                        <li data-theme="c">
-                                Kinetic Energy (2)
-                        </li>
-                        <li data-theme="c">
-                                Potential Energy (1)
-                        </li>
-                        <li data-theme="c">
-                                Acceleration (1)
-                        </li>
-                    </ul>
-                </div>
-                <div data-role="collapsible" data-collapsed="true">
-                    <h3>
-                        Connected Equations
-                    </h3>
-                    <ul data-role="listview" data-divider-theme="b" data-inset="false">
-                        <li data-theme="c">
-                                d=vt + 1/2at^2
-                        </li>
-                        <li data-theme="c">
-                                W = F*d*cosΘ
-                        </li>
-                        <li data-theme="c">
-                                v2 = v1 +a*t
-                        </li>
-                        <li data-theme="c">
-                                P = W/t
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="ui-grid-a">
+            <div class="ui-grid-b">
                 <div class="ui-block-a">
-                    <a data-role="button" data-transition="fade" href="#" data-icon="arrow-l"  data-iconpos="left">
+                    <a data-role="button" data-transition="fade" href="#" data-icon="arrow-l" data-iconpos="left">
                         Previous Problem
                     </a>
                 </div>
-                <div class="ui-block-b">
-                    <a data-role="button" data-transition="fade" href="#" data-icon="arrow-r"  data-iconpos="right">
+                <div class="ui-block-b text-align-center">
+                    <h2>Problem #<span class="problem-num">{#}</span></h2>
+                </div>
+                <div class="ui-block-c">
+                    <a data-role="button" data-transition="fade" href="#" data-icon="arrow-r" data-iconpos="right">
                         Next Problem
                     </a>
                 </div>
             </div>
-            <a data-role="button" data-transition="fade" data-theme="b" href="p-sortProblems.html">
-                Connect Problem to Video
-            </a>
+
+            <div class="paper">
+                
+                <div class="htmlContent">
+                    {htmlContent}
+                </div>
+
+                <br />
+
+                <div id="connected-tags" data-role="collapsible" data-collapsed="true" data-content-theme="b" data-transition="slide">
+                    <h3>
+                        Connected Principles &amp; Equations
+                    </h3>
+                    <ul data-role="listview" data-inset="true" data-theme="c">
+                        <li>Acceleration <span class="peer-count">1</span></li>
+                        <li>Acceleration <span class="peer-count">1</span></li>
+                        <li>Acceleration <span class="peer-count">1</span></li>
+                        <li>Acceleration <span class="peer-count">1</span></li>
+                    </ul>
+                    <ul data-role="listview" data-inset="true" data-theme="c">
+                        <li>$$\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}$$ <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                    </ul>
+                    <br clear="all" />
+                    <p class="footnote"><span class="peer-count">#</span> indicates how people chose this equation during the previous classroom group activity.</p>
+                </div>
+
+            </div>
+
+            <table id="problemDragging" width="730">
+                <tr>
+                    <th width="450">
+                        Will this problem help you solve the <em>Challenge Question</em>?
+                    </th>
+                    <th colspan="2" width="300">
+                        If so, send it to the shared videoboard<br />
+                      by dragging it into the portal.
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                         <div id="draggableTags"><!-- TODO: this id into a class instead -->
+                            <!-- to be dynamically populated -->
+                            <div data-role="button" data-inline="true" class="draggable" id="drag-problem'+''#''+'" value="'+''problemnum''+'">Problem</div>
+                        </div>
+                    </td>
+                    <td width="130">
+                        <img src="/assets/img/drag_icon.png" width="100" height="150" alt="drag gesture" />
+                    </td>
+                    <td width="170">
+                        <div id="tagDropArea" class="circle idle-glowing"><!-- TODO: this id into a class instead -->
+                            <div class="droparea-label">Portal</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+<!--
+            <div class="text-align-center">
+                <p>Will this problem help you solve the <em>Challenge Question</em>?<br />If so, tap the 'Connect Problem #<span class="problem-num">{#}</span> to Video' button to send it to the shared video board.</p>
+                <a href="#" data-role="button" data-transition="fade" data-theme="b">
+                    Connect Problem to Video
+                </a>
+            </div>
+-->
+
+            <!-- for UI_TESTING_ONLY ??? -->
+            <br clear="all" />
+
+            <div class="text-align-center">
+                 <p>When you are done tagging this video with your problems, tap the 'Done' button.</p>
+                <a href="p-sortProblems.html" data-role="button" data-theme="b" id="problemsDoneButton">Done</a>
+            </div>
+
             
         </div>
     </div>
