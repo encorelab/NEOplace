@@ -142,10 +142,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 $("#chooseVideoBoard .videoBoardSignInButton").each( function(index) {
                     var alreadyVisited = false;
                     var elementValue = $(this).attr("value");
+                    //_.filter
+                    //TODO: http://stackoverflow.com/questions/8779799/how-to-break-the-each-function-in-underscore-js
                     _.each( self.visitedVideoBoards, function(boardNumber){
                         if ( elementValue == boardNumber ) {
                             alreadyVisited = true;
-                            return; //break out of loop early
+                            console.log("broke out");
+                            return false; //break out of loop early
+                        }else{
+
+                            console.log("keep on going");
                         }
                     });
 
