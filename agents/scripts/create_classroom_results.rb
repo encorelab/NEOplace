@@ -27,14 +27,18 @@ def create_results()
 
   aggregated_principles = {}
   principle_events.each do |principle|
-    aggregated_principles[principle['payload']['problem_name']] = {'principles' => principle['payload']['principles']}
+    if principle['payload']['principles'].length > 0 then
+      aggregated_principles[principle['payload']['problem_name']] = {'principles' => principle['payload']['principles']}
+    end
   end
   puts "aggregated_principles: #{aggregated_principles.inspect}"
   puts "Length of aggregated_principles #{aggregated_principles.length}"
 
   aggregated_equations = {}
   equation_events.each do |equation|
-    aggregated_equations[equation['payload']['problem_name']] = {'equations' => equation['payload']['equations']}
+    if equation['payload']['principles'].length > 0 then
+      aggregated_equations[equation['payload']['problem_name']] = {'equations' => equation['payload']['equations']}
+    end
   end
   puts "aggregated_equations: #{aggregated_equations.inspect}"
   puts "Length of aggregated_equations #{aggregated_equations.length}"
