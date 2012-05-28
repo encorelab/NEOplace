@@ -33,8 +33,8 @@ def create_results()
   equation_events.each do |equation|
     aggregated_equations[equation['payload']['problem_name']] = {'principles' => equation['payload']['equations']}
   end
-  puts "aggregated_principles: #{aggregated_equations.inspect}"
-  puts "Length of aggregated_principles #{aggregated_equations.length}"
+  puts "aggregated_equations: #{aggregated_equations.inspect}"
+  puts "Length of aggregated_equations #{aggregated_equations.length}"
 end
 
 create_results()
