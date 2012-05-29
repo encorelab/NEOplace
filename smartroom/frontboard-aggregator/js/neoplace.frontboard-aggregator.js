@@ -52,7 +52,8 @@ NEOplace.FrontBoardAggregator = (function() {
         // add exception for assumptions
         if(obj.css_class=="assumption" && obj.text!=""){
             
-            
+            // FIX THIS: I'm not sure how to hide the <span> by default. Matt other, any ideas?
+            //$("#"+myDivId + " span").first().hide();
 
             var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"<br/><span class='assumption-fulltext'>"+obj.text+"</span></div>");
 
@@ -97,10 +98,6 @@ NEOplace.FrontBoardAggregator = (function() {
         jQuery("#quadrant-2 div").draggable();
         jQuery("#quadrant-3 div").draggable();
         jQuery("#quadrant-4 div").draggable();
-
-        if(obj.css_class=="assumption" && obj.text!=""){
-            //$("#"+myDivId + " span").first().hide();
-        }
 
     }
 
