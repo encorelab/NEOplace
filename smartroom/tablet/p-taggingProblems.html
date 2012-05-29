@@ -1,0 +1,131 @@
+<html> 
+<head> 
+    <title>NEOplace - Smartroom Activity</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
+
+    <script src="js/sail.js/sail.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/jquery.mobile.init.js')
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/jquery-ui-1.8.20.dragdrop.min.js')
+            .then('js/jquery.ui.touch-punch.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.student.js')
+            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+    </script>
+</head>
+<body class="student">
+
+    <!-- START taggingProblems -->
+    <div id="taggingProblems" data-role="page" data-theme="c">
+
+        <div data-role="header" data-theme="a" >
+            <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
+            <h1>NEOplace - Hollywood Physics</h1>
+        </div>
+        
+        <div data-role="content">
+
+            <div class="ui-grid-b">
+                <div class="ui-block-a">
+                    <a data-role="button" data-transition="fade" href="#" data-icon="arrow-l" data-iconpos="left">
+                        Previous Problem
+                    </a>
+                </div>
+                <div class="ui-block-b text-align-center">
+                    <h2>Problem #<span class="problem-num">{#}</span></h2>
+                </div>
+                <div class="ui-block-c">
+                    <a data-role="button" data-transition="fade" href="#" data-icon="arrow-r" data-iconpos="right">
+                        Next Problem
+                    </a>
+                </div>
+            </div>
+
+            <div class="paper">
+                
+                <div class="htmlContent">
+                    {htmlContent}
+                </div>
+
+                <br />
+
+                <div id="connected-tags" data-role="collapsible" data-collapsed="true" data-content-theme="b" data-transition="slide">
+                    <h3>
+                        Connected Principles &amp; Equations
+                    </h3>
+                    <ul data-role="listview" data-inset="true" data-theme="c">
+                        <li>Acceleration <span class="peer-count">1</span></li>
+                        <li>Acceleration <span class="peer-count">1</span></li>
+                        <li>Acceleration <span class="peer-count">1</span></li>
+                        <li>Acceleration <span class="peer-count">1</span></li>
+                    </ul>
+                    <ul data-role="listview" data-inset="true" data-theme="c">
+                        <li>$$\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}$$ <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                        <li>P = W/t <span class="peer-count">1</span></li>
+                    </ul>
+                    <br clear="all" />
+                    <p class="footnote"><span class="peer-count">#</span> indicates how people chose this equation during the previous classroom group activity.</p>
+                </div>
+
+            </div>
+
+            <table class="dragAndDropContainer" width="730">
+                <tr>
+                    <th width="450">
+                        Will this problem help you solve the <em>Challenge Question</em>?
+                    </th>
+                    <th colspan="2" width="300">
+                        If so, send it to the shared videoboard<br />
+                      by dragging it into the portal.
+                    </th>
+                </tr>
+                <tr>
+                    <td>
+                         <div class="draggableTags">
+                            <!-- to be dynamically populated -->
+                            <div data-role="button" data-inline="true" class="draggable" id="drag-problem'+''#''+'" value="'+''problemnum''+'">Problem</div>
+                        </div>
+                    </td>
+                    <td width="130">
+                        <img src="/assets/img/drag_icon.png" width="100" height="150" alt="drag gesture" />
+                    </td>
+                    <td width="170">
+                        <div class="tagDropArea circle idle-glowing">
+                            <div class="droparea-label">Portal</div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+<!--
+            <div class="text-align-center">
+                <p>Will this problem help you solve the <em>Challenge Question</em>?<br />If so, tap the 'Connect Problem #<span class="problem-num">{#}</span> to Video' button to send it to the shared video board.</p>
+                <a href="#" data-role="button" data-transition="fade" data-theme="b">
+                    Connect Problem to Video
+                </a>
+            </div>
+-->
+
+            <!-- for UI_TESTING_ONLY -->
+            <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
+            
+        </div>
+    </div>
+    <!-- END taggingProblems -->
+
+</body>
+</html>

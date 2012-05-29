@@ -1,4 +1,3 @@
-<!DOCTYPE html> 
 <html> 
 <head> 
     <title>NEOplace - Smartroom Activity</title> 
@@ -26,8 +25,8 @@
 </head>
 <body class="student">
 
-    <!-- START videoBoardAssignment page -->
-    <div id="videoBoardAssignment" data-role="page" data-theme="c">
+    <!-- START taggingPrinciplesFinished -->
+    <div id="taggingPrinciplesFinished" data-role="page" data-theme="c">
 
         <div data-role="header" data-theme="a" >
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
@@ -35,28 +34,18 @@
         </div>
 
         <div data-role="content">
-            <div class="board-assignment">
-                <p>Board<br /><span class="board-number">{#}</span></p>
-            </div>
-            <div class="text-align-center message">
-                <p>You have been assigned to a group and a video board.</p>
-                <p><img src="/assets/img/smartboard_gather.png" width="300" height="200" alt="student in front of smartboard" /></p>
-                
-            </div>
+            
+            <!-- <h2 class="text-align-center">Great work!</h2> -->
+            <p class="text-align-center"><img src="/assets/img/greatwork.png" width="235" height="208" alt="Thumbs up" /></p>
+            <h2 class="text-align-center">Waiting for the rest of your classmates to finish tagging all their videos...</h2>
 
-            <div class="text-align-center" id="signInInstructions">
-                <p>Tap the 'Sign In' button when you are there.</p>
-                <a href="#" data-role="button" data-theme="b" id="boardAssignmentSignInButton">Sign In</a>
-            </div>
+            <!-- for UI_TESTING_ONLY -->
+            <a href="p-sortPrinciplesBoard.html" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
 
-            <div class="text-align-center">
-                <p>Once your entire group is there, you can tap 'Continue' for instructions for the next step.</p>
-                <a href="p-sortPrinciples.html" data-role="button" data-theme="b" id="boardAssignmentContinueButton" class="ui-disabled">Continue</a>
-            </div>
         </div>
 
     </div>
-    <!-- END videoBoardAssignment page -->
-        
+    <!-- END taggingPrinciplesFinished -->
+
 </body>
 </html>
