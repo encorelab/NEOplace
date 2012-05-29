@@ -3,7 +3,7 @@
 <head> 
     <title>NEOplace - FrontboardBoard 2</title> 
     <meta charset="utf-8">
-    
+
     <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" />
     <link rel="stylesheet" type="text/css" href="css/neoplace.frontboard2.css" />
 
@@ -11,6 +11,11 @@
     <script type="text/javascript">
     
         Sail.load()
+            .then('js/jquery.mobile.init.js')
+            .then('js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/jquery-ui-1.8.20.dragdrop.min.js')
+
             .then('js/neoplace.frontboard-aggregator.js')
             .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
@@ -58,12 +63,5 @@
 
     </div>
 
-    <script type="text/javascript">
-        /*
-        Sail.load()
-            .then('js/neoplace.frontboard-aggregator.js')
-            .thenRun(function() { return Sail.init(NEOplace.FrontBoardAggregator); });
-        */
-    </script>
 </body>
 </html>
