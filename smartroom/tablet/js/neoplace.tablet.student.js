@@ -19,7 +19,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
     self.studentPrinciples = [];
 
+    self.problemTemplate = "";
     self.problemSet = [];
+    self.problemSetForEquationTagging = [];
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = true;
@@ -54,21 +56,87 @@ NEOplace.Tablet.Student = (function(Tablet) {
             return str;
     };
 
-    self.updatetaggingProblemsPage = function(problemSet) {
+    self.loadProblemTempate = function() {
+        // grab template body for problem layout
+        $.ajax({
+            url: 'template-problem.html',
+            success: function(data, textStatus, jqXHR){
+                self.problemTemplate = data;
+                console.log("loaded");
+            },
+            dataType: 'html'
+        });
+    }
 
-    //                         // grab problem from json files
-    //                 $.ajax({
-    //                     url: '/assets/problems/'+Sail.app.currentProblem.name+'.html',
-    //                     success: function(data, textStatus, jqXHR){
+    self.loadProblemTempate(); //TODO: move someone more appropriate, right now just call on js file load
 
-    //                         //save the html for later
-    //                         Sail.app.currentProblem.htmlContent += data;
+    self.getProblemSetForTagging = function() {
 
+        var loadedProblems = 0;
 
-    //                     },
-    //                     dataType: 'html'
-    //                 });
+        _.each( self.problemSet, function(problem){
+            // grab problem body html from json files
+            $.ajax({
+                url: '/assets/problems/'+problem.name+'.html',
+                success: function(data, textStatus, jqXHR){
+
+                    //save the html for later
+                    problem.htmlContent = data;
+
+                    //if all problems loaded, output
+                    loadedProblems++;
+                    if (loadedProblems === self.problemSet.length ){
+                       self.outputProblems(); 
+                    }
+
+                },
+                dataType: 'html'
+            });
+        });
+            
     };
+
+    self.outputProblems = function() {
+
+        var scrollingProblemsWidth = 0;
+        var windowWidth = $(window).width();
+        var sideMargins = 50;
+        var contentWidth = windowWidth - ( sideMargins * 2 );
+
+        _.each( self.problemSet, function(problem,key){
+            var id = "problem" + key;
+            $("#taggingProblems .scrollingProblems").append(
+                '<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate +'</div>'
+            ).trigger("create");
+
+            $('#'+id+' .problem-title').html(problem.title);
+            $('#'+id+' .html-content').html(problem.htmlContent);
+
+            scrollingProblemsWidth += windowWidth + (sideMargins*2);
+        });
+
+        console.log("windowWidth: " + windowWidth );
+
+        $("#taggingProblems .scrollingProblems").css("width",scrollingProblemsWidth);
+        $("#taggingProblems .scrollingProblems").css("left","0px");
+
+        $("#taggingProblems .attachProblemContainer").css("width", contentWidth + "px" );
+        $("#taggingProblems .problem").css("width", (contentWidth - 40) + "px");
+
+        var problemWidth = $("#taggingProblems .problem").css("width");
+
+        $("#taggingProblems .scrollingProblems").swipeleft(function(){
+            console.log("swipeleft, target: -" + problemWidth );
+            console.log($("#taggingProblems .scrollingProblems").css("left"));
+            $("#taggingProblems .scrollingProblems").animate({left:('-'+problemWidth)}, 1000);
+        });
+        
+        $("#taggingProblems .scrollingProblems").swiperight(function(){
+            console.log("swiperight, target: -" + windowWidth );
+            console.log($("#taggingProblems .scrollingProblems").css("left"));
+            $("#taggingProblems .scrollingProblems").animate({left:'0px'}, 1000);
+        });
+    }
 
     self.restoreState = function() {
         // set Sail.app.visitedVideoBoards to stored visitedboards (from Rollcall)
@@ -398,12 +466,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 if ( !UI_TESTING_ONLY ) {
 
-                    Sail.app.getProblemSetRelatedToVideo();
+                    self.getProblemSetRelatedToVideo();
 
                 }else{
                     //fake it
-                    var fakeProblemSet = ["BowlingBall","BumperCars"]; //TODO: more complex than this
-                    self.updatetaggingProblemsPage(fakeProblemSet);
+                    //TODO: more complex than this
+                    self.problemSet = [
+                        {title:"Bowling Ball", name:"BowlingBall"},
+                        {title:"Bumper Cars", name:"BumperCars"}
+                    ];
+                    self.getProblemSetForTagging();
 
                     //fake it, this event comes from the video board
                     $('#taggingProblems .skipButton').css('display','block');
@@ -456,8 +528,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 }else{
                     //fake it
-                    var fakeProblemSet = ["BowlingBall","BumperCars"]; //TODO: more complex than this
-                    self.updatetaggingProblemsPage(fakeProblemSet);
+                    //var fakeProblemSet = ["BowlingBall","BumperCars"]; //TODO: more complex than this
+                    //self.updatetaggingProblemsPage(fakeProblemSet);
 
                     //fake it, this event comes from the video board
                     $('#taggingEquations .skipButton').css('display','block');
@@ -483,9 +555,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     //Sail.app.getProblemSetRelatedToVideo();
 
                 }else{
-                    //fake it
-                    var fakeProblemSet = ["BowlingBall","BumperCars"]; //TODO: more complex than this
-                    self.updatetaggingProblemsPage(fakeProblemSet);
 
                     //fake it, this event comes from the video board
                     $('#variableWriter .skipButton').css('display','block');
@@ -586,7 +655,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         problem_set_received: function(sev) {
             //TODO: 
             Sail.app.problemSet = sev.payload.problem_set;
-            Sail.app.updatetaggingProblemsPage();
+            //Sail.app.updatetaggingProblemsPage();
         }
 
     };
