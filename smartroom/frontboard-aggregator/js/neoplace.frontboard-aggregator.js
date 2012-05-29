@@ -52,9 +52,6 @@ NEOplace.FrontBoardAggregator = (function() {
         // add exception for assumptions
         if(obj.css_class=="assumption" && obj.text!=""){
             
-            // FIX THIS: I'm not sure how to hide the <span> by default. Matt other, any ideas?
-            //$("#"+myDivId + " span").first().hide();
-
             var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"<br/><span class='assumption-fulltext'>"+obj.text+"</span></div>");
 
             // expand on double click
@@ -62,12 +59,8 @@ NEOplace.FrontBoardAggregator = (function() {
                 
                 var theFullText = $(this).text();
                 var myDivId = $(this).attr("id");
-                //$("p span").first().addClass('highlight');
-                //$("#"+myDivId + " span").first().fadeIn("slow");
-                $("#"+myDivId).first().animate();
+                $("#"+myDivId + " span").first().fadeIn("slow");
                 $("#"+myDivId + " span").first().show();
-                
-                //alert(theFullText);
 
             });
 
