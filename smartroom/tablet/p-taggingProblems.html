@@ -42,7 +42,7 @@
                     </a>
                 </div>
                 <div class="ui-block-b text-align-center">
-                    <h2>Problem #<span class="problem-num">{#}</span></h2>
+                    <h2 class="problem-title">{Problem Title}</h2>
                 </div>
                 <div class="ui-block-c">
                     <a data-role="button" data-transition="fade" href="#" data-icon="arrow-r" data-iconpos="right">
@@ -51,38 +51,45 @@
                 </div>
             </div>
 
-            <div class="paper">
-                
-                <div class="htmlContent">
-                    {htmlContent}
-                </div>
-
-                <br />
-
-                <div id="connected-tags" data-role="collapsible" data-collapsed="true" data-content-theme="b" data-transition="slide">
-                    <h3>
-                        Connected Principles &amp; Equations
-                    </h3>
-                    <ul data-role="listview" data-inset="true" data-theme="c">
-                        <li>Acceleration <span class="peer-count">1</span></li>
-                        <li>Acceleration <span class="peer-count">1</span></li>
-                        <li>Acceleration <span class="peer-count">1</span></li>
-                        <li>Acceleration <span class="peer-count">1</span></li>
-                    </ul>
-                    <ul data-role="listview" data-inset="true" data-theme="c">
-                        <li>$$\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}$$ <span class="peer-count">1</span></li>
-                        <li>P = W/t <span class="peer-count">1</span></li>
-                        <li>P = W/t <span class="peer-count">1</span></li>
-                        <li>P = W/t <span class="peer-count">1</span></li>
-                        <li>P = W/t <span class="peer-count">1</span></li>
-                        <li>P = W/t <span class="peer-count">1</span></li>
-                    </ul>
-                    <br clear="all" />
-                    <p class="footnote"><span class="peer-count">#</span> indicates how people chose this equation during the previous classroom group activity.</p>
-                </div>
-
+            <div class="text-align-center attachProblemContainer">
+                <p>Will this problem help you solve the <em>Challenge Question</em>?<br />If so, tap the button below to send it to the shared video board.</p>
+                <a href="#" data-role="button" data-transition="fade" data-theme="b" class="connectProblemButton">
+                    Connect This Problem to the Video
+                </a>
             </div>
 
+            <div class="paper">
+                <div class="html-content">
+                    {Problem HTML Content}
+                </div>
+            </div>
+
+            <br />
+
+            <div id="connected-tags" data-role="collapsible" data-collapsed="false" data-content-theme="b" data-transition="slide">
+                <h3>
+                    This Problem's Connected Principles &amp; Equations
+                </h3>
+                <ul data-role="listview" data-inset="true" data-theme="c">
+                    <li>Acceleration <span class="peer-count">1</span></li>
+                    <li>Acceleration <span class="peer-count">1</span></li>
+                    <li>Acceleration <span class="peer-count">1</span></li>
+                    <li>Acceleration <span class="peer-count">1</span></li>
+                </ul>
+                <ul data-role="listview" data-inset="true" data-theme="c">
+                    <li>$$\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}$$ <span class="peer-count">1</span></li>
+                    <li>P = W/t <span class="peer-count">1</span></li>
+                    <li>P = W/t <span class="peer-count">1</span></li>
+                    <li>P = W/t <span class="peer-count">1</span></li>
+                    <li>P = W/t <span class="peer-count">1</span></li>
+                    <li>P = W/t <span class="peer-count">1</span></li>
+                </ul>
+                <br clear="all" />
+                <p class="footnote"><span class="peer-count">#</span> indicates how people chose this equation during the previous classroom group activity.</p>
+            </div>
+
+<!-- version w/o dragging -->
+<!--
             <table class="dragAndDropContainer" width="730">
                 <tr>
                     <th width="450">
@@ -96,7 +103,6 @@
                 <tr>
                     <td>
                          <div class="draggableTags">
-                            <!-- to be dynamically populated -->
                             <div data-role="button" data-inline="true" class="draggable" id="drag-problem'+''#''+'" value="'+''problemnum''+'">Problem</div>
                         </div>
                     </td>
@@ -110,16 +116,9 @@
                     </td>
                 </tr>
             </table>
-
-<!-- old version w/o dragging -->
-<!--
-            <div class="text-align-center">
-                <p>Will this problem help you solve the <em>Challenge Question</em>?<br />If so, tap the 'Connect Problem #<span class="problem-num">{#}</span> to Video' button to send it to the shared video board.</p>
-                <a href="#" data-role="button" data-transition="fade" data-theme="b">
-                    Connect Problem to Video
-                </a>
-            </div>
 -->
+
+
 
             <!-- for UI_TESTING_ONLY -->
             <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>

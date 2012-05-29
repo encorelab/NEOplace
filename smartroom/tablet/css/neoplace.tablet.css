@@ -453,9 +453,19 @@ table.dragAndDropContainer .draggableTags {
     margin-top: 0.7em;
 }
 
+#taggingProblems .attachProblemContainer {
+    width: 725px;
+    margin: 0px auto 30px auto;
+}
+
 #taggingProblems .paper {
     background-image: none;
 }
+
+#taggingProblems .paper .html-content .pimg {
+   text-align: center;
+}
+
 
 #taggingProblems #connected-tags ul {
     width: 46%;
