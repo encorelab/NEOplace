@@ -1,3 +1,4 @@
+<!DOCTYPE html> 
 <html> 
 <head> 
     <title>NEOplace - Smartroom Activity</title> 
@@ -25,8 +26,8 @@
 </head>
 <body class="student">
 
-    <!-- START videoTaggingFinished -->
-    <div id="videoTaggingFinished" data-role="page" data-theme="c">
+    <!-- START sortPrinciplesBoard page -->
+    <div id="sortPrinciplesBoard" data-role="page" data-theme="c">
 
         <div data-role="header" data-theme="a" >
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
@@ -34,18 +35,28 @@
         </div>
 
         <div data-role="content">
-            
-            <!-- <h2 class="text-align-center">Great work!</h2> -->
-            <p class="text-align-center"><img src="/assets/img/greatwork.png" width="235" height="208" alt="Thumbs up" /></p>
-            <h2 class="text-align-center">Waiting for the rest of your classmates to finish tagging all their videos...</h2>
+            <div class="board-assignment">
+                <p>Board<br /><span class="board-number">{#}</span></p>
+            </div>
+            <div class="text-align-center message">
+                <p>You have been assigned to a group and a video board.</p>
+                <p><img src="/assets/img/smartboard_gather.png" width="300" height="200" alt="student in front of smartboard" /></p>
+                
+            </div>
 
-            <!-- for UI_TESTING_ONLY -->
-            <a href="p-videoBoardAssignment.html" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
+            <div class="text-align-center signInInstructions">
+                <p>Tap the 'Sign In' button when you are there.</p>
+                <a href="#" data-role="button" data-theme="b" class="boardSignInButton">Sign In</a>
+            </div>
 
+            <div class="text-align-center">
+                <p>Once your entire group is there, you can tap 'Continue' for instructions for the next step.</p>
+                <a href="p-sortPrinciples.html" data-role="button" data-theme="b" class="doneButton" class="ui-disabled">Continue</a>
+            </div>
         </div>
 
     </div>
-    <!-- END videoTaggingFinished -->
-
+    <!-- END videoBoardAssignment page -->
+        
 </body>
 </html>
