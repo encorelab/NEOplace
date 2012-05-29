@@ -294,6 +294,7 @@ body {
 
 /** common styles **/
 
+/* Styles used to override Sail login box */
 #auth-indicator {
     z-index: 100;
     color: #fff;
@@ -304,7 +305,6 @@ body {
     margin-top: 0.8em !important;
 }
 
-
 #login-box.auth-box {
     min-width: 400px;
     max-width: 500px;
@@ -313,37 +313,44 @@ body {
     right: 0 !important;
     top: 135px !important;
 }
+/* END Styles used to override Sail login box */
 
-/* Styles exclusively for: p-videoTagging.html */
-table#principleDragging {
+
+/* Styles used on all p-***.html pages */
+.skipButton {
+    margin-top: 100px;
+}
+/* END Styles used on all p-***.html pages */
+
+
+/* Styles exclusively for: p-taggingPrinciples.html */
+/* END Styles exclusively for: p-taggingPrinciples.html */
+
+
+/* Common styles for dragging and dropping to portal */
+table.dragAndDropContainer {
     margin: 0 auto;
     border-collapse: collapse;
     border-top: 1px dashed #ccc;
     border-bottom: 1px dashed #ccc;
 }
 
-#principleDragging th {
+table.dragAndDropContainer th {
     text-align: center;
-    
 }
 
-#principleDragging td, #principleDragging th {
+table.dragAndDropContainer td, table.dragAndDropContainer th {
     /*border: 1px solid red;*/
     padding: 20px 0;
     font-weight: normal;
 }
 
-#principleDragging #draggableTags {
+table.dragAndDropContainer .draggableTags {
     margin-top: -35px;
 }
 
-#principleDragging #tagDropArea {
-    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
-    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
-}
 
-#principleDragging .droparea-label {
+.tagDropArea .droparea-label {
     padding-top: 65px;
     padding-left: 5px;
     text-align: center;
@@ -351,6 +358,12 @@ table#principleDragging {
     letter-spacing: 0.2em;
     color: #c9e4f6;
     text-shadow: none;
+}
+
+.tagDropArea {
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
 }
 
 .circle {
@@ -400,18 +413,23 @@ table#principleDragging {
     -webkit-animation-iteration-count: 1;
     -webkit-animation-fill-mode: forwards; /* need this otherwise button comes back into view */
 }
-/* END Styles exclusively for: p-videoTagging.html */
+/* Common styles for dragging and dropping to portal */
 
-/* Styles exclusively for: p-finishedTagging.html */
 
-/* END Styles exclusively for: p-finishedTagging.html */
+/* Styles exclusively for: p-taggingPrinciplesFinished.html */
+/* END Styles exclusively for: p-taggingPrinciplesFinished.html */
 
-/* Styles exclusively for: p-videoBoardAssignment.html */
-#videoBoardAssignment .message {
+
+/* Styles exclusively for: p-sortPrinciplesBoard.html */
+/* ENDStyles exclusively for: p-sortPrinciplesBoard.html */
+
+
+/* Styles used in : p-sortPrinciplesBoard.html AND p-taggingEquations.html */
+#sortPrinciplesBoard .message, #taggingEquationsBoard .message {
     margin-top: 40px;
 }
 
-#videoBoardAssignment .board-assignment {
+.board-assignment {
     font-weight: bold; 
     position: absolute; 
     top: 135px; 
@@ -419,13 +437,29 @@ table#principleDragging {
     width: 300px;
 }
 
-#videoBoardAssignment .board-assignment p {
+.board-assignment p {
     position: relative; 
     left: -145px;
     text-align: center;
 }
 
-#videoBoardAssignment .board-number {
+.board-number {
     font-size: 1.5em;
 }
-/* END Styles exclusively for: p-videoBoardAssignment.html */
+/* Styles used in : p-sortPrinciplesBoard.html AND p-taggingEquations.html */
+
+/* Styles exclusively for: p-taggingProblems.html */
+#taggingProblems .ui-grid-b h2 {
+    margin-top: 0.7em;
+}
+
+#taggingProblems .paper {
+    background-image: none;
+}
+
+#taggingProblems #connected-tags ul {
+    width: 46%;
+    margin: 0 2%;
+    float: left;
+}
+/* END Styles exclusively for: p-taggingProblems.html */
