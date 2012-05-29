@@ -1,3 +1,4 @@
+<!DOCTYPE html> 
 <html> 
 <head> 
     <title>NEOplace - Smartroom Activity</title> 
@@ -25,54 +26,35 @@
 </head>
 <body class="student">
 
-    <!-- START variableWriter -->
-    <div id="variableWriter" data-role="page" data-theme="c">
+    <!-- START taggingEquationsBoard page -->
+    <div id="taggingEquationsBoard" data-role="page" data-theme="c">
 
         <div data-role="header" data-theme="a" >
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
             <h1>NEOplace - Hollywood Physics</h1>
         </div>
-        
+
         <div data-role="content">
-            <div>
-                <h2>Pick Your Variables</h2>
+            <div class="board-assignment">
+                <p>Board<br /><span class="board-number">{#}</span></p>
             </div>
-            <div>
-                <b>
-                    Write out any variables that you think are needed to help "solve" the
-                    challenge question
-                    <br />
-                    <br />
-                    (i.e. The speed of an object, the co-efficient of friction, the mass of
-                    an object)
-                </b>
-            </div>
-            <div data-role="fieldcontain">
-                <fieldset data-role="controlgroup">
-                    <label for="textarea3">
-                    </label>
-                    <textarea id="textarea3" placeholder="">
-                    </textarea>
-                </fieldset>
-            </div>
-            <div class="ui-grid-a">
-                <div class="ui-block-a">
-                    <a data-role="button" id="variableHint" href="#">
-                        Give me a Hint!
-                    </a>
-                </div>
-                <div class="ui-block-b">
-                    <input type="submit" value="Submit" />
-                </div>
+            <div class="text-align-center message">
+                <p>You have been assigned to a <strong>new</strong> group and a video board.</p>
+                <p><img src="/assets/img/smartboard_gather.png" width="300" height="200" alt="student in front of smartboard" /></p>
+                
             </div>
 
+            <div class="text-align-center signInInstructions">
+                <p>Tap the 'Sign In' button when you are there.</p>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton">Sign In</a>
+            </div>
 
-            <a href="p-finishPage.html" data-role="button" data-transition="fade" data-theme="b" >
-                Finished Submitting Variables
-            </a>
+            <!-- for UI_TESTING_ONLY -->
+            <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
         </div>
-    </div>
-    <!-- END variableWriter -->
 
+    </div>
+    <!-- END taggingEquationsBoard page -->
+        
 </body>
 </html>

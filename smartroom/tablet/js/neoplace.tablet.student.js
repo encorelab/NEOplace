@@ -79,7 +79,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             success: function (boards) {
                 console.log(boards);
                 Sail.app.visitedVideoBoards = _.map(boards, function(i) { return i.board });
-                $.mobile.loadPage('p-taggingPrinciplesBoard.html');
+                $.mobile.changePage('p-taggingPrinciplesBoard.html');
             }
         });
 
@@ -144,6 +144,11 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 
                 //skip button for testing only
                 $("#loginScreen .skipButton").css("display","block");
+                $("#loginScreen .skipButton").die();
+                $("#loginScreen .skipButton").live("click", function(){
+                    $.mobile.changePage('p-taggingPrinciplesBoard.html');
+                });
+
             }
             //});
 
@@ -208,8 +213,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 });
 
                 if ( UI_TESTING_ONLY ) {
-                    //skip over video tagging section
+                    //skip over entire video tagging section
                     $("#taggingPrinciplesBoard .skipButton").css("display","block");
+                    $("#taggingPrinciplesBoard .skipButton").die();
+                    $("#taggingPrinciplesBoard .skipButton").live("click", function(){
+                        $.mobile.changePage('p-taggingPrinciplesFinished.html');
+                    });
                 }
 
             });
@@ -324,18 +333,24 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     //nothing here really...
                 }else{
                     // testing button, will actually be 
-                    //self.events.sail.classmates_done_tagging();
-                    $( '#taggingPrinciplesFinished .skipButton').css("display","block");
+                    $('#taggingPrinciplesFinished .skipButton').css("display","block");
+                    $("#taggingPrinciplesFinished .skipButton").die();
+                    $("#taggingPrinciplesFinished .skipButton").live("click", function(){
+                        $.mobile.changePage('p-sortPrinciplesBoard.html');
+                    });
                 }
 
             });
 
-
+//!!!
             // ****************
             // PAGE: Students have been assigned to a group/videoboard for tagging problems
             // They are being asked to gather in front of board and check in
             $( '#sortPrinciplesBoard' ).live( 'pageinit',function(event){
                 console.log("#sortPrinciplesBoard pageinit");
+
+                //TODO: When/Where am I getting this # from the agent??
+                $("#sortPrinciplesBoard .board-number").html("2");
 
                 $("#sortPrinciplesBoard .videoBoardSignInButton").die();
                 $("#sortPrinciplesBoard .videoBoardSignInButton").live('click', function(){
@@ -346,7 +361,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         // send out check_in (which sends to wait screen)
                         Sail.app.submitCheckIn(self.userData, self.currentBoard);
                     }else{
-                        //fake it
                         self.events.sail.activity_started({payload:{activity_name:"principle_sorting"}});
                     }
                 });
@@ -363,7 +377,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 if ( !UI_TESTING_ONLY ) {
                     //nothing here really...
                 }else{
-                    //fake it
+                    //fake it, move to the next screen due to an event from the video board
                     $('#sortPrinciples .skipButton').css('display','block');
                     $('#sortPrinciples .skipButton').die();
                     $('#sortPrinciples .skipButton').live('click', function(){
@@ -391,44 +405,100 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     var fakeProblemSet = ["BowlingBall","BumperCars"]; //TODO: more complex than this
                     self.updatetaggingProblemsPage(fakeProblemSet);
 
-                    //fake it
+                    //fake it, this event comes from the video board
                     $('#taggingProblems .skipButton').css('display','block');
                     $('#taggingProblems .skipButton').die();
                     $('#taggingProblems .skipButton').live('click', function(){
-                        self.events.sail.activity_started({payload:{activity_name:"done_problem_tagging"}});
+                        self.events.sail.activity_started({payload:{activity_name:"equation_adding_board_assigned"}});
+                    });
+                }
+
+            });
+
+
+            // ****************
+            // PAGE: Students have been assigned to a NEW group/videoboard for tagging equations
+            // They are being asked to gather in front of board and check in
+            $( '#taggingEquationsBoard' ).live( 'pageinit',function(event){
+                console.log("#taggingEquationsBoard pageinit");
+
+                //TODO: When/Where am I getting this # from the agent??
+                $("#taggingEquationsBoard .board-number").html("3");
+
+                $("#taggingEquationsBoard .videoBoardSignInButton").die();
+                $("#taggingEquationsBoard .videoBoardSignInButton").live('click', function(){
+                    $(this).addClass("ui-disabled");
+                    $("#taggingEquationsBoard .signInInstructions").css("opacity","0.3");
+
+                    if ( !UI_TESTING_ONLY ) {
+                        // send out check_in (which sends to wait screen)
+                        Sail.app.submitCheckIn(self.userData, self.currentBoard);
+                    }else{
+                        self.events.sail.activity_started({payload:{activity_name:"equation_adding"}});
+                    }
+                });
+
+            });
+
+
+            // ****************
+            // PAGE: Students get 4-5 questions from a batch of 12 or so problems based on the previous step
+            // They are asked to flip through all of them and attach equations that are relevant
+            $( '#taggingEquations' ).live( 'pageinit',function(event){
+                console.log("#taggingEquations pageinit");
+
+                //TODO: show loading animation
+
+                if ( !UI_TESTING_ONLY ) {
+
+                    //TODO:
+                    Sail.app.getProblemSetRelatedToVideo();
+
+                }else{
+                    //fake it
+                    var fakeProblemSet = ["BowlingBall","BumperCars"]; //TODO: more complex than this
+                    self.updatetaggingProblemsPage(fakeProblemSet);
+
+                    //fake it, this event comes from the video board
+                    $('#taggingEquations .skipButton').css('display','block');
+                    $('#taggingEquations .skipButton').die();
+                    $('#taggingEquations .skipButton').live('click', function(){
+                        self.events.sail.activity_started({payload:{activity_name:"variable_writing"}});
                     });
                 }
 
 
-
             });
 
-            
             // ****************
-            // PAGE: Students have logged in and have been assigned to a group/videoboard
-            // They are being asked to gather in front of board and check in
-            $( '#sortPrinciplesBoard' ).live( 'pageinit',function(event){
-                console.log("#sortPrinciplesBoard pageinit");
+            // PAGE: Students stay in the previous group and write down their variables and assumptions
+            $( '#variableWriter' ).live( 'pageinit',function(event){
+                console.log("#variableWriter pageinit");
 
-                $("#sortPrinciplesBoard .boardSignInButton").die();
-                $("#sortPrinciplesBoard .boardSignInButton").live('click', function(){
-                    $(this).addClass("ui-disabled");
-                    $("#sortPrinciplesBoard .signInInstructions").css("opacity","0.3");
+                //TODO: show loading animation
 
-                    if ( !UI_TESTING_ONLY ) {
-                        //TODO: backend call
-                        //Sail.app.submitVideoBoardLogin(data.account.login, currentBoard);
-                    }else{
-                        //fake it
-                        //self.events.sail.group_video_board_checkin();
+                if ( !UI_TESTING_ONLY ) {
 
-                        $("#videoBoardAssignment .doneButton").removeClass("ui-disabled");
-                        
-                    }
-                });
+                    //TODO:
+                    //Sail.app.getProblemSetRelatedToVideo();
+
+                }else{
+                    //fake it
+                    var fakeProblemSet = ["BowlingBall","BumperCars"]; //TODO: more complex than this
+                    self.updatetaggingProblemsPage(fakeProblemSet);
+
+                    //fake it, this event comes from the video board
+                    $('#variableWriter .skipButton').css('display','block');
+                    $('#variableWriter .skipButton').die();
+                    $('#variableWriter .skipButton').live('click', function(){
+                        //self.events.sail.activity_started({payload:{activity_name:"equation_adding_board_assigned"}});
+                        $.mobile.changePage('p-finishPage.html');
+                    });
+                }
 
 
             });
+
             
         },
 
@@ -480,34 +550,37 @@ NEOplace.Tablet.Student = (function(Tablet) {
         activity_started: function(sev) {
             if (sev.payload.activity_name === "video_tagging") {
                 $.mobile.changePage('p-taggingPrinciples.html');
+
             } else if (sev.payload.activity_name === "principle_sorting") {
                 // do something, go somewhere
                 $.mobile.changePage('p-sortPrinciples.html');
+
             } else if (sev.payload.activity_name === "problem_tagging") {
                 // do something, go somewhere
                 $.mobile.changePage('p-taggingProblems.html'); 
+
             } else if (sev.payload.activity_name === "done_problem_tagging") {
                 // do something, go somewhere
-                $.mobile.changePage('p-wait-screen.html'); 
+                $.mobile.changePage('p-wait-screen.html');
+
+            } else if (sev.payload.activity_name === "equation_adding_board_assigned") {
+                $.mobile.changePage('p-taggingEquationsBoard.html');
+
             } else if (sev.payload.activity_name === "equation_adding") {
                 // do something, go somewhere else
+                $.mobile.changePage('p-taggingEquations.html');
+
+            } else if (sev.payload.activity_name === "done_equation_adding") {
+                // do something, go somewhere else
+                $.mobile.changePage('p-wait-screen.html');
+
+            } else if (sev.payload.activity_name === "variable_writing") {
+                // do something, go somewhere else
+                $.mobile.changePage('p-variableWriter.html');
+
             } else {
                 console.log('ignoring activity_started, wrong activity');
             }
-        },
-
-        classmates_done_tagging: function(sev) {
-            //TODO: 
-            $.mobile.changePage('p-videoBoardAssignment.html');
-        },
-
-        principles_sorted: function(sev) {
-            //TODO: 
-
-            //Enable the continue button
-            $("#sortPrinciples #doneSortingPrinciplesButton").css("display","block");
-            //or automatically go to next screen
-            //$.mobile.changePage('p-taggingProblems.html');
         },
 
         problem_set_received: function(sev) {

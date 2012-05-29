@@ -420,12 +420,16 @@ table.dragAndDropContainer .draggableTags {
 /* END Styles exclusively for: p-taggingPrinciplesFinished.html */
 
 
-/* Styles exclusively for: p-videoBoardAssignment.html */
-#sortPrinciplesBoard .message {
+/* Styles exclusively for: p-sortPrinciplesBoard.html */
+/* ENDStyles exclusively for: p-sortPrinciplesBoard.html */
+
+
+/* Styles used in : p-sortPrinciplesBoard.html AND p-taggingEquations.html */
+#sortPrinciplesBoard .message, #taggingEquationsBoard .message {
     margin-top: 40px;
 }
 
-#sortPrinciplesBoard .board-assignment {
+.board-assignment {
     font-weight: bold; 
     position: absolute; 
     top: 135px; 
@@ -433,17 +437,16 @@ table.dragAndDropContainer .draggableTags {
     width: 300px;
 }
 
-#sortPrinciplesBoard .board-assignment p {
+.board-assignment p {
     position: relative; 
     left: -145px;
     text-align: center;
 }
 
-#sortPrinciplesBoard .board-number {
+.board-number {
     font-size: 1.5em;
 }
-/* END Styles exclusively for: p-videoBoardAssignment.html */
-
+/* Styles used in : p-sortPrinciplesBoard.html AND p-taggingEquations.html */
 
 /* Styles exclusively for: p-taggingProblems.html */
 #taggingProblems .ui-grid-b h2 {
