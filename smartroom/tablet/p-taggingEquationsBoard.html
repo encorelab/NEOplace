@@ -26,8 +26,8 @@
 </head>
 <body class="student">
 
-    <!-- START chooseVideoBoard page -->
-    <div id="chooseVideoBoard" data-role="page" data-theme="c">
+    <!-- START taggingEquationsBoard page -->
+    <div id="taggingEquationsBoard" data-role="page" data-theme="c">
 
         <div data-role="header" data-theme="a" >
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
@@ -35,23 +35,26 @@
         </div>
 
         <div data-role="content">
-            <div class="text-align-center">
-                <p class="message">Walk over to any video board.</p>
-                <p><img src="/assets/img/choose_videoboard.png" width="300" height="200" alt="student in front of smartboard" /></p>
+            <div class="board-assignment">
+                <p>Board<br /><span class="board-number">{#}</span></p>
+            </div>
+            <div class="text-align-center message">
+                <p>You have been assigned to a <strong>new</strong> group and a video board.</p>
+                <p><img src="/assets/img/smartboard_gather.png" width="300" height="200" alt="student in front of smartboard" /></p>
+                
             </div>
 
-            <div class="text-align-center">
-                <p>Sign in by tapping on the appropriate button below:</p>
-                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="1">Video Board #1</a>
-                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="2">Video Board #2</a>
-                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="3">Video Board #3</a>
-                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="4">Video Board #4</a>
+            <div class="text-align-center signInInstructions">
+                <p>Tap the 'Sign In' button when you are there.</p>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton">Sign In</a>
             </div>
 
+            <!-- for UI_TESTING_ONLY -->
+            <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
         </div>
 
     </div>
-    <!-- END chooseVideoBoard page -->
+    <!-- END taggingEquationsBoard page -->
         
 </body>
 </html>
