@@ -1,0 +1,396 @@
+/* this is mostly lifted from common-knowledge-smartboard.css */
+
+body {
+  /*background: url("/images/common_habitats.png");*/
+  background-size: 70% auto;
+  background-position: 0 100px;
+  overflow: hidden;
+  background: #eee;
+}
+
+header {
+  display: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#wall {
+  position: absolute;
+  top: 10px;
+  bottom: 30px;
+  right: 165px;
+  left: 165px;
+
+  -moz-perspective: 900px;
+  -moz-transform-style: preserve-3d;
+  -webkit-perspective: 900px;
+  -webkit-transform-style: preserve-3d;
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+
+.toolbar {
+  border-radius: 8px !important;
+  position: absolute;
+  text-align: center;
+  background: rgba(0,0,0,0.85);
+}
+
+.toolbar ul {
+  list-style: none;
+  margin: 5px;
+  padding-left: 0;
+  text-align: left;
+}
+
+.toolbar .titlebar {
+  margin-bottom: 0.5em;
+}
+
+.toolbar.ui-draggable .titlebar {
+  cursor: pointer;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.toolbar.ui-draggable-dragging .titlebar {
+  cursor: move;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+.toolbar ul li {
+  background-color: #444;
+  border: 3px solid #aaa;
+  border-radius: 10px;
+  padding: 3px 8px;
+  margin-bottom: 6px;
+  overflow: hidden;
+}
+
+.toolbar ul li:hover {
+  cursor: pointer;
+}
+
+.toolbar li.selected {
+  background-color: #0a0;
+  border: dotted #0f0;
+}
+
+.toolbars-left {
+  position: absolute;
+  left: -155px;
+  top: 10px;
+  width: 160px;
+  bottom: 0px;
+
+  -moz-transform: rotateY(20deg) translateY(-2px);
+  -webkit-transform: rotateY(15deg) translateY(-10px) translateX(10px);
+  transform: rotateY(20deg) translateY(-10px);
+}
+
+.toolbars-right {
+  position: absolute;
+  right: -150px;
+  top: 10px;
+  width: 160px;
+  bottom: 0px;
+
+  -moz-transform: rotateY(-20deg) translateY(-2px);
+  -webkit-transform: rotateY(-15deg) translateY(-10px) translateX(-10px);
+  transform: rotateY(-20deg) translateY(-10px);
+}
+
+.toolbars-top {
+  top: -8px;
+  position: absolute;
+  right: 25%;
+}
+
+.toolbars-top .widget-box {
+  display: inline-block;
+  border-radius: 0px 0px 13px 13px;
+  padding: 4px;
+}
+
+.toolbars-top .widget-box a {
+  background-color: #444444;
+  border: 3px solid #AAAAAA;
+  border-radius: 10px 10px 10px 10px;
+  margin-top: 6px;
+  overflow: hidden;
+  padding: 3px 8px;
+  display: inline-block;
+}
+
+.toolbars-bottom {
+  bottom: -8px;
+  position: absolute;
+  right: 25%;
+}
+
+.toolbars-bottom .widget-box {
+  display: inline-block;
+  border-radius: 13px 13px 0px 0px;
+  padding: 4px;
+}
+
+.toolbars-bottom .widget-box a {
+  /* background-color: #444444;*/
+  border: 3px solid #AAAAAA;
+  border-radius: 10px 10px 10px 10px;
+  margin-bottom: 6px;
+  overflow: hidden;
+  padding: 3px 8px;
+  display: inline-block;
+}
+
+.filter-list-container {
+  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  height: 90%;
+}
+
+.toolbars-left .toolbar {
+  box-shadow: -4px 3px 5px rgba(0, 0, 0, 0.4);
+}
+
+.toolbars-right .toolbar {
+  box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.4);
+}
+
+#tags-filter,
+#authors-filter,
+#about-filter,
+#discourse-filter {
+  width: 100%;
+  position: static;
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+
+#tags-filter {
+  max-height: 72%;
+  height: 72%;
+}
+
+#authors-filter {
+  max-height: 72%;
+  height: 72%;
+}
+
+#discourse-filter {
+  max-height: 22%;
+  height: 22%;
+}
+
+#discourse-filter li {
+  text-transform: capitalize;
+}
+
+#about-filter {
+  max-height: 22%;
+  height: 22%;
+}
+
+div.none-yet {
+  padding: 10px;
+  font-style: italic;
+  opacity: 0.6;
+}
+
+.balloon {
+  position: absolute;
+  width: 300px;
+  display: inline-block;
+  
+  border-radius: 15px;
+  background-color: rgba(256,256,256,0.9);
+  box-shadow: rgba(0,0,0,0.25) 3px 3px 4px;
+}
+
+.balloon:hover {
+  cursor: pointer;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.balloon.ui-draggable-dragging {
+  cursor: move;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+.balloon.blurred {
+  opacity: 0.15;
+}
+
+.balloon .about.author {
+  color: #999999;
+  font-size: 11px;
+  margin-bottom: 1em;
+  padding: 2px;
+  position: absolute;
+  right: 6px;
+  top: 0;
+}
+
+.balloon h3.headline {
+  margin: 0;
+}
+
+.balloon .tags {
+  font-size: 11px;
+  margin: 0 8px 6px;
+}
+
+.balloon .tag {
+  background: rgba(200,200,200, 0.5);
+  border-radius: 5px;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  padding: 2px 4px;
+}
+
+.balloon .text {
+  margin-top: 0.5em;
+  font-size: 14px;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 14px;
+  padding-right: 14px;
+}
+
+.balloon.discourse-question {
+  background: rgba(255, 230, 208, 0.9);
+}
+
+.balloon.discourse-comment {
+  background: rgba(202, 248, 202, 0.9);
+}
+
+.link {
+  position: absolute;
+  border-bottom: solid #999 1px;
+  height: 0;
+  -webkit-transform-origin: 0 0;
+  -moz-transform-origin: 0 0;
+  -ms-transform-origin: 0 0;
+  -o-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+
+
+
+/* redefine CSS styles in  wall.css */
+.widget-box {
+  margin-top: 4px;
+  padding: 5px;
+  text-align: center;
+}
+
+/* adding CSS specific to neoplace.frontboard2 */
+#quadrant-1 div, #quadrant-2 div, #quadrant-3 div, #quadrant-4 div {
+    border: 3px solid #AAAAAA;
+    border-radius: 10px 10px 10px 10px;
+    text-align: center;
+}
+
+#board #quadrant-1, #board #quadrant-2, #board #quadrant-3, #board #quadrant-4{
+  /* padding-top: 5px;*/
+  
+}
+
+#board {
+  border-right: 1px solid #999999;
+  background: #fff;
+  font-size: 12px;
+}
+
+#quadrant-1{
+  border: 2px solid;
+  float: left;
+  width: 50%;
+  overflow: auto;
+}
+
+#quadrant-2{
+  border: 2px solid;
+  overflow: auto;
+}
+
+#quadrant-3{
+  border: 2px solid;
+  float: left;
+  width: 50%;
+  overflow: auto;
+}
+
+#quadrant-4{
+  border: 2px solid;
+  overflow: auto;
+}
+
+.principle{
+  background: none repeat scroll 0 0 #E6BD07;
+  padding: 2px;
+  width: 112px;
+  margin: 5px;
+  float: left;
+}
+
+.problem{
+  background: none repeat scroll 0 0 #4B57FA;
+  padding: 2px;
+  width: 112px;
+  margin: 5px;
+  float: left;
+}
+
+.equation{
+  background: none repeat scroll 0 0 #069106;
+  padding: 2px;
+  width: 112px;
+  margin: 5px;
+  float: left;
+}
+
+.assumption{
+  background: none repeat scroll 0 0 #7D022B;
+  padding: 2px;
+  width: 112px;
+  margin: 5px;
+  float: left;
+}
+
+.variable{
+  background: none repeat scroll 0 0 #F25805;
+  padding: 2px;
+  width: 112px;
+  margin: 5px;
+  float: left;
+}
+
+.widget-box-selected{
+  background-color: yellow;
+  color: black;
+}
+
+.board-name{
+  background-color: #CCCCCC;
+  color: black;
+  margin: 5px;
+  float: left;
+  padding: 10px;
+}
