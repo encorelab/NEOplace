@@ -21,7 +21,7 @@
             .then('js/neoplace.tablet.student.js')
             .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
-            .thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
     </script>
 </head>
 <body class="student">
@@ -39,7 +39,7 @@
             <p class="text-align-center" id="statusMsg"><img src="/assets/img/login.png" width="300" height="200" alt="" /></p>
 
             <!-- for UI_TESTING_ONLY -->
-            <a href="p-chooseVideoBoard.html" data-role="button" data-theme="b" id="signInStartButton" style="display:none;">Start</a>
+            <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
         </div>
 
     </div>

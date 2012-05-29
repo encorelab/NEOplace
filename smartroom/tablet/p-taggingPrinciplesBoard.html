@@ -1,3 +1,4 @@
+<!DOCTYPE html> 
 <html> 
 <head> 
     <title>NEOplace - Smartroom Activity</title> 
@@ -25,8 +26,8 @@
 </head>
 <body class="student">
 
-    <!-- START finishedTagging -->
-    <div id="finishedTagging" data-role="page" data-theme="c">
+    <!-- START taggingPrinciplesBoard page -->
+    <div id="taggingPrinciplesBoard" data-role="page" data-theme="c">
 
         <div data-role="header" data-theme="a" >
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
@@ -34,17 +35,26 @@
         </div>
 
         <div data-role="content">
-            <!-- <h2 class="text-align-center">Great work!</h2> -->
-            <p class="text-align-center"><img src="/assets/img/greatwork.png" width="235" height="208" alt="Thumbs up" /></p>
-            <h2 class="text-align-center">Waiting for the rest of your classmates to finish tagging all their videos...</h2>
+            <div class="text-align-center">
+                <p class="message">Walk over to any video board.</p>
+                <p><img src="/assets/img/choose_videoboard.png" width="300" height="200" alt="student in front of video board" /></p>
+            </div>
+
+            <div class="text-align-center">
+                <p>Sign in by tapping on the appropriate button below:</p>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="1">Video Board #1</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="2">Video Board #2</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="3">Video Board #3</a>
+                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton" value="4">Video Board #4</a>
+            </div>
 
             <!-- for UI_TESTING_ONLY -->
-            <a href="p-videoBoardAssignment.html" data-role="button"data-theme="b" id="finishedTaggingContinueButton" style="display:none;">Go!</a>
+            <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
 
         </div>
 
     </div>
-    <!-- END finishedTagging -->
-
+    <!-- END taggingPrinciplesBoard page -->
+        
 </body>
 </html>
