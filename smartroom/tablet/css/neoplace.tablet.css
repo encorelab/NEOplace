@@ -294,6 +294,7 @@ body {
 
 /** common styles **/
 
+/* Styles used to override Sail login box */
 #auth-indicator {
     z-index: 100;
     color: #fff;
@@ -304,7 +305,6 @@ body {
     margin-top: 0.8em !important;
 }
 
-
 #login-box.auth-box {
     min-width: 400px;
     max-width: 500px;
@@ -313,36 +313,45 @@ body {
     right: 0 !important;
     top: 135px !important;
 }
+/* END Styles used to override Sail login box */
+
+
+/* Styles used on all p-***.html pages */
+.skipButton {
+    margin-top: 100px;
+}
+/* END Styles used on all p-***.html pages */
+
 
 /* Styles exclusively for: p-videoTagging.html */
-table#principleDragging {
+table.principleDragging {
     margin: 0 auto;
     border-collapse: collapse;
     border-top: 1px dashed #ccc;
     border-bottom: 1px dashed #ccc;
 }
 
-#principleDragging th {
+.principleDragging th {
     text-align: center;
 }
 
-#principleDragging td, #principleDragging th {
+.principleDragging td, .principleDragging th {
     /*border: 1px solid red;*/
     padding: 20px 0;
     font-weight: normal;
 }
 
-#principleDragging #draggableTags {
+.principleDragging .draggableTags {
     margin-top: -35px;
 }
 
-#principleDragging #tagDropArea {
+.principleDragging .tagDropArea {
     -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
     -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
 }
 
-#principleDragging .droparea-label {
+.principleDragging .droparea-label {
     padding-top: 65px;
     padding-left: 5px;
     text-align: center;
@@ -401,9 +410,10 @@ table#principleDragging {
 }
 /* END Styles exclusively for: p-videoTagging.html */
 
-/* Styles exclusively for: p-finishedTagging.html */
 
-/* END Styles exclusively for: p-finishedTagging.html */
+/* Styles exclusively for: p-videoTaggingFinished.html */
+/* END Styles exclusively for: p-videoTaggingFinished.html */
+
 
 /* Styles exclusively for: p-videoBoardAssignment.html */
 #videoBoardAssignment .message {
@@ -429,8 +439,8 @@ table#principleDragging {
 }
 /* END Styles exclusively for: p-videoBoardAssignment.html */
 
-/* Styles exclusively for: p-problemPicker.html */
 
+/* Styles exclusively for: p-problemPicker.html */
 #problemPicker .ui-grid-b h2 {
     margin-top: 0.7em;
 }
@@ -444,5 +454,4 @@ table#principleDragging {
     margin: 0 2%;
     float: left;
 }
-
 /* END Styles exclusively for: p-problemPicker.html */
