@@ -19,7 +19,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
     self.studentPrinciples = [];
 
+    self.problemTemplate = "";
     self.problemSet = [];
+    self.problemSetForEquationTagging = [];
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = true;
@@ -54,35 +56,86 @@ NEOplace.Tablet.Student = (function(Tablet) {
             return str;
     };
 
-    self.getProblemSetForTagging = function(problemSet) {
-
-        //just do one for now
-        var problem = self.problemSet[0];
-
-         // grab problem from json files
+    self.loadProblemTempate = function() {
+        // grab template body for problem layout
         $.ajax({
-            url: '/assets/problems/'+problem.name+'.html',
+            url: 'template-problem.html',
             success: function(data, textStatus, jqXHR){
-
-                //save the html for later
-                //Sail.app.currentProblem.htmlContent += data;
-
-                problem.htmlContent = data;
-                console.log(problem.htmlContent);
-
-                self.outputProblems();
-
+                self.problemTemplate = data;
+                console.log("loaded");
             },
             dataType: 'html'
         });
+    }
+
+    self.loadProblemTempate(); //TODO: move someone more appropriate, right now just call on js file load
+
+    self.getProblemSetForTagging = function() {
+
+        var loadedProblems = 0;
+
+        _.each( self.problemSet, function(problem){
+            // grab problem body html from json files
+            $.ajax({
+                url: '/assets/problems/'+problem.name+'.html',
+                success: function(data, textStatus, jqXHR){
+
+                    //save the html for later
+                    problem.htmlContent = data;
+
+                    //if all problems loaded, output
+                    loadedProblems++;
+                    if (loadedProblems === self.problemSet.length ){
+                       self.outputProblems(); 
+                    }
+
+                },
+                dataType: 'html'
+            });
+        });
+            
     };
 
     self.outputProblems = function() {
-        var problem = self.problemSet[0];
-        $("#taggingProblems .html-content").html(problem.htmlContent);
-        $("#taggingProblems .problem-title").html(problem.title);
 
+        var scrollingProblemsWidth = 0;
+        var windowWidth = $(window).width();
+        var sideMargins = 50;
+        var contentWidth = windowWidth - ( sideMargins * 2 );
+
+        _.each( self.problemSet, function(problem,key){
+            var id = "problem" + key;
+            $("#taggingProblems .scrollingProblems").append(
+                '<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate +'</div>'
+            ).trigger("create");
+
+            $('#'+id+' .problem-title').html(problem.title);
+            $('#'+id+' .html-content').html(problem.htmlContent);
+
+            scrollingProblemsWidth += windowWidth + (sideMargins*2);
+        });
+
+        console.log("windowWidth: " + windowWidth );
+
+        $("#taggingProblems .scrollingProblems").css("width",scrollingProblemsWidth);
+        $("#taggingProblems .scrollingProblems").css("left","0px");
+
+        $("#taggingProblems .attachProblemContainer").css("width", contentWidth + "px" );
+        $("#taggingProblems .problem").css("width", (contentWidth - 40) + "px");
+
+        var problemWidth = $("#taggingProblems .problem").css("width");
+
+        $("#taggingProblems .scrollingProblems").swipeleft(function(){
+            console.log("swipeleft, target: -" + problemWidth );
+            console.log($("#taggingProblems .scrollingProblems").css("left"));
+            $("#taggingProblems .scrollingProblems").animate({left:('-'+problemWidth)}, 1000);
+        });
         
+        $("#taggingProblems .scrollingProblems").swiperight(function(){
+            console.log("swiperight, target: -" + windowWidth );
+            console.log($("#taggingProblems .scrollingProblems").css("left"));
+            $("#taggingProblems .scrollingProblems").animate({left:'0px'}, 1000);
+        });
     }
 
     self.restoreState = function() {
