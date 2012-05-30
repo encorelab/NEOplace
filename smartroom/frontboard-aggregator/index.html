@@ -11,54 +11,53 @@
     <script type="text/javascript">
     
         Sail.load()
-            .then('js/jquery.mobile.init.js')
-            .then('js/jquery.mobile-1.1.0.js')
-            .then('js/jquery.mobile.toast.js')
-            .then('js/jquery-ui-1.8.20.dragdrop.min.js')
+            //.then('js/jquery.mobile.init.js')
+            //.then('js/jquery.mobile-1.1.0.js')
+            //.then('js/jquery.mobile.toast.js')
+            //.then('js/jquery-ui-1.8.20.dragdrop.min.js')
 
             .then('js/neoplace.frontboard-aggregator.js')
-            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
             .thenRun(function() { return Sail.init(NEOplace.FrontBoardAggregator); });  
-    
     </script>
 </head>
 <body>
-    <div id="board">
+    <div id="board" class="hide-div">
         <div id="quadrant-1">
-            <div class="board-name">Video 1</div>
+            <span class="board-name">Video 1</span>
+            <div id="quadrant-content-1"></div>
         </div>
         <div id="quadrant-2">
-            <div class="board-name">Video 2</div>
+            <span class="board-name">Video 2</span>
+            <div id="quadrant-content-2"></div>
         </div>
         <div id="quadrant-3">
-            <div class="board-name">Video 3</div>
+            <span class="board-name">Video 3</span>
+            <div id="quadrant-content-3"></div>
         </div>
         <div id="quadrant-4">
-            <div class="board-name">Video 4</div>
+            <span class="board-name">Video 4</span>
+            <div id="quadrant-content-4"></div>
         </div>
     </div>
 
-    <div class="toolbars-bottom">
+    <div id="toolbars" class="toolbars-bottom hide-div">
         
         <div class="widget-box">
             <a id="filter-principles" class="widget-box-selected" href="#">Principles</a>
-        </div>
-    
-        <div class="widget-box">
             <a id="filter-equations" class="widget-box-selected" href="#">Equations</a>
-        </div>
-
-        <div class="widget-box">
             <a id="filter-problems" class="widget-box-selected" href="#">Problems</a>
-        </div>
-
-        <div class="widget-box">
             <a id="filter-assumptions" class="widget-box-selected" href="#">Assumptions</a>
+            <a id="filter-variables" class="widget-box-selected" href="#">Variables</a>
         </div>
 
-        <div class="widget-box">
-            <a id="filter-variables" class="widget-box-selected" href="#">Variables</a>
+        <div id="fullscreen-toolbar" class="widget-box">
+            <a id="board-0" class="widget-box-selected" href="#">[+]</a> 
+            <a id="board-1" class="" href="#">[1]</a> 
+            <a id="board-2" class="" href="#">[2]</a>  
+            <a id="board-3" class="" href="#">[3]</a> 
+            <a id="board-4" class="" href="#">[4]</a>
         </div>
 
     </div>

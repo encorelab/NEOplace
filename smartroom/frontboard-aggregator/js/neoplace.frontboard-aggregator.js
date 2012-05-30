@@ -4,6 +4,10 @@
 var NEOplace = window.NEOplace || {};
 
 NEOplace.FrontBoardAggregator = (function() {
+
+    var equationsUrl="http://localhost/mywebapps/PlaceWeb.GitHub/NEOplace/smartroom/frontboard-aggregator/equations/";
+    //var equationsUrl="http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/equations/";
+
     var self = {};
 
     self.name = "NEOplace.FrontBoardAggregator";
@@ -21,35 +25,98 @@ NEOplace.FrontBoardAggregator = (function() {
         }).toArray();
         var maxZ = Math.max.apply(Math, zs);
         jQuery(this).css('z-index', maxZ + 1);
+
+        //test make make all position absolute
+        //jQuery("#quadrant-content-1 div").css('position', 'absolute');
     };
 
-    // set quadrants' width and height
-    var setQuadrantsDimensions = function () {
-        var winHeight = $(window).height(),
-            quadrantHeight = (winHeight/2)-28;
+    var showHtmlContent = function() {
+        jQuery("#board").fadeIn("slow");
+        jQuery("#toolbars").fadeIn("slow");
+        jQuery("#board").show();
+        jQuery("#toolbars").show();
 
-        //jQuery('#board').innerHeight() - 100;
-        jQuery("#board").css("height",(winHeight)+"px");
-        jQuery("#quadrant-1").css("height",quadrantHeight+"px");
-        jQuery("#quadrant-2").css("height",quadrantHeight+"px");
-        jQuery("#quadrant-3").css("height",quadrantHeight+"px");
-        jQuery("#quadrant-4").css("height",quadrantHeight+"px");
     }
 
-    setQuadrantsDimensions();
+    // set quadrants' width and height
+    var viewAllQuadrants = function () {
+        var winHeight = $(window).height(),
+            winWidth = $(window).width(),
+            quadrantHeight = (winHeight/2)-30,
+            quadrantWidth = (winWidth/2)-5;
 
-    // make draggable all div in each quadrant
-    jQuery("#quadrant-1 div").draggable();
-    jQuery("#quadrant-2 div").draggable();
-    jQuery("#quadrant-3 div").draggable();
-    jQuery("#quadrant-4 div").draggable();
+        // show all
+        jQuery("#quadrant-1").show();
+        jQuery("#quadrant-2").show();
+        jQuery("#quadrant-3").show();
+        jQuery("#quadrant-4").show();
+
+        $("#quadrant-1").animate({ 
+            height: quadrantHeight+"px", 
+            width: quadrantWidth+"px", 
+        }, 1000);
+
+        $("#quadrant-2").animate({ 
+            height: quadrantHeight+"px", 
+            width: quadrantWidth+"px", 
+        }, 1000);
+
+        $("#quadrant-3").animate({ 
+            height: quadrantHeight+"px", 
+            width: quadrantWidth+"px", 
+        }, 1000);
+        
+        $("#quadrant-4").animate({ 
+            height: quadrantHeight+"px", 
+            width: quadrantWidth+"px", 
+        }, 1000);
+    }
+
+    var hideAllQuadrants = function() {
+        jQuery("#quadrant-1").hide();
+        jQuery("#quadrant-2").hide();
+        jQuery("#quadrant-3").hide();
+        jQuery("#quadrant-4").hide();
+    }
+
+    // set quadrants' width and height
+    var fullScreenOneQuadrant = function (quadrantId) {
+
+        // for all quadrants load default
+        if(quadrantId==0)
+        {
+            viewAllQuadrants();
+        } else {
+
+            var winHeight = $(window).height(),
+                winWidth = $(window).width(),
+                quadrantHeight = winHeight-56;
+
+            // hide all
+            hideAllQuadrants();
+
+            // set new size of the quadrant
+            jQuery("#quadrant-"+quadrantId).show();
+
+            $("#quadrant-"+quadrantId).animate({ 
+                height: quadrantHeight+"px", 
+                width: winWidth+"px", 
+            }, 1000);
+        }
+
+        // highlight active view in toolbar
+        jQuery("#fullscreen-toolbar a").removeClass("widget-box-selected");
+
+        jQuery("#board-"+quadrantId).addClass("widget-box-selected");
+
+    }
 
     // Add element to target board
     var addElementToBoard = function (obj) {
         
-        var divId = MD5.hexdigest(obj.name);
+        var divId = MD5.hexdigest(obj.name)+"-"+Math.floor((Math.random()*100)+1);
 
-        // add exception for assumptions
+        // assumptions
         if(obj.css_class=="assumption" && obj.text!=""){
             
             var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"<br/><span class='assumption-fulltext'>"+obj.text+"</span></div>");
@@ -73,24 +140,86 @@ NEOplace.FrontBoardAggregator = (function() {
 
             });
 
+        // equations
+        } else if (obj.css_class=="equation" && obj.name!="") {
+            var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'><img alt='"+obj.name+"' src='"+equationsUrl+obj.name+"'></div>");
 
         } else {
-
             var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"</div>");
         }
-
 
         // bring the element to the top when clicked
         element.mousedown(bringDraggableToFront);
 
+        element.fadeIn("slow");
 
-        // Add to  target board
-        var board = jQuery("#quadrant-"+obj.board).prepend(element);
+        
+        // set absolute position
+        element.css('position', 'absolute'); 
 
-        jQuery("#quadrant-1 div").draggable();
-        jQuery("#quadrant-2 div").draggable();
-        jQuery("#quadrant-3 div").draggable();
-        jQuery("#quadrant-4 div").draggable();
+        // assign element a random position within the corresponding quadrant
+
+        var winHeight = $(window).height(),
+            winWidth = $(window).width(),
+
+            quadrantHeight = jQuery("#quadrant-1").height(),
+            quadrantWidth = jQuery("#quadrant-1").width(),
+
+            //quadrantHeight = (winHeight/2),
+            //quadrantWidth = (winWidth/2),
+            tolerance = 100,
+            Min = 0,
+            Max = 0,
+            left = 0,
+            top = 0;
+
+
+        // Min + (int)(Math.random() * ((Max - Min) + 1))
+
+        if (obj.board==1) {
+            Min = 0;
+            Max = quadrantWidth-tolerance;
+            left = Min + (Math.random() * ((Max - Min) + 1));
+    
+            Min = 0;
+            Max = quadrantHeight-tolerance;
+            top = Min + (Math.random() * ((Max - Min) + 1));
+
+        } else if (obj.board==2) {
+            Min = winWidth-quadrantWidth;
+            Max = winWidth-tolerance;
+            left = Min + (Math.random() * ((Max - Min) + 1));
+    
+            Min = 0;
+            Max = quadrantHeight-tolerance;
+            top = Min + (Math.random() * ((Max - Min) + 1));
+            
+        } else if (obj.board==3) {
+            Min = 0;
+            Max = quadrantWidth-tolerance;
+            left = Min + (Math.random() * ((Max - Min) + 1));
+    
+            Min = quadrantHeight;
+            Max = (quadrantHeight*2)-tolerance;
+            top = Min + (Math.random() * ((Max - Min) + 1));
+        } else if (obj.board==4) {
+            Min = winWidth-quadrantWidth;
+            Max = winWidth-tolerance;
+            left = Min + (Math.random() * ((Max - Min) + 1));
+    
+            Min = quadrantHeight;
+            Max = (quadrantHeight*2)-tolerance;
+            top = Min + (Math.random() * ((Max - Min) + 1));
+        }
+        
+        element.css('left', left + 'px');
+        element.css('top', top + 'px');
+
+        // make element dragable
+        element.draggable({ containment: "#quadrant-"+ obj.board});
+
+        // Add element to target board
+        var board = jQuery("#quadrant-content-"+obj.board).prepend(element);
 
     }
 
@@ -149,7 +278,7 @@ NEOplace.FrontBoardAggregator = (function() {
                 }
             });
 
-        jQuery('#filter-problems').click(function () {
+            jQuery('#filter-problems').click(function () {
             
             elementLink = jQuery('#filter-problems');
 
@@ -165,7 +294,7 @@ NEOplace.FrontBoardAggregator = (function() {
                 }
             });
 
-        jQuery('#filter-equations').click(function () {
+            jQuery('#filter-equations').click(function () {
 
                 elementLink = jQuery('#filter-equations');
 
@@ -181,7 +310,7 @@ NEOplace.FrontBoardAggregator = (function() {
                 }
             });
 
-        jQuery('#filter-variables').click(function () {
+            jQuery('#filter-variables').click(function () {
                 
                 elementLink = jQuery('#filter-variables');
 
@@ -197,7 +326,7 @@ NEOplace.FrontBoardAggregator = (function() {
                 }
             });
 
-        jQuery('#filter-assumptions').click(function () {
+            jQuery('#filter-assumptions').click(function () {
                 elementLink = jQuery('#filter-assumptions');
 
                 if(assumptionsOn)
@@ -212,11 +341,35 @@ NEOplace.FrontBoardAggregator = (function() {
                 }
             });
 
+            // adding functions for full screen 
+            jQuery('#board-0').click(function () {
 
+                fullScreenOneQuadrant(0);
+            });
+
+            jQuery('#board-1').click(function () {
+                fullScreenOneQuadrant(1);
+            });
+
+            jQuery('#board-2').click(function () {
+                fullScreenOneQuadrant(2);
+            });
+
+            jQuery('#board-3').click(function () {
+                fullScreenOneQuadrant(3);
+            });
+
+            jQuery('#board-4').click(function () {
+                fullScreenOneQuadrant(4);
+            });
         },
 
         connected: function (ev) {
             console.log("Connected...");
+            
+            showHtmlContent();
+            viewAllQuadrants();
+
 
         },
 

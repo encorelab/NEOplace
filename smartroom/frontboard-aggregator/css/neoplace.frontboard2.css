@@ -301,7 +301,7 @@ div.none-yet {
 }
 
 /* adding CSS specific to neoplace.frontboard2 */
-#quadrant-1 div, #quadrant-2 div, #quadrant-3 div, #quadrant-4 div {
+#quadrant-content-1 div, #quadrant-content-2 div, #quadrant-content-3 div, #quadrant-content-4 div, .board-name {
     border: 3px solid #AAAAAA;
     border-radius: 10px 10px 10px 10px;
     text-align: center;
@@ -359,9 +359,8 @@ div.none-yet {
 }
 
 .equation{
-  background: none repeat scroll 0 0 #069106;
+  background: none repeat scroll 0 0 #FFFFFF;
   padding: 2px;
-  width: 112px;
   margin: 5px;
   float: left;
 }
@@ -383,18 +382,29 @@ div.none-yet {
 }
 
 .widget-box-selected{
-  background-color: yellow;
-  color: black;
+  background-color: #1B50E0;
+  color: #FFFFFF;
 }
 
 .board-name{
   background-color: #CCCCCC;
   color: black;
   margin: 5px;
-  float: left;
+  float: right;
   padding: 10px;
+  font-size: 2em;
 }
 
 .assumption-fulltext{
   display: none;
+}
+
+#connecting{
+  background: none repeat scroll 0 0 #CCCCCC;
+  border: 1px solid #000000;
+  padding-top: 10px;
+}
+
+.hide-div{
+  display: none; 
 }
