@@ -367,9 +367,9 @@ div.none-yet {
 }
 
 .assumption{
-  background: none repeat scroll 0 0 #7D022B;
+  background: none repeat scroll 0 0 #CCADA3;
   padding: 2px;
-  width: 112px;
+  width: 150px;
   margin: 5px;
   float: left;
 }
@@ -393,4 +393,8 @@ div.none-yet {
   margin: 5px;
   float: left;
   padding: 10px;
+}
+
+.assumption-fulltext{
+  display: none;
 }
