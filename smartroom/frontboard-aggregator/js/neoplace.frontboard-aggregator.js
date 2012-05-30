@@ -5,8 +5,8 @@ var NEOplace = window.NEOplace || {};
 
 NEOplace.FrontBoardAggregator = (function() {
 
-    var equationsUrl="http://localhost/mywebapps/PlaceWeb.GitHub/NEOplace/smartroom/frontboard-aggregator/equations/";
-    //var equationsUrl="http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/equations/";
+    //var equationsUrl="http://localhost/mywebapps/PlaceWeb.GitHub/NEOplace/smartroom/frontboard-aggregator/equations/";
+    var equationsUrl="http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/equations/";
 
     var self = {};
 
