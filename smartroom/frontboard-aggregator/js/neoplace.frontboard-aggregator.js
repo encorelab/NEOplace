@@ -10,6 +10,19 @@ NEOplace.FrontBoardAggregator = (function() {
 
     self.cumulativeTagArray = [];
 
+    // Brings a .ui-draggable element to the front (via z-index).
+    // This is meant to be used as a callback for jQuery event bindings,
+    // so `this` is assumed to refer to the element you want to bring
+    // to the front.
+    var bringDraggableToFront = function () {
+        var zs = jQuery('.ui-draggable').map(function() {
+            var z = jQuery(this).css('z-index'); 
+            return z === 'auto' ? 100 : parseInt(z, 10);
+        }).toArray();
+        var maxZ = Math.max.apply(Math, zs);
+        jQuery(this).css('z-index', maxZ + 1);
+    };
+
     // set quadrants' width and height
     var setQuadrantsDimensions = function () {
         var winHeight = $(window).height(),
@@ -25,27 +38,61 @@ NEOplace.FrontBoardAggregator = (function() {
 
     setQuadrantsDimensions();
 
+    // make draggable all div in each quadrant
+    jQuery("#quadrant-1 div").draggable();
+    jQuery("#quadrant-2 div").draggable();
+    jQuery("#quadrant-3 div").draggable();
+    jQuery("#quadrant-4 div").draggable();
+
     // Add element to target board
     var addElementToBoard = function (obj) {
-        var element = jQuery("<div class='"+obj.css_class+"'>"+obj.name+"</div>");
         
+        var divId = MD5.hexdigest(obj.name);
+
+        // add exception for assumptions
+        if(obj.css_class=="assumption" && obj.text!=""){
+            
+            var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"<br/><span class='assumption-fulltext'>"+obj.text+"</span></div>");
+
+            // expand on double click
+            element.dblclick(function () {
+                
+                var theFullText = $(this).text();
+                var myDivId = $(this).attr("id");
+                $("#"+myDivId + " span").first().fadeIn("slow");
+                $("#"+myDivId + " span").first().show();
+
+            });
+
+            // contract on click
+            element.click(function () {
+
+                var myDivId = $(this).attr("id");
+                $("#"+myDivId + " span").first().fadeIn("slow");
+                $("#"+myDivId + " span").first().hide();
+
+            });
+
+
+        } else {
+
+            var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"</div>");
+        }
+
+
+        // bring the element to the top when clicked
+        element.mousedown(bringDraggableToFront);
+
+
         // Add to  target board
         var board = jQuery("#quadrant-"+obj.board).prepend(element);
+
+        jQuery("#quadrant-1 div").draggable();
+        jQuery("#quadrant-2 div").draggable();
+        jQuery("#quadrant-3 div").draggable();
+        jQuery("#quadrant-4 div").draggable();
+
     }
-
-
-    // this is kinda sloppy, but it should work
-    var toggleFilterOption = function (criteria, keyword) {
-        li = jQuery('#' + keyword + '-filter li.' + keyword + '-' + criteria);
-        if (li.is('.selected')) {
-            li.removeClass('selected');
-            filterBalloons();
-        } else {
-            li.addClass('selected');
-            filterBalloons();
-        }
-    };
-
 
     self.init = function() {
         Sail.app.groupchatRoom = 'neo-a@conference.' + Sail.app.xmppDomain;
@@ -88,8 +135,6 @@ NEOplace.FrontBoardAggregator = (function() {
             jQuery('#filter-principles').click(function () {
                 
                 elementLink = jQuery('#filter-principles');
-
-                //.widget-box-active
 
                 if(principlesOn)
                 {
@@ -189,10 +234,22 @@ NEOplace.FrontBoardAggregator = (function() {
                 });
 
                 _.each(sev.payload.assumptions, function (i) {
+                    
+                    if(i.length>30){
+                        shortName = i.substr(0,30)+ " ...";
+                        text = i;
+                    } else {
+                        shortName = i;
+                        text = "";
+                    }
+
+                    //var 
+
                     var assumption = {
                         board:sev.payload.origin,
-                        name:i,
-                        css_class:"assumption"
+                        name:shortName,
+                        css_class:"assumption",
+                        text:text
                     }
                     // add to board
                     addElementToBoard(assumption);
