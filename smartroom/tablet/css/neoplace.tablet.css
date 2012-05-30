@@ -471,6 +471,7 @@ table.dragAndDropContainer .draggableTags {
 
 #taggingProblems .paper {
     background-image: none;
+    overflow: hidden;
     width: 100%;
 }
 
@@ -490,3 +491,21 @@ table.dragAndDropContainer .draggableTags {
     float: left;
 }
 /* END Styles exclusively for: p-taggingProblems.html */
+
+
+/* Styles exclusively for: p-variableWriter.html */
+label .label-extra {
+    font-size: 80%; 
+    font-weight:normal;
+}
+
+h3.label-replacement {
+    margin: 1.4em 0 0.6em 2px;
+}
+
+/*.ui-field-contain input.ui-input-text, 
+.ui-field-contain .ui-input-search, */
+#variableWriter .ui-field-contain textarea.ui-input-text {
+    width: 100%;
+}
+/* END Styles exclusively for: p-variableWriter.html */
