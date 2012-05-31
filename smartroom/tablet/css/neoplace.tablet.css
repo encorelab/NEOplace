@@ -461,12 +461,12 @@ table.dragAndDropContainer .draggableTags {
 
 #taggingProblems .attachProblemContainer {
     float: left;
-    border: 1px solid green;
+    /*border: 1px solid green;*/
 }
 
 #taggingProblems .problem {
     margin: 0 20px;
-    border: 1px solid red;
+    /*border: 1px solid red;*/
 }
 
 #taggingProblems .paper {
@@ -492,6 +492,50 @@ table.dragAndDropContainer .draggableTags {
 }
 /* END Styles exclusively for: p-taggingProblems.html */
 
+
+/* Styles exclusively for: p-taggingProblems.html */
+#taggingEquations .ui-grid-b h2 {
+    margin-top: 0.7em;
+}
+
+
+#taggingEquations .scrollingProblems {
+    position: relative;
+    overflow: hidden;
+}
+
+#taggingEquations .attachProblemContainer {
+    float: left;
+    /*border: 1px solid green;*/
+}
+
+#taggingEquations .problem {
+    margin: 0 20px;
+    /*border: 1px solid red;*/
+}
+
+#taggingEquations .paper {
+    background-image: none;
+    overflow: hidden;
+    width: 100%;
+}
+
+#taggingEquations .paper .html-content .pimg {
+   text-align: center;
+}
+
+#taggingEquations .connected-tags {
+    margin-top: 20px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+#taggingEquations #connected-tags ul {
+    width: 46%;
+    margin: 0 2%;
+    float: left;
+}
+/* END Styles exclusively for: p-taggingProblems.html */
 
 /* Styles exclusively for: p-variableWriter.html */
 label .label-extra {
