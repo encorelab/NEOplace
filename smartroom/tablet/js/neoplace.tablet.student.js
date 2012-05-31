@@ -100,6 +100,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         });
     }
 
+    //called on app load
     self.loadProblemTempate = function() {
         // grab template body for problem layout
         $.ajax({
@@ -112,6 +113,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         });
     }
 
+    //called on app load
     self.loadAllEquations = function() {
         console.log("loadAllEquations");
         $.ajax({
@@ -124,6 +126,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         });
     }
 
+    //helper method
     self.parseEquationIdsIntoString = function(equationIds){
 
         var equations = _.map( equationIds, function(id){
@@ -135,7 +138,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         return equations;
     }
 
-    self.getHtmlForProblems = function() {
+    self.getHtmlForProblems = function(pageScope) {
 
         var loadedProblems = 0;
 
@@ -151,7 +154,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     //if all problems loaded, output
                     loadedProblems++;
                     if (loadedProblems === self.problemSet.length ){
-                       self.outputProblems(); 
+                       self.outputProblems(pageScope); 
                     }
 
                 },
@@ -161,7 +164,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
             
     };
 
-    self.outputProblems = function() {
+    self.outputProblems = function(pageScope) {
+
+        console.log( "outputProblems() on " + pageScope );
 
         var scrollingProblemsWidth = 0;
         var windowWidth = $(window).width();
@@ -170,29 +175,38 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         _.each( self.problemSet, function(problem,key){
             var id = "problem" + key;
-            $("#taggingProblems .scrollingProblems").append(
+            $(pageScope+" .scrollingProblems").append(
                 '<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate +'</div>'
             ).trigger("create");
+
+            if (pageScope === "#taggingEquations") {
+                $('#'+id+' .connectButton').replaceWith("");
+            }
 
             $('#'+id+' .problem-title').html(problem.title);
             $('#'+id+' .html-content').html(problem.htmlContent);
             $('#'+id+' .connectProblemButton').attr("value", problem.name);
 
-            var principlesList = "";
-            _.each( problem.principles, function(principle){
-                principlesList += "<li>"+principle+"</li>";
-            });
-            $('#'+id+' .principlesList').html(principlesList).listview("refresh");
+            if ( problem.principles.length > 0 ) {
+                var principlesList = "";
+                _.each( problem.principles, function(principle){
+                    principlesList += "<li>"+principle+"</li>";
+                });
+                $('#'+id+' .principlesList').html(principlesList).listview("refresh");
+            }else{
+                $('#'+id+' .principlesList').replaceWith("");
+            }
 
-            var equations = self.parseEquationIdsIntoString(problem.equations);
-            var equationsList = "";
-            _.each( equations, function(equation){
-                equationsList += "<li>"+equation.name+"</li>";
-            });
-            $('#'+id+' .equationsList').html(equationsList).listview("refresh");
-            
-
-
+            if (pageScope === "#taggingProblems") {
+                var equations = self.parseEquationIdsIntoString(problem.equations);
+                var equationsList = "";
+                _.each( equations, function(equation){
+                    equationsList += "<li>"+equation.name+"</li>";
+                });
+                $('#'+id+' .equationsList').html(equationsList).listview("refresh");
+            }else{
+                $('#'+id+' .equationsList').replaceWith("");
+            }
 
             scrollingProblemsWidth += windowWidth + (sideMargins*2);
         });
@@ -201,10 +215,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
         MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
         //TODO: refresh not happening at right time.... look into a different event to trigger the refresh
-        $( '.equationsList').listview("refresh");
+        $('.equationsList').listview("refresh");
 
-        $('#taggingProblems .connectProblemButton').die();
-        $('#taggingProblems .connectProblemButton').live("click", function(){
+        $(pageScope+' .connectProblemButton').die();
+        $(pageScope+' .connectProblemButton').live("click", function(){
             var buttonValue = $(this).attr("value");
             console.log( "click on connect button with value " + buttonValue);
             //TODO: backend call to save buttonValue
@@ -212,48 +226,50 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         console.log("windowWidth: " + windowWidth );
 
-        $("#taggingProblems .scrollingProblems").css("width",scrollingProblemsWidth);
-        $("#taggingProblems .scrollingProblems").css("left","0px");
+        $(pageScope+" .scrollingProblems").css("width",scrollingProblemsWidth);
+        $(pageScope+" .scrollingProblems").css("left","0px");
 
-        $("#taggingProblems .attachProblemContainer").css("width", contentWidth + "px" );
-        $("#taggingProblems .problem").css("width", (contentWidth - 40) + "px");
+        $(pageScope+" .attachProblemContainer").css("width", contentWidth + "px" );
+        $(pageScope+" .problem").css("width", (contentWidth - 40) + "px");
 
         self.problemWidth = (contentWidth - 40); //$("#taggingProblems .problem").css("width");
         self.currentlyAnimating = false;
         self.currentProblemIndex = 0;
         
-        $("#taggingProblems").swipeleft(function(){
+        $(pageScope).swipeleft(function(){
             if ( self.currentlyAnimating ) return;
             if ( self.currentProblemIndex == self.problemSet.length-1 ) return;
 
             self.currentProblemIndex++;
-            self.animateProblems();
+            self.animateProblems(pageScope);
         });
         
-        $("#taggingProblems").swiperight(function(){
+        $(pageScope).swiperight(function(){
             if ( self.currentlyAnimating ) return;
             if ( self.currentProblemIndex == 0 ) return;
 
             self.currentProblemIndex--;
-            self.animateProblems();
+            self.animateProblems(pageScope);
             
         });
     }
 
-    self.animateProblems = function(){
+    self.animateProblems = function(pageScope){
+
+        console.log( "animateProblems() on " + pageScope );
 
         var target = self.problemWidth * self.currentProblemIndex;
         console.log("swiping, target: -" + target );
 
-        $("#taggingProblems .previousProblem").addClass("ui-disabled");
-        $("#taggingProblems .nextProblem").addClass("ui-disabled");
+        $(pageScope+" .previousProblem").addClass("ui-disabled");
+        $(pageScope+" .nextProblem").addClass("ui-disabled");
 
-        $("#taggingProblems .scrollingProblems").animate({left:'-'+target+'px'}, 1000, function(){
+        $(pageScope+" .scrollingProblems").animate({left:'-'+target+'px'}, 1000, function(){
             if ( self.currentProblemIndex > 0 ) {
-                $("#taggingProblems .previousProblem").removeClass("ui-disabled");
+                $(pageScope+" .previousProblem").removeClass("ui-disabled");
             }
             if ( self.currentProblemIndex < self.problemSet.length-1 ) {
-                $("#taggingProblems .nextProblem").removeClass("ui-disabled");
+                $(pageScope+" .nextProblem").removeClass("ui-disabled");
             }
         });
     }
@@ -565,7 +581,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 }else{
                     //fake it
-                    //TODO: need to add in results from homework activity
+                    //TODO: need to add in results from classroom activity
                     self.problemSet = [
                         {   title:"Bowling Ball", 
                             name:"BowlingBall", 
@@ -590,15 +606,15 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     $("#taggingProblems .previousProblem").click(function(){
                         self.currentProblemIndex--;
-                        self.animateProblems();
+                        self.animateProblems("#taggingProblems");
                     });
 
                     $("#taggingProblems .nextProblem").click(function(){
                         self.currentProblemIndex++;
-                        self.animateProblems();
+                        self.animateProblems("#taggingProblems");
                     });
 
-                    self.getHtmlForProblems();
+                    self.getHtmlForProblems("#taggingProblems");
 
                     //fake it, this event comes from the video board
                     $('#taggingProblems .skipButton').css('display','block');
@@ -651,8 +667,41 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 }else{
                     //fake it
-                    //var fakeProblemSet = ["BowlingBall","BumperCars"]; //TODO: more complex than this
-                    //self.updatetaggingProblemsPage(fakeProblemSet);
+                    //TODO: need to add in results from classroom activity
+                    self.problemSet = [
+                        {   title:"Melon Drop", 
+                            name:"MellonDrop", 
+                            principles:["Acceleration", "Newton's First Law"],
+                            equations:[4, 18, 21]
+                        },
+                        {   title:"Block on a Table Top", 
+                            name:"BlockOnTable",
+                            principles:["Static Friction", "Potential Energy"],
+                            equations:[6, 9, 18]
+                        },
+                        {   title:"Block on a Board", 
+                            name:"BlockOnBoard",
+                            principles:["Potential Energy","Work"],
+                            equations:[4, 10, 11, 27, 29]
+                        }
+                    ];
+
+                    if ( self.problemSet.length > 1 ) {
+                        $("#taggingEquations .nextProblem").removeClass("ui-disabled");
+                    }
+
+                    $("#taggingEquations .previousProblem").click(function(){
+                        self.currentProblemIndex--;
+                        self.animateProblems("#taggingEquations");
+                    });
+
+                    $("#taggingProblems .nextProblem").click(function(){
+                        self.currentProblemIndex++;
+                        self.animateProblems("#taggingEquations");
+                    });
+
+                    self.getHtmlForProblems("#taggingEquations");
+
 
                     //fake it, this event comes from the video board
                     $('#taggingEquations .skipButton').css('display','block');
