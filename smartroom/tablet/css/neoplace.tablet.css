@@ -461,12 +461,12 @@ table.dragAndDropContainer .draggableTags {
 
 #taggingProblems .attachProblemContainer {
     float: left;
-    border: 1px solid green;
+    /*border: 1px solid green;*/
 }
 
 #taggingProblems .problem {
     margin: 0 20px;
-    border: 1px solid red;
+    /*border: 1px solid red;*/
 }
 
 #taggingProblems .paper {
