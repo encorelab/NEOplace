@@ -37,42 +37,25 @@
 
             <div class="ui-grid-b">
                 <div class="ui-block-a">
-                    <a data-role="button" data-transition="fade" href="#" data-icon="arrow-l" data-iconpos="left">
+                    <a href="#" data-role="button" data-transition="slide" data-direction="reverse" data-icon="arrow-l" data-iconpos="left" class="previousProblem ui-disabled">
                         Previous Problem
                     </a>
                 </div>
                 <div class="ui-block-b text-align-center">
-                    <h2>Problem #<span class="problem-num">{#}</span></h2>
+                    <!-- empty -->
                 </div>
                 <div class="ui-block-c">
-                    <a data-role="button" data-transition="fade" href="#" data-icon="arrow-r" data-iconpos="right">
+                    <a href="#" data-role="button" data-transition="slide" data-icon="arrow-r" data-iconpos="right" class="nextProblem ui-disabled">
                         Next Problem
                     </a>
                 </div>
             </div>
 
-            <div class="paper">
-                
-                <div class="htmlContent">
-                    {htmlContent}
-                </div>
-
-                <br />
-
-                <div id="connected-tags" data-role="collapsible" data-collapsed="true" data-content-theme="b" data-transition="slide">
-                    <h3>
-                        Connected Principles
-                    </h3>
-                    <ul data-role="listview" data-inset="true" data-theme="c">
-                        <li>Acceleration</li>
-                        <li>Acceleration</li>
-                        <li>Acceleration</li>
-                        <li>Acceleration</li>
-                    </ul>
-                    <br clear="all" />
-                </div>
-
+            <div class="scrollingProblems">
+                <!-- will be dynamically replaced -->
             </div>
+            
+            <br clear="all" />
 
             <table class="dragAndDropContainer" width="730">
                 <tr>
