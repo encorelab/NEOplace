@@ -1,0 +1,67 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>NEOplace - Teacher Tablet</title> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    <!-- <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /> -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.1.0.css"/> 
+    <link rel="stylesheet" type="text/css" href="css/neoplace.tablet.css" />
+
+    <script src="js/sail.js/sail.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        Sail.load()
+            .then('js/jquery.mobile.init.js')
+            .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
+            .then('js/jquery.mobile.toast.js')
+            .then('js/neoplace.tablet.js')
+            .then('js/neoplace.tablet.teacher.js')
+            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+    </script>
+</head>
+<body class="student">
+
+    <!-- START taggingPrinciples page -->
+    <div id="taggingPrinciples" data-role="page" data-theme="c">
+
+        <div data-role="header">
+            <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
+            <h1>NEOplace - Hollywood Physics</h1>
+        </div>
+
+        <div data-role="content">
+
+            <div data-role="controlgroup">
+                <h2>Step 1 of 4: Tagging Principles</h2>
+            </div>
+
+            <div>Tap the button to start playing videos:</div>
+            <div class="ui-grid-c">
+                <div class="ui-block-a">
+                    <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="right" class="startVideoButton ui-disabled" value="1">Start Round 1</a>
+                </div>
+                <div class="ui-block-b">
+                    <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="right" class="startVideoButton ui-disabled" value="2">Start Round 2</a>
+                </div>
+                <div class="ui-block-c">
+                    <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="right" class="startVideoButton ui-disabled" value="3">Start Round 3</a>
+                </div>
+                <div class="ui-block-d">
+                    <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="right" class="startVideoButton ui-disabled" value="4">Start Round 4</a>
+                </div>
+            </div><!-- /grid-c -->
+
+            <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="top" class="nextStepButton ui-disabled">Goto Step 2</a>
+
+            <!-- for UI_TESTING_ONLY -->
+            <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
+        </div>
+
+    </div>
+    <!-- END taggingPrinciples page -->
+        
+</body>
+</html>
