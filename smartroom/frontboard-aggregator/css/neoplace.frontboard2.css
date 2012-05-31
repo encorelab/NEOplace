@@ -131,7 +131,7 @@ a {
 .toolbars-bottom {
   bottom: -8px;
   position: absolute;
-  right: 25%;
+  /*right: 25%;*/
 }
 
 .toolbars-bottom .widget-box {
@@ -307,14 +307,13 @@ div.none-yet {
     text-align: center;
 }
 
-#board #quadrant-1, #board #quadrant-2, #board #quadrant-3, #board #quadrant-4{
-  /* padding-top: 5px;*/
+#quadrant-1, #quadrant-2, #quadrant-3, #quadrant-4{
+  background: #FFFFFF;
   
 }
 
 #board {
   border-right: 1px solid #999999;
-  background: #fff;
   font-size: 12px;
 }
 
@@ -390,7 +389,7 @@ div.none-yet {
   background-color: #CCCCCC;
   color: black;
   margin: 5px;
-  float: right;
+  float: left;
   padding: 10px;
   font-size: 2em;
 }

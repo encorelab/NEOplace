@@ -5,6 +5,7 @@ var NEOplace = window.NEOplace || {};
 
 NEOplace.FrontBoardAggregator = (function() {
 
+    // TODO: move this out to config.json
     //var equationsUrl="http://localhost/mywebapps/PlaceWeb.GitHub/NEOplace/smartroom/frontboard-aggregator/equations/";
     var equationsUrl="http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/equations/";
 
@@ -14,36 +15,52 @@ NEOplace.FrontBoardAggregator = (function() {
 
     self.cumulativeTagArray = [];
 
-    // Brings a .ui-draggable element to the front (via z-index).
-    // This is meant to be used as a callback for jQuery event bindings,
-    // so `this` is assumed to refer to the element you want to bring
-    // to the front.
-    var bringDraggableToFront = function () {
-        var zs = jQuery('.ui-draggable').map(function() {
-            var z = jQuery(this).css('z-index'); 
-            return z === 'auto' ? 100 : parseInt(z, 10);
-        }).toArray();
-        var maxZ = Math.max.apply(Math, zs);
-        jQuery(this).css('z-index', maxZ + 1);
+    self.init = function() {
+        Sail.app.groupchatRoom = 'neo-a@conference.' + Sail.app.xmppDomain;
 
-        //test make make all position absolute
-        //jQuery("#quadrant-content-1 div").css('position', 'absolute');
+        // TODO: move this out to config.json
+        Sail.app.username = "neo-frontwall-2";
+        Sail.app.password = "22d5d010a45fac5b72bc151e60bf60dc8bc089a8";
+
+        Sail.modules
+            .load('Strophe.AutoConnector', {mode: 'pseudo-anon'})
+            .load('AuthStatusWidget')
+            .thenRun(function () {
+                Sail.autobindEvents(NEOplace.FrontBoardAggregator);
+                jQuery(Sail.app).trigger('initialized');
+
+                // TODO: add click bindings here
+
+                return true;
+            });
     };
 
+    self.authenticate = function () {
+        jQuery(self).trigger('authenticated');
+    };
+
+    // Define control variables
+    var principlesOn = true;
+    var problemsOn = true;
+    var equationsOn = true;
+    var variablesOn = true;
+    var assumptionsOn = true;
+    var absolutePositionOn = false;
+
+    // Shows board and toolbars. This function is called when sail is connected.
     var showHtmlContent = function() {
         jQuery("#board").fadeIn("slow");
         jQuery("#toolbars").fadeIn("slow");
         jQuery("#board").show();
         jQuery("#toolbars").show();
-
     }
 
-    // set quadrants' width and height
+    // Renders default view. Show 4 quadrants
     var viewAllQuadrants = function () {
         var winHeight = $(window).height(),
             winWidth = $(window).width(),
             quadrantHeight = (winHeight/2)-30,
-            quadrantWidth = (winWidth/2)-5;
+            quadrantWidth = (winWidth/2)-6;
 
         // show all
         jQuery("#quadrant-1").show();
@@ -72,6 +89,7 @@ NEOplace.FrontBoardAggregator = (function() {
         }, 1000);
     }
 
+    // Hides all quadrants. 
     var hideAllQuadrants = function() {
         jQuery("#quadrant-1").hide();
         jQuery("#quadrant-2").hide();
@@ -79,7 +97,7 @@ NEOplace.FrontBoardAggregator = (function() {
         jQuery("#quadrant-4").hide();
     }
 
-    // set quadrants' width and height
+    // Shows in fullscreen a given quadrant. Receives quadrant id
     var fullScreenOneQuadrant = function (quadrantId) {
 
         // for all quadrants load default
@@ -89,7 +107,7 @@ NEOplace.FrontBoardAggregator = (function() {
         } else {
 
             var winHeight = $(window).height(),
-                winWidth = $(window).width(),
+                winWidth = $(window).width()-4,
                 quadrantHeight = winHeight-56;
 
             // hide all
@@ -104,14 +122,18 @@ NEOplace.FrontBoardAggregator = (function() {
             }, 1000);
         }
 
-        // highlight active view in toolbar
+        // highlight active option in UI
         jQuery("#fullscreen-toolbar a").removeClass("widget-box-selected");
 
         jQuery("#board-"+quadrantId).addClass("widget-box-selected");
 
     }
 
-    // Add element to target board
+    /* 
+        Adds element to target quadrant. 
+        Recieves an object with data needed.
+        This function is called when XMPP events are received.
+    */
     var addElementToBoard = function (obj) {
         
         var divId = MD5.hexdigest(obj.name)+"-"+Math.floor((Math.random()*100)+1);
@@ -153,7 +175,6 @@ NEOplace.FrontBoardAggregator = (function() {
 
         element.fadeIn("slow");
 
-        // set absolute position
         element.css('position', 'absolute'); 
 
         // make element dragable
@@ -163,8 +184,8 @@ NEOplace.FrontBoardAggregator = (function() {
         // Calculte element's random position for each quadrant
         var winHeight = $(window).height(),
             winWidth = $(window).width(),
-            quadrantHeight = jQuery("#quadrant-1").height(),
-            quadrantWidth = jQuery("#quadrant-1").width(),
+            quadrantHeight = winHeight/2,
+            quadrantWidth = winWidth/2,
             tolerance = 185,
             Min = 0,
             Max = 0,
@@ -214,40 +235,29 @@ NEOplace.FrontBoardAggregator = (function() {
         // Add element to target board
         var board = jQuery("#quadrant-content-"+obj.board).prepend(element);
 
+        
+        if(!absolutePositionOn){
+            jQuery("#quadrant-content-"+obj.board+" div").css('position', 'inherit');
+        }
+
     }
 
-    self.init = function() {
-        Sail.app.groupchatRoom = 'neo-a@conference.' + Sail.app.xmppDomain;
+    // Brings a .ui-draggable element to the front (via z-index).
+    // This is meant to be used as a callback for jQuery event bindings,
+    // so `this` is assumed to refer to the element you want to bring
+    // to the front.
+    var bringDraggableToFront = function () {
+        var zs = jQuery('.ui-draggable').map(function() {
+            var z = jQuery(this).css('z-index'); 
+            return z === 'auto' ? 100 : parseInt(z, 10);
+        }).toArray();
+        var maxZ = Math.max.apply(Math, zs);
+        jQuery(this).css('z-index', maxZ + 1);
 
-        // TODO: move this out to config.json
-        Sail.app.username = "neo-frontwall-2";
-        Sail.app.password = "22d5d010a45fac5b72bc151e60bf60dc8bc089a8";
-
-        Sail.modules
-            .load('Strophe.AutoConnector', {mode: 'pseudo-anon'})
-            .load('AuthStatusWidget')
-            .thenRun(function () {
-                Sail.autobindEvents(NEOplace.FrontBoardAggregator);
-                jQuery(Sail.app).trigger('initialized');
-
-                // TODO: add click bindings here
-
-                return true;
-            });
+        //test make make all position absolute
+        //jQuery("#quadrant-content-1 div").css('position', 'absolute');
     };
 
-    self.authenticate = function () {
-        jQuery(self).trigger('authenticated');
-    };
-
-    
-    var principlesOn = true;
-    var problemsOn = true;
-    var equationsOn = true;
-    var variablesOn = true;
-    var assumptionsOn = true;
-
-    var absolutePositionOn = true;
 
     self.events = {
         initialized: function (ev) {
@@ -256,6 +266,8 @@ NEOplace.FrontBoardAggregator = (function() {
 
         'ui.initialized': function (ev) {
 
+            // Define UI events and functions
+
             jQuery('#absolute-pos').click(function () {
                 
                 elementLink = jQuery('#absolute-pos');
@@ -263,11 +275,10 @@ NEOplace.FrontBoardAggregator = (function() {
                 if(absolutePositionOn)
                 {
                     absolutePositionOn = false;
-                    jQuery("#quadrant-content-1 div").css('position', 'relative');
-                    jQuery("#quadrant-content-2 div").css('position', 'relative');
-                    jQuery("#quadrant-content-3 div").css('position', 'relative');
-                    jQuery("#quadrant-content-4 div").css('position', 'relative');
-
+                    jQuery("#quadrant-content-1 div").css('position', 'inherit');
+                    jQuery("#quadrant-content-2 div").css('position', 'inherit');
+                    jQuery("#quadrant-content-3 div").css('position', 'inherit');
+                    jQuery("#quadrant-content-4 div").css('position', 'inherit');
                     elementLink.removeClass("widget-box-selected");
                 } else {
                     absolutePositionOn = true;
@@ -275,7 +286,6 @@ NEOplace.FrontBoardAggregator = (function() {
                     jQuery("#quadrant-content-2 div").css('position', 'absolute');
                     jQuery("#quadrant-content-3 div").css('position', 'absolute');
                     jQuery("#quadrant-content-4 div").css('position', 'absolute');
-
                     elementLink.addClass("widget-box-selected");
 
                 }
@@ -387,13 +397,14 @@ NEOplace.FrontBoardAggregator = (function() {
         connected: function (ev) {
             console.log("Connected...");
             
+            // Displaying content only when sails is connected.
             showHtmlContent();
             viewAllQuadrants();
-
-
         },
 
         sail: {
+
+            // Define Sail events and functions
 
             videowall_assumptions_variables_commit: function (sev) {
                 _.each(sev.payload.variables, function (i) {
@@ -470,7 +481,6 @@ NEOplace.FrontBoardAggregator = (function() {
             }
         }
     };
-
 	
     return self;
 })();
