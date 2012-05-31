@@ -153,28 +153,23 @@ NEOplace.FrontBoardAggregator = (function() {
 
         element.fadeIn("slow");
 
-        
         // set absolute position
         element.css('position', 'absolute'); 
 
-        // assign element a random position within the corresponding quadrant
+        // make element dragable
+        element.draggable({ containment: "#quadrant-"+ obj.board});
 
+
+        // Calculte element's random position for each quadrant
         var winHeight = $(window).height(),
             winWidth = $(window).width(),
-
             quadrantHeight = jQuery("#quadrant-1").height(),
             quadrantWidth = jQuery("#quadrant-1").width(),
-
-            //quadrantHeight = (winHeight/2),
-            //quadrantWidth = (winWidth/2),
-            tolerance = 100,
+            tolerance = 185,
             Min = 0,
             Max = 0,
             left = 0,
             top = 0;
-
-
-        // Min + (int)(Math.random() * ((Max - Min) + 1))
 
         if (obj.board==1) {
             Min = 0;
@@ -212,11 +207,9 @@ NEOplace.FrontBoardAggregator = (function() {
             top = Min + (Math.random() * ((Max - Min) + 1));
         }
         
+        // set position 
         element.css('left', left + 'px');
         element.css('top', top + 'px');
-
-        // make element dragable
-        element.draggable({ containment: "#quadrant-"+ obj.board});
 
         // Add element to target board
         var board = jQuery("#quadrant-content-"+obj.board).prepend(element);
@@ -254,12 +247,39 @@ NEOplace.FrontBoardAggregator = (function() {
     var variablesOn = true;
     var assumptionsOn = true;
 
+    var absolutePositionOn = true;
+
     self.events = {
         initialized: function (ev) {
             NEOplace.FrontBoardAggregator.authenticate();
         },
 
         'ui.initialized': function (ev) {
+
+            jQuery('#absolute-pos').click(function () {
+                
+                elementLink = jQuery('#absolute-pos');
+
+                if(absolutePositionOn)
+                {
+                    absolutePositionOn = false;
+                    jQuery("#quadrant-content-1 div").css('position', 'relative');
+                    jQuery("#quadrant-content-2 div").css('position', 'relative');
+                    jQuery("#quadrant-content-3 div").css('position', 'relative');
+                    jQuery("#quadrant-content-4 div").css('position', 'relative');
+
+                    elementLink.removeClass("widget-box-selected");
+                } else {
+                    absolutePositionOn = true;
+                    jQuery("#quadrant-content-1 div").css('position', 'absolute');
+                    jQuery("#quadrant-content-2 div").css('position', 'absolute');
+                    jQuery("#quadrant-content-3 div").css('position', 'absolute');
+                    jQuery("#quadrant-content-4 div").css('position', 'absolute');
+
+                    elementLink.addClass("widget-box-selected");
+
+                }
+            });
 
             jQuery('#filter-principles').click(function () {
                 

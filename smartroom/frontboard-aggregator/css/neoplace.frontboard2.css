@@ -223,7 +223,7 @@ div.none-yet {
   cursor: grab;
 }
 
-.balloon.ui-draggable-dragging {
+.balloon.ui-draggable-dragging, .principle.ui-draggable-dragging, .problem.ui-draggable-dragging, .equation.ui-draggable-dragging, .assumption.ui-draggable-dragging, .variable.ui-draggable-dragging {
   cursor: move;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
