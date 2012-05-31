@@ -112,9 +112,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
         });
     }
 
-    self.loadProblemTempate(); //TODO: move someone more appropriate, right now just call on js file load
-
     self.loadAllEquations = function() {
+        console.log("loadAllEquations");
         $.ajax({
             url: '/assets/equations.json',
             success: function(data, textStatus, jqXHR){
@@ -125,8 +124,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
         });
     }
 
-    self.loadAllEquations(); //TODO: move someone more appropriate, right now just call on js file load
+    self.parseEquationIdsIntoString = function(equationIds){
 
+        var equations = _.map( equationIds, function(id){
+            var eq = {};
+            eq.id = id;
+            eq.name = '$$'+self.allEquations[id].name+'$$';
+            return eq;
+        });
+        return equations;
+    }
 
     self.getHtmlForProblems = function() {
 
@@ -169,11 +176,32 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
             $('#'+id+' .problem-title').html(problem.title);
             $('#'+id+' .html-content').html(problem.htmlContent);
-            console.log(problem.name);
             $('#'+id+' .connectProblemButton').attr("value", problem.name);
+
+            var principlesList = "";
+            _.each( problem.principles, function(principle){
+                principlesList += "<li>"+principle+"</li>";
+            });
+            $('#'+id+' .principlesList').html(principlesList).listview("refresh");
+
+            var equations = self.parseEquationIdsIntoString(problem.equations);
+            var equationsList = "";
+            _.each( equations, function(equation){
+                equationsList += "<li>"+equation.name+"</li>";
+            });
+            $('#'+id+' .equationsList').html(equationsList).listview("refresh");
             
+
+
+
             scrollingProblemsWidth += windowWidth + (sideMargins*2);
         });
+
+        //update formatting of equations
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+
+        //TODO: refresh not happening at right time.... look into a different event to trigger the refresh
+        $( '.equationsList').listview("refresh");
 
         $('#taggingProblems .connectProblemButton').die();
         $('#taggingProblems .connectProblemButton').live("click", function(){
@@ -257,6 +285,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
 
             Sail.app.drowsyURL = Sail.app.config.mongo.url;
+
         },
 
         // triggered when the user has authenticated but is not yet in the XMPP chat channel
@@ -266,6 +295,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         // triggered when the user has authenticated and connected to the XMPP chat channel
         connected: function(ev) {
+
+            // Load any JS/JSON objects required for the rest of the app
+            self.loadProblemTempate();
+            self.loadAllEquations(); 
 
             // ****************
             //PAGE: By default, on login screen ('#loginScreen')
@@ -534,9 +567,21 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     //fake it
                     //TODO: need to add in results from homework activity
                     self.problemSet = [
-                        {title:"Bowling Ball", name:"BowlingBall"},
-                        {title:"Bumper Cars", name:"BumperCars"},
-                        {title:"Car Stuck in Mud", name:"StuckCar"}
+                        {   title:"Bowling Ball", 
+                            name:"BowlingBall", 
+                            principles:["Acceleration", "Newton's First Law"],
+                            equations:[4, 18, 21]
+                        },
+                        {   title:"Bumper Cars", 
+                            name:"BumperCars",
+                            principles:["Static Friction", "Potential Energy"],
+                            equations:[6, 9, 18]
+                        },
+                        {   title:"Car Stuck in Mud", 
+                            name:"StuckCar",
+                            principles:["Potential Energy","Work"],
+                            equations:[4, 10, 11, 27, 29]
+                        }
                     ];
 
                     if ( self.problemSet.length > 1 ) {
@@ -620,13 +665,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 // temp equations, they are actually per problem
                 var equationIds = [2,3,5,10];
 
-                var equations = _.map( equationIds, function(id){
-                    var eq = {};
-                    eq.id = id;
-                    eq.name = '$$'+self.allEquations[id].name+'$$';
-                    return eq;
-                });
-                console.log( equations );
+                var equations = self.parseEquationIdsIntoString(equationIds);
+                console.log("equations",equations);
 
                 //output draggable buttons onto the taggingEquations page... need to use for loop here (see Colin for expl.)
                 var output = '';
