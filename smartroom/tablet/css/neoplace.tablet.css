@@ -420,12 +420,12 @@ table.dragAndDropContainer .draggableTags {
 /* END Styles exclusively for: p-taggingPrinciplesFinished.html */
 
 
-/* Styles exclusively for: p-sortPrinciplesBoard.html */
-/* ENDStyles exclusively for: p-sortPrinciplesBoard.html */
+/* Styles exclusively for: p-checkInBoard.html */
+/* ENDStyles exclusively for: p-checkInBoard.html */
 
 
-/* Styles used in : p-sortPrinciplesBoard.html AND p-taggingEquations.html */
-#sortPrinciplesBoard .message, #taggingEquationsBoard .message {
+/* Styles used in : p-checkInBoard.html AND p-taggingEquations.html */
+#checkInBoard .message, #taggingEquationsBoard .message {
     margin-top: 40px;
 }
 
@@ -446,7 +446,7 @@ table.dragAndDropContainer .draggableTags {
 .board-number {
     font-size: 1.5em;
 }
-/* Styles used in : p-sortPrinciplesBoard.html AND p-taggingEquations.html */
+/* Styles used in : p-checkInBoard.html AND p-taggingEquations.html */
 
 /* Styles exclusively for: p-taggingProblems.html */
 #taggingProblems .ui-grid-b h2 {
