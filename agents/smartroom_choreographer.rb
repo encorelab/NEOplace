@@ -33,7 +33,7 @@ class SmartroomChoreographer < Sail::Agent
 
     event :start_sort? do |stanza, data|
       log "Received student_principles_submit #{data.inspect}"
-      if data.payload == "principle_sort_step" then
+      if data && data['payload'] && data['payload']['step'] == "principle_sort" then
         generate_location_assignment()
         send_location_assignments(@user_wall_assignments)
       end
