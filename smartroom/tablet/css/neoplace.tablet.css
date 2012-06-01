@@ -420,12 +420,12 @@ table.dragAndDropContainer .draggableTags {
 /* END Styles exclusively for: p-taggingPrinciplesFinished.html */
 
 
-/* Styles exclusively for: p-sortPrinciplesBoard.html */
-/* ENDStyles exclusively for: p-sortPrinciplesBoard.html */
+/* Styles exclusively for: p-checkInBoard.html */
+/* ENDStyles exclusively for: p-checkInBoard.html */
 
 
-/* Styles used in : p-sortPrinciplesBoard.html AND p-taggingEquations.html */
-#sortPrinciplesBoard .message, #taggingEquationsBoard .message {
+/* Styles used in : p-checkInBoard.html AND p-taggingEquations.html */
+#checkInBoard .message, #taggingEquationsBoard .message {
     margin-top: 40px;
 }
 
@@ -446,15 +446,43 @@ table.dragAndDropContainer .draggableTags {
 .board-number {
     font-size: 1.5em;
 }
-/* Styles used in : p-sortPrinciplesBoard.html AND p-taggingEquations.html */
+/* Styles used in : p-checkInBoard.html AND p-taggingEquations.html */
 
 /* Styles exclusively for: p-taggingProblems.html */
 #taggingProblems .ui-grid-b h2 {
     margin-top: 0.7em;
 }
 
+
+#taggingProblems .scrollingProblems {
+    position: relative;
+    overflow: hidden;
+}
+
+#taggingProblems .attachProblemContainer {
+    float: left;
+    /*border: 1px solid green;*/
+}
+
+#taggingProblems .problem {
+    margin: 0 20px;
+    /*border: 1px solid red;*/
+}
+
 #taggingProblems .paper {
     background-image: none;
+    overflow: hidden;
+    width: 100%;
+}
+
+#taggingProblems .paper .html-content .pimg {
+   text-align: center;
+}
+
+#taggingProblems .connected-tags {
+    margin-top: 20px;
+    width: 90%;
+    margin: 0 auto;
 }
 
 #taggingProblems #connected-tags ul {
@@ -463,3 +491,65 @@ table.dragAndDropContainer .draggableTags {
     float: left;
 }
 /* END Styles exclusively for: p-taggingProblems.html */
+
+
+/* Styles exclusively for: p-taggingProblems.html */
+#taggingEquations .ui-grid-b h2 {
+    margin-top: 0.7em;
+}
+
+
+#taggingEquations .scrollingProblems {
+    position: relative;
+    overflow: hidden;
+}
+
+#taggingEquations .attachProblemContainer {
+    float: left;
+    /*border: 1px solid green;*/
+}
+
+#taggingEquations .problem {
+    margin: 0 20px;
+    /*border: 1px solid red;*/
+}
+
+#taggingEquations .paper {
+    background-image: none;
+    overflow: hidden;
+    width: 100%;
+}
+
+#taggingEquations .paper .html-content .pimg {
+   text-align: center;
+}
+
+#taggingEquations .connected-tags {
+    margin-top: 20px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+#taggingEquations #connected-tags ul {
+    width: 46%;
+    margin: 0 2%;
+    float: left;
+}
+/* END Styles exclusively for: p-taggingProblems.html */
+
+/* Styles exclusively for: p-variableWriter.html */
+label .label-extra {
+    font-size: 80%; 
+    font-weight:normal;
+}
+
+h3.label-replacement {
+    margin: 1.4em 0 0.6em 2px;
+}
+
+/*.ui-field-contain input.ui-input-text, 
+.ui-field-contain .ui-input-search, */
+#variableWriter .ui-field-contain textarea.ui-input-text {
+    width: 100%;
+}
+/* END Styles exclusively for: p-variableWriter.html */

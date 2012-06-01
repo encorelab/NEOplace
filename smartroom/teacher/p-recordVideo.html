@@ -1,7 +1,7 @@
 <!DOCTYPE html> 
 <html> 
 <head> 
-    <title>NEOplace - Smartroom Activity</title> 
+    <title>NEOplace - Teacher Tablet</title> 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     
@@ -15,10 +15,8 @@
             .then('js/jquery.mobile.init.js')
             .then('js/sail.js/rollcall.js', 'js/jquery.mobile-1.1.0.js')
             .then('js/jquery.mobile.toast.js')
-            .then('js/jquery-ui-1.8.20.dragdrop.min.js')
-            .then('js/jquery.ui.touch-punch.js')
             .then('js/neoplace.tablet.js')
-            .then('js/neoplace.tablet.student.js')
+            .then('js/neoplace.tablet.teacher.js')
             .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
             //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
@@ -26,35 +24,26 @@
 </head>
 <body class="student">
 
-    <!-- START sortPrinciplesBoard page -->
-    <div id="sortPrinciplesBoard" data-role="page" data-theme="c">
+    <!-- START recordVideo page -->
+    <div id="recordVideo" data-role="page" data-theme="c">
 
-        <div data-role="header" data-theme="a" >
+        <div data-role="header">
             <a href="/smartroom/tablet/" data-ajax="false" data-icon="alert" data-iconpos="notext" data-theme="b" title="Reload"></a>
             <h1>NEOplace - Hollywood Physics</h1>
         </div>
 
         <div data-role="content">
-            <div class="board-assignment">
-                <p>Board<br /><span class="board-number">{#}</span></p>
-            </div>
-            <div class="text-align-center message">
-                <p>You have been assigned to a group and a video board.</p>
-                <p><img src="/assets/img/smartboard_gather.png" width="300" height="200" alt="student in front of smartboard" /></p>
-                
-            </div>
 
-            <div class="text-align-center signInInstructions">
-                <p>Tap the 'Sign In' button when you are there.</p>
-                <a href="#" data-role="button" data-theme="b" class="videoBoardSignInButton">Sign In</a>
-            </div>
+        <h2>Step 4 of 4: Record Video</h2>
+
+            <a href="#" data-role="button" data-icon="check" data-iconpos="top" class="doneButton" value="1">Finish</a>
 
             <!-- for UI_TESTING_ONLY -->
             <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
         </div>
 
     </div>
-    <!-- END videoBoardAssignment page -->
+    <!-- END recordVideo page -->
         
 </body>
 </html>

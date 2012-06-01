@@ -3,7 +3,7 @@
 <head> 
     <title>NEOplace - FrontboardBoard 2</title> 
     <meta charset="utf-8">
-    
+
     <link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" />
     <link rel="stylesheet" type="text/css" href="css/neoplace.frontboard2.css" />
 
@@ -12,58 +12,53 @@
     
         Sail.load()
             .then('js/neoplace.frontboard-aggregator.js')
-            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
             .thenRun(function() { return Sail.init(NEOplace.FrontBoardAggregator); });  
-    
     </script>
 </head>
 <body>
-    <div id="board">
-        <div id="quadrant-1">
-            <div class="board-name">Video 1</div>
+    <div id="board" class="hide-div">
+        <div id="quadrant-A">
+            <span class="board-name">Video A</span>
+            <div id="quadrant-content-A"></div>
         </div>
-        <div id="quadrant-2">
-            <div class="board-name">Video 2</div>
+        <div id="quadrant-B">
+            <span class="board-name">Video B</span>
+            <div id="quadrant-content-B"></div>
         </div>
-        <div id="quadrant-3">
-            <div class="board-name">Video 3</div>
+        <div id="quadrant-C">
+            <span class="board-name">Video C</span>
+            <div id="quadrant-content-C"></div>
         </div>
-        <div id="quadrant-4">
-            <div class="board-name">Video 4</div>
+        <div id="quadrant-D">
+            <span class="board-name">Video D</span>
+            <div id="quadrant-content-D"></div>
         </div>
     </div>
 
-    <div class="toolbars-bottom">
+    <div id="toolbars" class="toolbars-bottom hide-div">
         
         <div class="widget-box">
             <a id="filter-principles" class="widget-box-selected" href="#">Principles</a>
-        </div>
-    
-        <div class="widget-box">
             <a id="filter-equations" class="widget-box-selected" href="#">Equations</a>
-        </div>
-
-        <div class="widget-box">
             <a id="filter-problems" class="widget-box-selected" href="#">Problems</a>
-        </div>
-
-        <div class="widget-box">
             <a id="filter-assumptions" class="widget-box-selected" href="#">Assumptions</a>
+            <a id="filter-variables" class="widget-box-selected" href="#">Variables</a>
         </div>
 
+        <div id="fullscreen-toolbar" class="widget-box">
+            <a id="board-ALL" class="widget-box-selected" href="#">[ ]</a> 
+            <a id="board-A" class="" href="#">[A]</a> 
+            <a id="board-B" class="" href="#">[B]</a>  
+            <a id="board-C" class="" href="#">[C]</a> 
+            <a id="board-D" class="" href="#">[D]</a>
+        </div>
         <div class="widget-box">
-            <a id="filter-variables" class="widget-box-selected" href="#">Variables</a>
+            <a id="absolute-pos" alt="Absolute Position On/Off" class="" href="#">Floating</a>
         </div>
 
     </div>
 
-    <script type="text/javascript">
-        /*
-        Sail.load()
-            .then('js/neoplace.frontboard-aggregator.js')
-            .thenRun(function() { return Sail.init(NEOplace.FrontBoardAggregator); });
-        */
-    </script>
 </body>
 </html>

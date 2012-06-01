@@ -1,0 +1,80 @@
+/* apply a natural box layout model to all elements */
+* { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
+
+body {
+  background-color: #eee;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 100%;
+}
+
+/** sail.css **/
+.mask {
+  opacity: 0.7;
+  background-color: #000;
+  position: absolute;
+  z-index: 1000;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+.widget-box {
+    text-align: center;
+    color: #fff;
+    background-color: #333;
+    -webkit-border-radius: 12px;
+    border-radius: 12px;
+    -webkit-box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    -moz-box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    box-shadow: 3px 3px 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);
+}
+.auth-box {
+    position: absolute;
+    top: 14% !important;
+    left: 10%;
+    right: 10%;
+    padding: 0 20px 20px 20px !important;
+}
+
+
+#connecting {
+    top: 190px !important;
+}
+
+
+/** used in jquery.mobile.toast.js **/
+.ui-sail-loading-icon {
+    background-attachment: scroll;
+    background-clip: border-box;
+    background-color: #2A2A2A;
+    background-image: url("../loader.gif");
+    background-origin: padding-box;
+    background-position: 0 0;
+    background-repeat: repeat;
+    background-size: 46px 46px;
+    
+    border-radius: 36px 36px 36px 36px;
+    display: block;
+    height: 44px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0.5em;
+    padding: 1px;
+    width: 44px;
+}
+
+/** codiqa generated **/
+.text-align-center {
+  text-align: center;
+}
+
+.text-align-right {
+  text-align: right;
+}
+
+.skipButton, .nextStepButton {
+    margin-top: 40px;
+}
+
+/* Styles exclusively for: p-loginScreen.html */
+/* END Styles exclusively for: p-loginScreen.html */

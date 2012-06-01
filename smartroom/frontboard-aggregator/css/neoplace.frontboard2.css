@@ -131,7 +131,7 @@ a {
 .toolbars-bottom {
   bottom: -8px;
   position: absolute;
-  right: 25%;
+  /*right: 25%;*/
 }
 
 .toolbars-bottom .widget-box {
@@ -223,7 +223,7 @@ div.none-yet {
   cursor: grab;
 }
 
-.balloon.ui-draggable-dragging {
+.balloon.ui-draggable-dragging, .principle.ui-draggable-dragging, .problem.ui-draggable-dragging, .equation.ui-draggable-dragging, .assumption.ui-draggable-dragging, .variable.ui-draggable-dragging {
   cursor: move;
   cursor: -moz-grabbing;
   cursor: -webkit-grabbing;
@@ -301,43 +301,42 @@ div.none-yet {
 }
 
 /* adding CSS specific to neoplace.frontboard2 */
-#quadrant-1 div, #quadrant-2 div, #quadrant-3 div, #quadrant-4 div {
+#quadrant-content-A div, #quadrant-content-B div, #quadrant-content-C div, #quadrant-content-D div, .board-name {
     border: 3px solid #AAAAAA;
     border-radius: 10px 10px 10px 10px;
     text-align: center;
 }
 
-#board #quadrant-1, #board #quadrant-2, #board #quadrant-3, #board #quadrant-4{
-  /* padding-top: 5px;*/
+#quadrant-A, #quadrant-B, #quadrant-C, #quadrant-D{
+  background: #FFFFFF;
   
 }
 
 #board {
   border-right: 1px solid #999999;
-  background: #fff;
   font-size: 12px;
 }
 
-#quadrant-1{
+#quadrant-A{
   border: 2px solid;
   float: left;
   width: 50%;
   overflow: auto;
 }
 
-#quadrant-2{
+#quadrant-B{
   border: 2px solid;
   overflow: auto;
 }
 
-#quadrant-3{
+#quadrant-C{
   border: 2px solid;
   float: left;
   width: 50%;
   overflow: auto;
 }
 
-#quadrant-4{
+#quadrant-D{
   border: 2px solid;
   overflow: auto;
 }
@@ -359,17 +358,16 @@ div.none-yet {
 }
 
 .equation{
-  background: none repeat scroll 0 0 #069106;
+  background: none repeat scroll 0 0 #FFFFFF;
   padding: 2px;
-  width: 112px;
   margin: 5px;
   float: left;
 }
 
 .assumption{
-  background: none repeat scroll 0 0 #7D022B;
+  background: none repeat scroll 0 0 #CCADA3;
   padding: 2px;
-  width: 112px;
+  width: 150px;
   margin: 5px;
   float: left;
 }
@@ -383,8 +381,8 @@ div.none-yet {
 }
 
 .widget-box-selected{
-  background-color: yellow;
-  color: black;
+  background-color: #1B50E0;
+  color: #FFFFFF;
 }
 
 .board-name{
@@ -393,4 +391,19 @@ div.none-yet {
   margin: 5px;
   float: left;
   padding: 10px;
+  font-size: 2em;
+}
+
+.assumption-fulltext{
+  display: none;
+}
+
+#connecting{
+  background: none repeat scroll 0 0 #CCCCCC;
+  border: 1px solid #000000;
+  padding-top: 10px;
+}
+
+.hide-div{
+  display: none; 
 }

@@ -34,42 +34,41 @@
         </div>
         
         <div data-role="content">
-            <div>
-                <h2>Pick Your Variables</h2>
+
+            <div class="text-align-center">
+                <h2>Set Your Variables and Assumptions</h2>
+                <p>What are any variables or assumptions that you think are needed to help "solve" the challenge question?</p>
             </div>
-            <div>
-                <b>
-                    Write out any variables that you think are needed to help "solve" the
-                    challenge question
-                    <br />
-                    <br />
-                    (i.e. The speed of an object, the co-efficient of friction, the mass of
-                    an object)
-                </b>
-            </div>
+
             <div data-role="fieldcontain">
+
                 <fieldset data-role="controlgroup">
-                    <label for="textarea3">
+                    <h3 class="label-replacement">1) Choose the type:</h3>
+                    
+                    <input type="radio" name="radio-choice-1" id="radio-choice-1" value="choice-1" checked="checked" />
+                    <label for="radio-choice-1">
+                        Variable
+                        <div class="label-extra">Examples: The speed of an object, the mass of an object, the height of a drop.</div>
                     </label>
-                    <textarea id="textarea3" placeholder="">
-                    </textarea>
+                    <input type="radio" name="radio-choice-1" id="radio-choice-2" value="choice-2"  />
+                    <label for="radio-choice-2">
+                        Assumption
+                        <div class="label-extra">Examples: The surface is frictionless, there is no air resistance, the surface can absorb 1000N.</div>
+                    </label>
                 </fieldset>
-            </div>
-            <div class="ui-grid-a">
-                <div class="ui-block-a">
-                    <a data-role="button" id="variableHint" href="#">
-                        Give me a Hint!
-                    </a>
-                </div>
-                <div class="ui-block-b">
-                    <input type="submit" value="Submit" />
-                </div>
+
+
+                <h3 class="label-replacement">2) Enter your assumption or variable below:</h3>
+                <textarea name="textarea" id="assumptionOrVariable"></textarea>
+
+                <p class="text-align-center">Tap 'Add' to send it to the shared board. You can add multiple variables or assumptions.</p>
+                <input type="submit" value="Add" data-theme="b" data-icon="plus" class="addButton" />
+                
             </div>
 
 
-            <a href="p-finishPage.html" data-role="button" data-transition="fade" data-theme="b" >
-                Finished Submitting Variables
-            </a>
+            <!-- for UI_TESTING_ONLY -->
+            <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
         </div>
     </div>
     <!-- END variableWriter -->
