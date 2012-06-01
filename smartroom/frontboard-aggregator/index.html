@@ -11,11 +11,6 @@
     <script type="text/javascript">
     
         Sail.load()
-            //.then('js/jquery.mobile.init.js')
-            //.then('js/jquery.mobile-1.1.0.js')
-            //.then('js/jquery.mobile.toast.js')
-            //.then('js/jquery-ui-1.8.20.dragdrop.min.js')
-
             .then('js/neoplace.frontboard-aggregator.js')
             //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
@@ -24,21 +19,21 @@
 </head>
 <body>
     <div id="board" class="hide-div">
-        <div id="quadrant-1">
-            <span class="board-name">Video 1</span>
-            <div id="quadrant-content-1"></div>
+        <div id="quadrant-A">
+            <span class="board-name">Video A</span>
+            <div id="quadrant-content-A"></div>
         </div>
-        <div id="quadrant-2">
-            <span class="board-name">Video 2</span>
-            <div id="quadrant-content-2"></div>
+        <div id="quadrant-B">
+            <span class="board-name">Video B</span>
+            <div id="quadrant-content-B"></div>
         </div>
-        <div id="quadrant-3">
-            <span class="board-name">Video 3</span>
-            <div id="quadrant-content-3"></div>
+        <div id="quadrant-C">
+            <span class="board-name">Video C</span>
+            <div id="quadrant-content-C"></div>
         </div>
-        <div id="quadrant-4">
-            <span class="board-name">Video 4</span>
-            <div id="quadrant-content-4"></div>
+        <div id="quadrant-D">
+            <span class="board-name">Video D</span>
+            <div id="quadrant-content-D"></div>
         </div>
     </div>
 
@@ -53,11 +48,11 @@
         </div>
 
         <div id="fullscreen-toolbar" class="widget-box">
-            <a id="board-0" class="widget-box-selected" href="#">[ ]</a> 
-            <a id="board-1" class="" href="#">[1]</a> 
-            <a id="board-2" class="" href="#">[2]</a>  
-            <a id="board-3" class="" href="#">[3]</a> 
-            <a id="board-4" class="" href="#">[4]</a>
+            <a id="board-ALL" class="widget-box-selected" href="#">[ ]</a> 
+            <a id="board-A" class="" href="#">[A]</a> 
+            <a id="board-B" class="" href="#">[B]</a>  
+            <a id="board-C" class="" href="#">[C]</a> 
+            <a id="board-D" class="" href="#">[D]</a>
         </div>
         <div class="widget-box">
             <a id="absolute-pos" alt="Absolute Position On/Off" class="" href="#">Floating</a>
