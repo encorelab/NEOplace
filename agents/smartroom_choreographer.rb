@@ -15,6 +15,9 @@ class SmartroomChoreographer < Sail::Agent
 
   def behaviour
     when_ready do
+      # Setup MongoDB connection
+      @mongo = Mongo::Connection.new.db(config[:database])
+
       join_room
       #join_log_room
     end
@@ -34,7 +37,16 @@ class SmartroomChoreographer < Sail::Agent
     event :start_sort? do |stanza, data|
       log "Received student_principles_submit #{data.inspect}"
       if data && data['payload'] && data['payload']['step'] == "principle_sort" then
-        generate_location_assignment()
+        # data = JSON.parse('{ "VW1":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}], "VW2":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}] }')
+        vidwall_user_tag_counts = JSON.parse('{ "video-wall-A":{"bob":3,"jim":4,"tim":1}, "video-wall-B":{"bob":3,"jim":2,"tim":4} , "video-wall-C":{"bob":1,"jim":2,"tim":4} }')
+        # vidwall_user_tag_counts = JSON.parse('[ {"bob":3,"jim":4,"tim":1}, {"bob":3,"jim":2,"tim":4} ]')
+
+        # call function to generate the location assignments
+        @user_wall_assignments = generate_location_assignments(vidwall_user_tag_counts)
+
+        # store user_wall_assignments in database so clients can use it
+        store_user_wall_assigments(@user_wall_assignments)
+
         send_location_assignments(@user_wall_assignments)
       end
     end 
@@ -46,19 +58,15 @@ class SmartroomChoreographer < Sail::Agent
   end
 
   # This function is brought to you by Matt Zukowski's brilliance
-  def generate_location_assignment()
+  def generate_location_assignments(vidwall_user_tag_counts)
+    log "Video wall user tag counts to generate location assignments #{vidwall_user_tag_counts.inspect}"
     # end result structure used to send out messages later on
-    @user_wall_assignments = {}
+    user_wall_assignments = {}
 
     # function to determine if there are still users in the hash
     def any_unassigned_users_left?(vidwall_user_tag_rankings)
         vidwall_user_tag_rankings.any?{|wall, users| !users.empty?}
     end
-
-    # data = JSON.parse('{ "VW1":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}], "VW2":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}] }')
-    vidwall_user_tag_counts = JSON.parse('{ "video-wall-A":{"bob":3,"jim":4,"tim":1}, "video-wall-B":{"bob":3,"jim":2,"tim":4} , "video-wall-C":{"bob":1,"jim":2,"tim":4} }')
-    # vidwall_user_tag_counts = JSON.parse('[ {"bob":3,"jim":4,"tim":1}, {"bob":3,"jim":2,"tim":4} ]')
-    log "Video wall user tag counts from JSON #{vidwall_user_tag_counts.inspect}"
 
     # Step 1 create sorted rankings
     vidwall_user_tag_rankings = vidwall_user_tag_counts.map do |wall, user_counts|
@@ -81,7 +89,7 @@ class SmartroomChoreographer < Sail::Agent
         # retrieve top user
         top_user = vidwall_user_tag_rankings[wall].first
         # store top user in result structure with the assigned wall
-        @user_wall_assignments[top_user] = wall
+        user_wall_assignments[top_user] = wall
         
         # delete the user from all videowall rankings
         walls.each {|w| vidwall_user_tag_rankings[w].delete(top_user) }
@@ -89,8 +97,19 @@ class SmartroomChoreographer < Sail::Agent
         i = (i + 1) % walls.length
     end
 
-    log "User assignment array to send messages #{@user_wall_assignments.inspect}"
+    log "User assignment array to send messages #{user_wall_assignments.inspect}"
+    return user_wall_assignments
+  end
 
+  def store_user_wall_assigments(user_wall_assignments)
+    @mongo.collection(:user_wall_assignments).remove()
+
+    user_wall_assignments.map do |user, wall|
+      beautified_user_wall_assignment = {:user_name => user, :location => wall}
+      @mongo.collection(:user_wall_assignments).save(beautified_user_wall_assignment)
+    end
+
+    log "pimped out user_wall_assignments stored for lookup in mongo"
   end
 
 
