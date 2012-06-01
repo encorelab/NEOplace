@@ -301,13 +301,13 @@ div.none-yet {
 }
 
 /* adding CSS specific to neoplace.frontboard2 */
-#quadrant-content-1 div, #quadrant-content-2 div, #quadrant-content-3 div, #quadrant-content-4 div, .board-name {
+#quadrant-content-A div, #quadrant-content-B div, #quadrant-content-C div, #quadrant-content-D div, .board-name {
     border: 3px solid #AAAAAA;
     border-radius: 10px 10px 10px 10px;
     text-align: center;
 }
 
-#quadrant-1, #quadrant-2, #quadrant-3, #quadrant-4{
+#quadrant-A, #quadrant-B, #quadrant-C, #quadrant-D{
   background: #FFFFFF;
   
 }
@@ -317,26 +317,26 @@ div.none-yet {
   font-size: 12px;
 }
 
-#quadrant-1{
+#quadrant-A{
   border: 2px solid;
   float: left;
   width: 50%;
   overflow: auto;
 }
 
-#quadrant-2{
+#quadrant-B{
   border: 2px solid;
   overflow: auto;
 }
 
-#quadrant-3{
+#quadrant-C{
   border: 2px solid;
   float: left;
   width: 50%;
   overflow: auto;
 }
 
-#quadrant-4{
+#quadrant-D{
   border: 2px solid;
   overflow: auto;
 }
