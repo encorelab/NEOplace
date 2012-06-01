@@ -1,0 +1,414 @@
+body {
+    background-color: #EEEEEE;
+    overflow:hidden;
+    /*font-family: fantasy;*/
+    font-family: sans-serif;
+    font-weight: bolder;
+    font-size: 10pt;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    height: 768px;
+    width: 1024px;
+}
+
+#epic-task-completed-container {
+    position: absolute;
+    top: 352px;
+    left: 0px;
+    height: 64px;
+    width: 100%;
+    display: inline;
+    z-index: 999991;
+}
+
+#modal-background {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background-color: #555555;
+    opacity: 0.5;
+    height: 100%;
+    width: 100%;
+    z-index: 99999;
+    display: inline;
+}
+
+#mario {
+   position: absolute;
+   display: inline;
+   top: 800px;
+   left: 730px;
+   z-index: 999992;
+}
+
+#achievement-description {
+    position:relative;
+    top: -120px;
+    font-size: 3em;
+    text-align: center;
+    color: #FFFFFF;
+    text-shadow: 0.1em 0.1em 0.2em black;
+}
+
+
+
+#legend-bar {
+    position:absolute;
+    top: 738px;
+    height: 30px;
+    left: 0px;
+    width: 1024px;
+    text-align: left;
+    background-color: #666666;
+    opacity: 1.0;
+    color: #ffffff;
+    background:-webkit-gradient(linear, 0 0, 0 100%, from(#909090), to(#666666));
+    background:-moz-linear-gradient(#909090, #666666);
+    background:-o-linear-gradient(#909090, #666666);
+    background:linear-gradient(#909090, #666666);
+    text-shadow: 0.1em 0.1em 0.2em black;
+}
+
+#legend-step1 {
+    position: relative;
+    left: 80px;
+    display: inline;
+}
+
+#legend-step2 {
+    position: absolute;
+    left: 280px;
+    display: inline;
+}
+#legend-step3 {
+    position: relative;
+    left: 210px;
+    display: inline;
+}
+
+#legend-step4 {
+    position: relative;
+    left: 250px;
+    display: inline;
+}
+
+#legend-step5 {
+    position: relative;
+    left: 290px;
+    display: inline;
+}
+
+#legend-step6 {
+    position: relative;
+    left: 330px;
+    display: inline;
+}
+
+#legend-description {
+    position: relative;
+    left: 370px;
+    display: inline;
+    font-style: italic;
+}
+
+#progress-bar {
+    position:absolute;
+    text-align: left;
+    background-color: #4DBD5C;
+    opacity: 1.0;
+    width: 1024px;
+    height: 30px;
+    left: 0px;
+    color: #ffffff;
+    text-shadow: 0.1em 0.1em 0.2em black;
+}
+
+.bar-dialog {
+    position: relative;
+    left: 14px;
+    top: 8px;
+    text-align: left;
+    color: #ffffff;
+    font-size: 10pt;
+    font-family: sans-serif;
+    font-weight: normal;
+}
+
+.bar-dialog.bold {
+    font-weight: bolder;
+}
+
+#location-1 {
+    position: absolute;
+    left: 156px;
+    top: 40px;
+    float: right;
+    width: 342px;
+    height: 342px;
+    text-align: center;
+    background-image: url('../images/paper_342x342.png');
+    color: #ffffff;
+}
+
+
+#location-1 img {
+    position: relative;
+    top: 130px;
+    left: -164px;
+}
+
+
+#location-2 {
+    position: absolute;
+    left: 536px;
+    top: 40px;
+    width: 342px;
+    height: 342px;
+    text-align: center;
+    background-image: url('../images/paper_342x342.png');
+    color: #ffffff;
+}
+
+#location-2 img {
+    position: relative;
+    top: 130px;
+    left: 164px;
+}
+
+
+#location-3 {
+    position: absolute;
+    left: 156px;
+    top: 390px;
+    width: 342px;
+    height: 342px;
+    text-align: center;
+    background-image: url('../images/paper_342x342.png');
+    color: #ffffff;
+}
+
+#location-3 img {
+    position: relative;
+    top: 130px;
+    left: -164px;
+}
+
+#location-4 {
+    position: absolute;
+    left: 536px;
+    top: 390px;
+    width: 342px;
+    height: 342px;
+    text-align: center;
+    background-image: url('../images/paper_342x342.png');
+    color: #ffffff;
+}
+
+#location-4 img {
+    position: relative;
+    top: 130px;
+    left: 164px;
+}
+
+
+.user {
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    z-index:100;
+}
+
+
+@-webkit-keyframes greenPulse {
+from {
+	background-color: #88d392;
+	-moz-box-shadow: 0 0 2px 2px #88d392;
+	-webkit-box-shadow: 0 0 2px 2px #88d392;
+	box-shadow: 0 0 2px 2px #88d392;
+}
+50% {
+    background-color: #4DBD5C;
+    -moz-box-shadow: 0 0 9px 9px #4DBD5C;
+    -webkit-box-shadow: 0 0 9px 9px #4DBD5C;
+    box-shadow: 0 0 9px 9px #4DBD5C;
+    
+     }
+to {
+    background-color: #88d392;
+    -moz-box-shadow: 0 0 2px 2px #88d392;
+    -webkit-box-shadow: 0 0 2px 2px #88d392;
+    box-shadow: 0 0 2px 2px #88d392;
+    }
+}
+
+@-webkit-keyframes redPulse {
+from {
+	background-color: #2e88c4;
+	-moz-box-shadow: 0 0 2px 2px #2e88c4;
+	-webkit-box-shadow: 0 0 2px 2px #2e88c4;
+	box-shadow: 0 0 2px 2px #2e88c4;
+}
+50% {
+    background-color: #AC0B2C;
+    -moz-box-shadow: 0 0 9px 9px #AC0B2C;
+    -webkit-box-shadow: 0 0 9px 9px #AC0B2C;
+    box-shadow: 0 0 9px 9px #AC0B2C;
+    
+     }
+to {
+    background-color: #2e88c4;
+    -moz-box-shadow: 0 0 2px 2px #2e88c4;
+    -webkit-box-shadow: 0 0 2px 2px #2e88c4;
+    box-shadow: 0 0 2px 2px #2e88c4;
+    }
+}
+
+
+@-webkit-keyframes yellowPulse {
+from {
+	background-color: #2e88c4;
+	-moz-box-shadow: 0 0 2px 2px #2e88c4;
+	-webkit-box-shadow: 0 0 2px 2px #2e88c4;
+	box-shadow: 0 0 2px 2px #2e88c4;
+}
+50% {
+    background-color: #FFF640;
+    -moz-box-shadow: 0 0 9px 9px #FFF640;
+    -webkit-box-shadow: 0 0 9px 9px #FFF640;
+    box-shadow: 0 0 9px 9px #FFF640;
+    
+     }
+to {
+    background-color: #2e88c4;
+    -moz-box-shadow: 0 0 2px 2px #2e88c4;
+    -webkit-box-shadow: 0 0 2px 2px #2e88c4;
+    box-shadow: 0 0 2px 2px #2e88c4;
+    }
+}
+
+.triangle-right {
+	position:relative;
+	padding:2px;
+        width:148px;
+	height: 31px;
+	margin:1em 0 3em;
+	color:#fff;
+	background:#96BED9; /* default background for browsers without gradient support */
+	/* css3 */
+	background:-webkit-gradient(linear, 0 0, 0 100%, from(#96BED9), to(#7E9FC0));
+	background:-moz-linear-gradient(#96BED9, #7E9FC0);
+	background:-o-linear-gradient(#96BED9, #7E9FC0);
+	background:linear-gradient(#96BED9, #7E9FC0);
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+}
+
+.user-name {
+    position: relative;
+    top: 22px;
+    left: -42px;
+    color: #000000; 
+}
+
+.trophies {
+    position: relative;
+    display: inline;
+    top: 10px;
+    left: -60px;
+}
+
+.good-time {
+
+	-webkit-animation-name: greenPulse;
+	-webkit-animation-duration: 2s;
+	-webkit-animation-iteration-count: infinite;
+}
+
+/*
+.triangle-right.caution {
+
+	-webkit-animation-name: yellowPulse;
+	-webkit-animation-duration: 2s;
+	-webkit-animation-iteration-count: infinite;
+}
+
+.triangle-right.stop {
+
+	-webkit-animation-name: redPulse;
+	-webkit-animation-duration: 2s;
+	-webkit-animation-iteration-count: infinite;
+} */
+
+
+/* Variant : for left positioned triangle
+------------------------------------------ */
+
+.triangle-right.left {
+	margin-left:70px;
+        margin-top:-3.4em;
+}
+
+/* Variant : for right positioned triangle
+------------------------------------------ */
+
+.triangle-right.right {
+       
+	margin-left:-100px;
+	margin-top:-3.4em;
+}
+
+/* THE TRIANGLE
+------------------------------------------------------------------------------------------------------------------------------- */
+
+.triangle-right:after {
+	content:"";
+	position:absolute;
+	bottom:-20px; /* value = - border-top-width - border-bottom-width */
+	left:50px; /* controls horizontal position */
+	border-width:20px 0 0 20px; /* vary these values to change the angle of the vertex */
+	border-style:solid;
+	border-color:#96BED9 transparent;
+        z-index:-10;
+    /* reduce the damage in FF3.0 */
+    display:block; 
+    width:0;
+    
+}
+
+
+/* Variant : left
+------------------------------------------ */
+
+.triangle-right.left:after {
+	top:15px; 
+	left:-7px; /* value = - border-left-width - border-right-width */
+	bottom:auto;
+	border-width:15px 15px 0 0; /* vary these values to change the angle of the vertex */
+	border-color:transparent #96BED9;
+	-webkit-animation-name: greenPulse;
+	-webkit-animation-duration: 2s;
+	-webkit-animation-iteration-count: infinite;
+}
+
+/* Variant : right
+------------------------------------------ */
+
+.triangle-right.right:after {
+	top:15px; 
+	right:-7px; /* value = - border-left-width - border-right-width */
+	bottom:auto;
+        left:auto;
+	border-width:15px 0 0 15px; /* vary these values to change the angle of the vertex */
+	border-color:transparent #96BED9 ;
+	
+}
+
+
+.location-player li {
+    color: #ffffff;
+    list-style-position: inside;
+}
+
+

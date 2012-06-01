@@ -1,0 +1,66 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    
+    
+        <title>NeoPLACE Front Board Prototype</title>
+        
+        <!-- JS -->
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="js/jquery.jangle.js"></script>
+        <script type="text/javascript" src="js/neoplace_FrontBoard.js"></script>
+        <script src="js/sail.js/sail.js" type="text/javascript"></script>
+        <!-- script type="text/javascript">
+            Sail.load()
+                .then('js/jquery.mobile.init.js')
+                .then('js/sail.js/rollcall.js')
+                .then('js/neoplace.frontboard.js')
+                //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
+                //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+        </script -->
+        
+        
+        <!-- CSS -->
+        <!-- link rel="stylesheet" type="text/css" href="js/sail.js/css/sail.css" /-->
+        <link rel="stylesheet" type="text/css" href="css/neoplace_FrontBoard.css">
+    </head>
+    <body>
+        <div id="epic-task-completed-container" style="displays: none">
+            <div id="task-completed-container">
+                <img src="images/icon_star.png" height="64" width="64">
+                <div id="achievement-description">Group A &lt;TaskName&gt; Completed!!</div>
+            </div>
+        </div>
+        <div id="mario">
+            <img src="images/mario2.png" alt="super mario!!" />
+        </div>
+         <div id="location-environment">
+            <div id="progress-bar" class="good-time"><div id="progress-text" class="bar-dialog bold">Lots of time left!</div></div>
+            <div id="locations">
+                <div id="top-locations">
+                    <div id="location-1"><img src="images/circle_A" alt="Location A" /></div>
+                    <div id="location-2"><img src="images/circle_B" alt="Location B" /></div>
+                </div>
+                <br />
+                <div id="bottom-locations">
+                    <div id="location-3"><img src="images/circle_C" alt="Location C" /></div>
+                    <div id="location-4"><img src="images/circle_D" alt="Location D" /></div>
+                </div>
+            </div>
+            <div id="legend-bar"><div class="bar-dialog">Progress Legend:
+                <div id="legend-step1"><img src="images/icon_square.png" alt="Step 1: Square Shape" /> Step 1</div>
+                <div id="legend-step2"><img src="images/icon_triangle.png" alt="Step 2: Triangle Shape" /> Step 2</div>
+                <div id="legend-step3"><img src="images/icon_circle.png" alt="Step 3: Circle Shape" /> Step 3</div>
+                <div id="legend-step4"><img src="images/icon_star.png" alt="Step 4: Star Shape" /> Step 4</div>
+                <div id="legend-step5"><img src="images/icon_polygon.png" alt="Step 5: Polygon Shape" /> Step 5</div>
+                <div id="legend-step6"><img src="images/icon_upsidedownTriangle.png" alt="Step 6: Star Shape" /> Step 6</div>
+                <div id="legend-description">Shapes indicate steps that are complete</div>
+                </div>
+            </div>
+        </div>
+        
+         
+    </body>
+</html>
