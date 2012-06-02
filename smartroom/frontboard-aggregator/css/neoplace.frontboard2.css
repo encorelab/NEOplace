@@ -1,13 +1,11 @@
 /* this is mostly lifted from common-knowledge-smartboard.css */
 
 body {
-  /*background-image: url("../images/corkboard.jpg");*/
-  background-color:#eee;
+  /*background: url("/images/common_habitats.png");*/
   background-size: 70% auto;
+  background-position: 0 100px;
   overflow: hidden;
-  /*background-position: 0 0px;
-  
-  /*background: #eee;*/
+  background: #eee;
 }
 
 header {
@@ -307,64 +305,12 @@ div.none-yet {
     border: 3px solid #AAAAAA;
     border-radius: 10px 10px 10px 10px;
     text-align: center;
-    overflow: auto;
-
 }
 
 #quadrant-A, #quadrant-B, #quadrant-C, #quadrant-D{
-  background: #FFF;
- 
+  background: #FFFFFF;
+  
 }
-
-/* adding the paper effect to the quadrants */
-
-.paper {
-/*    padding: 1.5em 50px 30px 50px;*/
-    /*width: 725px;*/
-    margin: 10px 10px 10px 10px;
-    font-size: 1.2em;
-    position: relative;
-    background: #fff;
-    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
-    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
-}
-
-/*.paper h2 {
-    margin-top: 0;
-    text-align: center;
-}*/
-
-.paper:before, .paper:after {
-    position: absolute;
-    width: 40%;
-    height: 10px;
-    content: ' ';
-    left: 12px;
-    bottom: 15px;
-    background: transparent;
-    -webkit-transform: skew(-5deg) rotate(-5deg);
-    -moz-transform: skew(-5deg) rotate(-5deg);
-    -ms-transform: skew(-5deg) rotate(-5deg);
-    -o-transform: skew(-5deg) rotate(-5deg);
-    transform: skew(-5deg) rotate(-5deg);
-    -webkit-box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
-    z-index: -1;
-}
-
-.paper:after {
-    left: auto;
-    right: 12px;
-    -webkit-transform: skew(5deg) rotate(5deg);
-    -moz-transform: skew(5deg) rotate(5deg);
-    -ms-transform: skew(5deg) rotate(5deg);
-    -o-transform: skew(5deg) rotate(5deg);
-    transform: skew(5deg) rotate(5deg);
-}
-
-/* end of paper effect */
 
 #board {
   border-right: 1px solid #999999;
@@ -372,31 +318,27 @@ div.none-yet {
 }
 
 #quadrant-A{
-/*  border: 2px solid;*/
+  border: 2px solid;
   float: left;
-  width: 40%;
-  /*overflow: auto;*/
+  width: 50%;
+  overflow: auto;
 }
 
 #quadrant-B{
-/*  border: 2px solid;*/
-  width: 40%;
-  float: right;
-  /*overflow: auto;*/
+  border: 2px solid;
+  overflow: auto;
 }
 
 #quadrant-C{
-/*  border: 2px solid;*/
+  border: 2px solid;
   float: left;
-  width: 40%;
-  /*overflow: auto;*/
+  width: 50%;
+  overflow: auto;
 }
 
 #quadrant-D{
-/*  border: 2px solid;*/
-  width: 40%;
-  float: right;
-  /*overflow: auto;*/
+  border: 2px solid;
+  overflow: auto;
 }
 
 .principle{
