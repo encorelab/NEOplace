@@ -60,6 +60,11 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
     /************************ OUTGOING EVENTS ******************************/
 
+    self.submitStartVideo = function() {
+        var sev = new Sail.Event('next_video', {}); //no payload
+        Sail.app.groupchat.sendEvent(sev);
+    }
+
     self.submitStartActivity = function(activityName) {
         var sev = new Sail.Event('activity_started', {
             activity_name:activityName,
@@ -69,15 +74,25 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         //$.mobile.changePage('p-taggingPrinciples.html');
     }
 
+    self.submitVideoAnswerComplete = function(videoBoardLetter, studentNames) {
+        var sev = new Sail.Event('video_answer_complete', {
+            location:videoBoardLetter,
+            students:studentNames
+        });
+        Sail.app.groupchat.sendEvent(sev);
+
+        //$.mobile.changePage('p-taggingPrinciples.html');
+    }
 
     /************************ INCOMING EVENTS ******************************/
 
     self.events.sail = {
-        student_principle_commit: function (sev) {
-            var boardLetter = sev.payload.location;
+        videowall_principles_commit: function (sev) {
+            var boardLetter = sev.payload.videowall;
             console.log("Heard that board " + boardLetter + " is done sorting principles.")
             $('#sortPrinciples .approveButton[value="'+boardLetter+'"]').removeClass("ui-disabled");
         }
+
     };
 
     /************************ PUBLIC METHODS ******************************/
@@ -87,25 +102,31 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         return u.kind === "Instructor";
     };
 
-    self.updatePrincipleBoardButtons = function(){
-        //console.log("updatePrincipleBoardButtons() " + self.currentBoard);
-        $('#taggingPrinciples .startVideoButton[value="'+self.currentBoard+'"]').addClass('ui-disabled');
-        self.currentBoard = self.currentBoard + 1;
-        if ( self.currentBoard <= TOTAL_VIDEO_BOARDS ) {
-            $('#taggingPrinciples .startVideoButton[value="'+self.currentBoard+'"]').removeClass('ui-disabled');
-        }else{
-            $('#taggingPrinciples .nextStepButton').removeClass('ui-disabled');
+    self.updatePrincipleBoardButtons = function(eventString, roundNum){
+        console.log("updatePrincipleBoardButtons()", eventString, roundNum, self.currentBoard);
+        var roundNum = parseInt(roundNum);
+        if ( eventString === "allowSignIn" ) {
+            self.currentBoard = roundNum; //self.currentBoard + 1;
+            $('#taggingPrinciples .allowSignInButton[value="'+roundNum+'"]').addClass('ui-disabled');
+            $('#taggingPrinciples .startVideoButton[value="'+roundNum+'"]').removeClass('ui-disabled');
+        
+        } else if ( eventString === "startVideo" ) {
+            $('#taggingPrinciples .startVideoButton[value="'+roundNum+'"]').addClass('ui-disabled');
+            if ( roundNum === TOTAL_VIDEO_BOARDS ) {
+                $('#taggingPrinciples .nextStepButton').removeClass('ui-disabled');
+            }else{
+                $('#taggingPrinciples .allowSignInButton[value="'+(roundNum+1)+'"]').removeClass('ui-disabled');
+            }
+
         }
+    
     }
 
     // ****************
     //PAGE: By default, on login screen ('#loginScreen')
     $( '#loginScreen' ).live( 'pageinit',function(event){
         console.log("#loginScreen pageinit");
-        if ( !UI_TESTING_ONLY ) {
-
-        }else{
-
+        if ( UI_TESTING_ONLY ) {
             //skip button for testing only
             $("#loginScreen .skipButton").css("display","block");
             $("#loginScreen .skipButton").die();
@@ -123,26 +144,34 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
     $( '#taggingPrinciples' ).live( 'pageinit',function(event){
         console.log("#taggingPrinciples pageinit");
 
-        $('#taggingPrinciples .startVideoButton[value="'+self.currentBoard+'"]').removeClass("ui-disabled");
+        $('#taggingPrinciples .allowSignInButton[value="'+self.currentBoard+'"]').removeClass("ui-disabled");
+        $('#taggingPrinciples .allowSignInButton').click(function(){
+            var roundNum = $(this).attr("value");
+            if ( !UI_TESTING_ONLY ) {
+                self.submitStartVideo(); //xmpp msg
+            }
+            self.updatePrincipleBoardButtons("allowSignIn", roundNum);
+        });
         $('#taggingPrinciples .startVideoButton').click(function(){
-            self.submitStartActivity("video_tagging"); //xmpp msg
-            self.updatePrincipleBoardButtons();
+            var roundNum = $(this).attr("value");
+            if ( !UI_TESTING_ONLY ) {
+                self.submitStartActivity("video_tagging"); //xmpp msg
+            }
+            self.updatePrincipleBoardButtons("startVideo", roundNum);
         });
 
         $('#taggingPrinciples .nextStepButton').click(function(){
             $.mobile.changePage('p-sortPrinciples.html');
         });
 
-        if ( !UI_TESTING_ONLY ) {
-
-        }else{
-                 //skip button for testing only
-                $("#taggingPrinciples .skipButton").css("display","block");
-                $("#taggingPrinciples .skipButton").die();
-                $("#taggingPrinciples .skipButton").live("click", function(){
-                    $.mobile.changePage('p-sortPrinciples.html');
-                });
-        }
+        //if ( UI_TESTING_ONLY ) {
+            //skip button for testing only
+            $("#taggingPrinciples .skipButton").css("display","block");
+            $("#taggingPrinciples .skipButton").die();
+            $("#taggingPrinciples .skipButton").live("click", function(){
+                $.mobile.changePage('p-sortPrinciples.html');
+            });
+        //}
 
     });
 
@@ -156,16 +185,20 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
         $('#sortPrinciples .startStepButton').click(function(){
             $(this).addClass("ui-disabled");
-            self.submitStartActivity("principle_sorting"); //xmpp msg
-            //$('#sortPrinciples .approveButton').removeClass("ui-disabled");
+            if ( !UI_TESTING_ONLY ) {
+                self.submitStartActivity("principle_sorting"); //xmpp msg
+            }else{
+                $('#sortPrinciples .approveButton').removeClass("ui-disabled");
+            }
         });
 
-        //TODO: when the tablet hears "done" from the video board, change the color of the button
-        //$('#sortPrinciples .approveButton[value="A"]').addClass();
+        //When the tablet hears "done" from the video board, update the button
+        //(see "videowall_principles_commit" event)
+        //$('#sortPrinciples .approveButton[value="A"]').removeClass("ui-disabled");
+        
         $('#sortPrinciples .approveButton').click(function(){
             $(this).addClass("ui-disabled");
             self.approvedBoards = self.approvedBoards + 1;
-            console.log( self.approvedBoards );
             if ( self.approvedBoards == TOTAL_VIDEO_BOARDS ) {
                 $('#sortPrinciples .nextStepButton').removeClass('ui-disabled');
             }
@@ -175,16 +208,14 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             $.mobile.changePage('p-taggingEquations.html');
         });
 
-        if ( !UI_TESTING_ONLY ) {
-
-        }else{
-                 //skip button for testing only
-                $("#sortPrinciples .skipButton").css("display","block");
-                $("#sortPrinciples .skipButton").die();
-                $("#sortPrinciples .skipButton").live("click", function(){
-                    $.mobile.changePage('p-taggingEquations.html');
-                });
-        }
+        //if ( UI_TESTING_ONLY ) {
+            //skip button for testing only
+            $("#sortPrinciples .skipButton").css("display","block");
+            $("#sortPrinciples .skipButton").die();
+            $("#sortPrinciples .skipButton").live("click", function(){
+                $.mobile.changePage('p-taggingEquations.html');
+            });
+        //}
 
     });
 
@@ -197,7 +228,11 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
         $('#taggingEquations .startStepButton').click(function(){
             $(this).addClass("ui-disabled");
-            $('#taggingEquations .approveButton').removeClass("ui-disabled");
+            if ( !UI_TESTING_ONLY ) {
+                self.submitStartActivity("equation_tagging"); //xmpp msg
+            }else{
+                $('#taggingEquations .approveButton').removeClass("ui-disabled");
+            }
         });
 
         $('#taggingEquations .approveButton').click(function(){
@@ -216,14 +251,37 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         if ( !UI_TESTING_ONLY ) {
 
         }else{
-                 //skip button for testing only
-                $("#taggingEquations .skipButton").css("display","block");
-                $("#taggingEquations .skipButton").die();
-                $("#taggingEquations .skipButton").live("click", function(){
-                    $.mobile.changePage('p-recordVideo.html');
-                });
+            //skip button for testing only
+            $("#taggingEquations .skipButton").css("display","block");
+            $("#taggingEquations .skipButton").die();
+            $("#taggingEquations .skipButton").live("click", function(){
+                $.mobile.changePage('p-recordVideo.html');
+            });
         }
 
+    });
+
+    // ****************
+    // PAGE: 
+    $( '#recordVideo' ).live( 'pageinit',function(event){
+        console.log("#recordVideo pageinit");
+
+        $('#recordVideo .startStepButton').click(function(){
+            $(this).addClass("ui-disabled");
+            if ( !UI_TESTING_ONLY ) {
+                self.submitStartActivity("video_answer"); //xmpp msg
+            }else{
+                $('#recordVideo .doneButton').removeClass("ui-disabled");
+            }
+        });
+
+        $('#recordVideo .doneButton').click(function(){
+            $(this).addClass("ui-disabled");
+            var videoBoardLetter = $(this).attr("value");
+            if ( !UI_TESTING_ONLY ) {
+                self.submitVideoAnswerComplete(videoBoardLetter,["slim","aho","sliu"]); //xmpp msg //TODO: get rid of hardcoded students
+            }
+        });
     });
 
     
