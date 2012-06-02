@@ -11,6 +11,7 @@ class SmartroomChoreographer < Sail::Agent
   def initialize(*args)
     super(*args)
     @user_wall_assignments = {}
+    @user_wall_assignments_eq = {}
     @vidwalls_user_tag_counts = {'A' => {}, 'B' => {}, 'C' => {}, 'D' => {}}
   end
 
@@ -23,15 +24,29 @@ class SmartroomChoreographer < Sail::Agent
       #join_log_room
 
       @mongo.collection(:vidwall_user_tag_counts).find().each do |row|
-        log "#{row.inspect}"
+        # log "#{row.inspect}"
         row.map do |key, values|
           unless key == "_id" then
-            log "key #{key}"
+            # log "key #{key}"
             @vidwalls_user_tag_counts.merge!({key => values})
           end
         end
       end
       log "Restored vidwalls_user_tag_counts from MongoDB #{@vidwalls_user_tag_counts}"
+
+      # @mongo.collection(:user_wall_assignments).find().each do |row|
+      #   log "#{row.inspect}"
+      #   new_row = {}
+      #   row.map do |key, value|
+      #     unless key == "_id" then
+      #       log "key #{key} value #{value}"
+      #       new_row.merge!({key => value})
+      #     end
+      #   end
+      #   log "new_row #{new_row}"
+      #   @user_wall_assignments.merge!(new_row)
+      # end
+      # log "Restored user_wall_assignments from MongoDB #{@user_wall_assignments}"
 
     end
     
@@ -56,6 +71,7 @@ class SmartroomChoreographer < Sail::Agent
 
     event :start_sort? do |stanza, data|
       log "Received student_principles_submit #{data.inspect}"
+      # first sorting by principle submission ranking
       if data && data['payload'] && data['payload']['step'] == "principle_sort" then
         # data = JSON.parse('{ "VW1":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}], "VW2":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}] }')
         # vidwall_user_tag_counts = JSON.parse('{ "A":{"bob":3,"jim":4,"tim":1}, "B":{"bob":3,"jim":2,"tim":4} , "C":{"bob":1,"jim":2,"tim":4} }')
@@ -69,7 +85,10 @@ class SmartroomChoreographer < Sail::Agent
         # send out events
         send_location_assignments(@user_wall_assignments)
       elsif data && data['payload'] && data['payload']['step'] == "equations_step" then
-
+        # call function to generate old location assignments
+        @user_wall_assignments_eq = generate_location_assignments(@vidwalls_user_tag_counts)
+        # reshuffle users
+        log "What I got for reshuffling #{@user_wall_assignments_eq}"
       end
     end 
 
@@ -77,7 +96,7 @@ class SmartroomChoreographer < Sail::Agent
 
   def record_user_presence(user)
     log "Recording user #{user} in all locations"
-    @vidwalls_user_tag_counts.map do |location, users|
+    @vidwalls_user_tag_counts.map do |location, v|
       record_principle_submission(user, location, 0)
     end
   end
