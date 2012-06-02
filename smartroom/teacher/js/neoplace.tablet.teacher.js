@@ -77,8 +77,6 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             activity_name:activityName,
         });
         Sail.app.groupchat.sendEvent(sev);
-
-        //$.mobile.changePage('p-taggingPrinciples.html');
     }
 
     self.submitVideoAnswerComplete = function(videoBoardLetter, studentNames) {
@@ -87,30 +85,54 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             students:studentNames
         });
         Sail.app.groupchat.sendEvent(sev);
-
-        //$.mobile.changePage('p-taggingPrinciples.html');
     }
 
-    self.submitTeacherPrinciplesApprove = function(boardLetter) {
-        console.log( "submitTeacherPrinciplesApprove()", boardLetter);
-        var board = self.boards[boardLetter];
-        console.log(board);
-        var sev = new Sail.Event('teacher_principles_approve', {
-            principles: board.principles,
-            students: board.students
+    self.submitTeacherProblemsApprove = function(boardLetter) {
+        console.log( "submitTeacherProblemsApprove()", boardLetter);
+        //var board = self.boards[boardLetter];
+        //console.log("board:", board);
+        var sev = new Sail.Event('teacher_problems_approve', {
+            //principles: board.principles,
+            //students: board.students
         });
+        Sail.app.groupchat.sendEvent(sev);
     }
 
     /************************ INCOMING EVENTS ******************************/
 
     self.events.sail = {
+
         videowall_principles_commit: function (sev) {
             var boardLetter = sev.payload.videowall;
             console.log("Heard that board " + boardLetter + " is done sorting principles.")
-            $('#sortPrinciples .approveButton[value="'+boardLetter+'"]').removeClass("ui-disabled");
-            //save principles for this group
-            self.boards[boardLetter].students = sev.payload.students;
-            self.boards[boardLetter].principles = sev.payload.principles;
+            $('#sortPrinciples .donePrinciples[value="'+boardLetter+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b"); //not actually clickable
+        },
+
+        videowall_problems_commit: function (sev) {
+            var boardLetter = sev.payload.videowall;
+            console.log("Heard that board " + boardLetter + " is done tagging problems.")
+            $('#sortPrinciples .doneProblems[value="'+boardLetter+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
+            //save problems for this group
+            //self.boards[boardLetter].students = sev.payload.students;
+            //self.boards[boardLetter].problems = sev.payload.problems;
+        },
+
+        videowall_equations_commit: function (sev) {
+            var boardLetter = sev.payload.videowall;
+            console.log("Heard that board " + boardLetter + " is done tagging equations.")
+            $('#taggingEquations .doneEquations[value="'+boardLetter+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
+        },
+
+        videowall_assumptions_variables_commit: function (sev) {
+            var boardLetter = sev.payload.videowall;
+            console.log("Heard that board " + boardLetter + " is done writing assumptions.")
+            $('#taggingEquations .approveButton[value="'+boardLetter+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b").removeClass("ui-disabled");
+        },
+
+        videowall_assumptions_variables_commit_cancel: function (sev) {
+            var boardLetter = sev.payload.videowall;
+            console.log("Heard that board " + boardLetter + " needs more time to write assumptions.")
+            $('#taggingEquations .approveButton[value="'+boardLetter+'"]').addClass("ui-disabled");
         }
 
     };
@@ -208,25 +230,14 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             if ( !UI_TESTING_ONLY ) {
                 self.submitStartActivity("principle_sorting"); //xmpp msg
             }else{
-                $('#sortPrinciples .approveButton').removeClass("ui-disabled");
+                $('#sortPrinciples .donePrinciples').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
+                $('#sortPrinciples .doneProblems').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
             }
+            $('#sortPrinciples .nextStepButton').removeClass('ui-disabled');
         });
 
-        //When the tablet hears "done" from the video board, update the button
-        //(see "videowall_principles_commit" event)
-        //$('#sortPrinciples .approveButton[value="A"]').removeClass("ui-disabled");
-        
-        $('#sortPrinciples .approveButton').click(function(){
-            $(this).addClass("ui-disabled");
-            var boardLetter = $(this).attr("value");
-            self.approvedBoards = self.approvedBoards + 1;
-            if ( self.approvedBoards == TOTAL_VIDEO_BOARDS ) {
-                $('#sortPrinciples .nextStepButton').removeClass('ui-disabled');
-            }
-            if ( !UI_TESTING_ONLY ) {
-                self.submitTeacherPrinciplesApprove(boardLetter); //xmpp
-            }
-        });
+        //When the tablet hears "done" from the video board, update the fake buttons
+        //(see "videowall_principles_commit" and "videowall_problems_commit" events)
 
         $('#sortPrinciples .nextStepButton').click(function(){
             $.mobile.changePage('p-taggingEquations.html');
@@ -255,16 +266,22 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             if ( !UI_TESTING_ONLY ) {
                 self.submitStartActivity("equation_tagging"); //xmpp msg
             }else{
-                $('#taggingEquations .approveButton').removeClass("ui-disabled");
+                $('#taggingEquations .doneEquations').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
+                $('#taggingEquations .approveButton').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b").removeClass("ui-disabled");
             }
         });
 
+
         $('#taggingEquations .approveButton').click(function(){
             $(this).addClass("ui-disabled");
+            var boardLetter = $(this).attr("value");
             self.approvedBoards = self.approvedBoards + 1;
-            console.log(self.approvedBoards);
-            if ( self.approvedBoards == TOTAL_VIDEO_BOARDS ) {
+            console.log(self.approvedBoards, boardLetter);
+            if ( self.approvedBoards === TOTAL_VIDEO_BOARDS ) {
                 $('#taggingEquations .nextStepButton').removeClass('ui-disabled');
+            }
+            if ( !UI_TESTING_ONLY ) {
+                self.submitTeacherProblemsApprove(boardLetter); //xmpp
             }
         });
 
@@ -272,16 +289,14 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             $.mobile.changePage('p-recordVideo.html');
         });
 
-        if ( !UI_TESTING_ONLY ) {
-
-        }else{
+        //if ( UI_TESTING_ONLY ) {
             //skip button for testing only
             $("#taggingEquations .skipButton").css("display","block");
             $("#taggingEquations .skipButton").die();
             $("#taggingEquations .skipButton").live("click", function(){
                 $.mobile.changePage('p-recordVideo.html');
             });
-        }
+        //}
 
     });
 
