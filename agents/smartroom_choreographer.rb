@@ -65,6 +65,9 @@ class SmartroomChoreographer < Sail::Agent
     event :student_principle_submit? do |stanza, data|
       log "Received student_principles_submit #{data.inspect}"
       if data['origin'] && data['payload']['location'] && data['payload']['principle'] then
+        # This couldn't hurt. We might have missed check_in, so why not record the precense
+        record_user_presence(data['origin'])
+        # And now count the submission
         record_principle_submission(data['origin'], data['payload']['location'],)
       end
     end
@@ -81,16 +84,18 @@ class SmartroomChoreographer < Sail::Agent
         @user_wall_assignments = generate_location_assignments(@vidwalls_user_tag_counts)
 
         # store user_wall_assignments in database so clients can use it
-        store_user_wall_assigments(@user_wall_assignments)
+        store_user_wall_assigments_principle(@user_wall_assignments)
         # send out events
         send_location_assignments(@user_wall_assignments)
-      elsif data && data['payload'] && data['payload']['step'] == "equations_step" then
+      elsif data && data['payload'] && data['payload']['step'] == "equation_step" then
         # call function to generate old location assignments
         user_wall_assignments_eq = generate_location_assignments(@vidwalls_user_tag_counts)
         # reshuffle users
         log "What I got for reshuffling #{user_wall_assignments_eq}"
         @user_wall_assignments_eq = generate_location_assignments_eq(user_wall_assignments_eq)
 
+        # store user_wall_assignments in database so clients can use it
+        store_user_wall_assigments_equation(@user_wall_assignments_eq)
         # send out events
         send_location_assignments(@user_wall_assignments_eq)
       end
@@ -245,12 +250,20 @@ class SmartroomChoreographer < Sail::Agent
     log "Storing done"
   end
 
-  def store_user_wall_assigments(user_wall_assignments)
-    @mongo.collection(:user_wall_assignments).remove()
+  def store_user_wall_assigments_principle(user_wall_assignments)
+    store_user_wall_pairs(user_wall_assignments, :user_wall_assignments_principle)
+  end
 
-    user_wall_assignments.map do |user, wall|
-      beautified_user_wall_assignment = {:user_name => user, :location => wall}
-      @mongo.collection(:user_wall_assignments).save(beautified_user_wall_assignment)
+  def store_user_wall_assigments_equation(user_wall_assignments)
+    store_user_wall_pairs(user_wall_assignments, :user_wall_assignments_equation)
+  end
+
+  def store_user_wall_pairs(user_wall_pairs, collection)
+    @mongo.collection(collection).remove()
+
+    user_wall_pairs.map do |user, wall|
+      beautified_user_wall_pairs = {:user_name => user, :location => wall}
+      @mongo.collection(collection).save(beautified_user_wall_pairs)
     end
 
     log "pimped out user_wall_assignments stored for lookup in mongo"
