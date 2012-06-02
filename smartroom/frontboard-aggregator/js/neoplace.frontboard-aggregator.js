@@ -59,7 +59,9 @@ NEOplace.FrontBoardAggregator = (function() {
         var winHeight = jQuery(window).height(),
             winWidth = jQuery(window).width(),
             quadrantHeight = (winHeight/2)-20,
-            quadrantWidth = (winWidth/2)-35;
+            // mike's suggestion
+            //quadrantWidth = (winWidth/2)-20; messing thigs when combined with the css
+            quadrantWidth = (winWidth/2)-6;
 
         // show all
         jQuery("#quadrant-A").show();
