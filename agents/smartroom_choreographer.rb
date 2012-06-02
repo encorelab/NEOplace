@@ -11,7 +11,8 @@ class SmartroomChoreographer < Sail::Agent
   def initialize(*args)
     super(*args)
     @user_wall_assignments = {}
-    @vidwall_user_tag_counts = {}
+    @user_wall_assignments_eq = {}
+    @vidwalls_user_tag_counts = {'A' => {}, 'B' => {}, 'C' => {}, 'D' => {}}
   end
 
   def behaviour
@@ -21,13 +22,44 @@ class SmartroomChoreographer < Sail::Agent
 
       join_room
       #join_log_room
+
+      @mongo.collection(:vidwall_user_tag_counts).find().each do |row|
+        # log "#{row.inspect}"
+        row.map do |key, values|
+          unless key == "_id" then
+            # log "key #{key}"
+            @vidwalls_user_tag_counts.merge!({key => values})
+          end
+        end
+      end
+      log "Restored vidwalls_user_tag_counts from MongoDB #{@vidwalls_user_tag_counts}"
+
+      # @mongo.collection(:user_wall_assignments).find().each do |row|
+      #   log "#{row.inspect}"
+      #   new_row = {}
+      #   row.map do |key, value|
+      #     unless key == "_id" then
+      #       log "key #{key} value #{value}"
+      #       new_row.merge!({key => value})
+      #     end
+      #   end
+      #   log "new_row #{new_row}"
+      #   @user_wall_assignments.merge!(new_row)
+      # end
+      # log "Restored user_wall_assignments from MongoDB #{@user_wall_assignments}"
+
     end
     
     self_joined_log_room do |stanza|
       groupchat_logger_ready!
     end
 
-    
+    event :check_in? do |stanza, data|
+      log "Received check_in #{data.inspect}"
+      if data['origin'] && data['payload']['location'] then
+        record_user_presence(data['origin'])
+      end
+    end
     
     # Keep track of who is submitting what principle
     event :student_principle_submit? do |stanza, data|
@@ -39,47 +71,61 @@ class SmartroomChoreographer < Sail::Agent
 
     event :start_sort? do |stanza, data|
       log "Received student_principles_submit #{data.inspect}"
+      # first sorting by principle submission ranking
       if data && data['payload'] && data['payload']['step'] == "principle_sort" then
         # data = JSON.parse('{ "VW1":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}], "VW2":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}] }')
-        vidwall_user_tag_counts = JSON.parse('{ "A":{"bob":3,"jim":4,"tim":1}, "B":{"bob":3,"jim":2,"tim":4} , "C":{"bob":1,"jim":2,"tim":4} }')
+        # vidwall_user_tag_counts = JSON.parse('{ "A":{"bob":3,"jim":4,"tim":1}, "B":{"bob":3,"jim":2,"tim":4} , "C":{"bob":1,"jim":2,"tim":4} }')
         # vidwall_user_tag_counts = JSON.parse('[ {"bob":3,"jim":4,"tim":1}, {"bob":3,"jim":2,"tim":4} ]')
 
         # call function to generate the location assignments
-        @user_wall_assignments = generate_location_assignments(vidwall_user_tag_counts)
+        @user_wall_assignments = generate_location_assignments(@vidwalls_user_tag_counts)
 
         # store user_wall_assignments in database so clients can use it
         store_user_wall_assigments(@user_wall_assignments)
         # send out events
         send_location_assignments(@user_wall_assignments)
+      elsif data && data['payload'] && data['payload']['step'] == "equations_step" then
+        # call function to generate old location assignments
+        @user_wall_assignments_eq = generate_location_assignments(@vidwalls_user_tag_counts)
+        # reshuffle users
+        log "What I got for reshuffling #{@user_wall_assignments_eq}"
       end
     end 
 
   end
 
+  def record_user_presence(user)
+    log "Recording user #{user} in all locations"
+    @vidwalls_user_tag_counts.map do |location, v|
+      record_principle_submission(user, location, 0)
+    end
+  end
+
   # This function stores the submitted principles for each student
-  def record_principle_submission(user, location)
+  def record_principle_submission(user, location, count=1)
     log "user #{user.inspect} - location #{location.inspect}"
 
-    unless @vidwall_user_tag_counts[location] == nil then
+    unless @vidwalls_user_tag_counts[location] == nil then
+      log "Updating location #{location} with user #{user}"
       # create Hash with user name and count 1
-      user_tag_count = {user => 1}
+      user_tag_count = {user => count}
       # Retrieve Has with users and counts for a certain location
-      user_tag_counts = @vidwall_user_tag_counts[location]
+      user_tag_counts = @vidwalls_user_tag_counts[location]
       log "Before #{user_tag_counts}"
       # Merge the hashes and add counts if user already exists
       new_user_tag_counts = user_tag_counts.merge(user_tag_count){|key, oldcount, newcount| oldcount + newcount}
       log "After #{new_user_tag_counts}"
-      @vidwall_user_tag_counts[location] = new_user_tag_counts
-      log "vidwall_user_tag_counts after adding: #{@vidwall_user_tag_counts.inspect}"
+      @vidwalls_user_tag_counts[location] = new_user_tag_counts
+      # log "vidwall_user_tag_counts after adding: #{@vidwalls_user_tag_counts.inspect}"
     else
       # Create entry for location
-      user_tag_count = {user => 1}
-      @vidwall_user_tag_counts[location] = user_tag_count
-      log "Creating new entry for location #{location} object is now this: #{@vidwall_user_tag_counts}}"
+      user_tag_count = {user => count}
+      @vidwalls_user_tag_counts[location] = user_tag_count
+      log "Creating new entry for location #{location} with user #{user} and count 1"
     end
-      
-    # user_tag_count = {user => 1}
-    # vidwall_user_tag_counts[location].
+
+    #store in mongo
+    store_vidwall_user_tag_counts(@vidwalls_user_tag_counts)
   end
 
   # This function is brought to you by Matt Zukowski's brilliance
@@ -124,6 +170,18 @@ class SmartroomChoreographer < Sail::Agent
 
     log "User assignment array to send messages #{user_wall_assignments.inspect}"
     return user_wall_assignments
+  end
+
+  def store_vidwall_user_tag_counts(vidwalls_user_tag_counts)
+    log "Store vidwall_user_tag_counts in mongo database #{vidwalls_user_tag_counts}"
+    @mongo.collection(:vidwall_user_tag_counts).remove()
+    vidwalls_user_tag_counts.map do |wall, users|
+      # log "#{wall} #{users}"
+      vidwall = {wall => users}
+      # log "#{vidwall.inspect}"
+      @mongo.collection(:vidwall_user_tag_counts).save(vidwall)
+    end
+    log "Storing done"
   end
 
   def store_user_wall_assigments(user_wall_assignments)
