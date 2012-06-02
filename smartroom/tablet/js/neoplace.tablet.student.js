@@ -8,8 +8,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.userData = {
         name:null,
         id:null,
-        group:null,
-        members:[]
+        problemSet:[]
     };
 
     self.currentBoard = null;
@@ -18,16 +17,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.visitedVideoBoards = []; //nb: current video board is visitedVideoBoards[ visitedVideoBoards.length-1 ], as long as the DB isn't full of junk;
 
     self.studentPrinciples = [];
+    //self.groupPrinciples = [];
 
-    self.problemWidth = 0; //can I get rid of this variable
+    self.problemWidth = 0;
     self.currentlyAnimating = false;
     self.currentProblemIndex = 0;
 
     self.problemTemplate = "";
-    self.problemSet = [];
-    self.problemSetForEquationTagging = [];
+    // self.problemSet = [];    // added to userData
+    // self.problemSetForEquationTagging = [];
 
     self.allEquations = {};
+    self.allProblemSets = {};
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false;
@@ -89,7 +90,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             console.log("drop ", ui.draggable.attr("value"));
 
             if ( !UI_TESTING_ONLY ) {
-                //TODO: Some sort of backend call would go here using the value attribute
+                self.submitPrinciple(ui.draggable.attr("value"));
 
             }else{
                 //note: don't need to want for response so no need to fake it
@@ -126,6 +127,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
         });
     };
 
+    // called on app load
+    self.loadAllClassroomProblems = function() {
+        console.log("loadAllClassroomProblems");
+        $.ajax({
+            url: '/assets/classroom.json',
+            success: function(data, textStatus, jqXHR){
+                self.allProblemSets = data;
+                console.log("loaded problem sets");
+            },
+            dataType: 'json'
+        });
+    };    
+
     //helper method
     self.parseEquationIdsIntoString = function(equationIds){
 
@@ -142,10 +156,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         var loadedProblems = 0;
 
-        _.each( self.problemSet, function(problem){
+        _.each( self.userData.problemSet, function(problem){
             // grab problem body html from json files
             $.ajax({
-                url: '/assets/problems/'+problem.name+'.html',
+                url: '/assets/problems/'+problem.problem_name+'.html',
                 success: function(data, textStatus, jqXHR){
 
                     //save the html for later
@@ -153,7 +167,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     //if all problems loaded, output
                     loadedProblems++;
-                    if (loadedProblems === self.problemSet.length ){
+                    if (loadedProblems === self.userData.problemSet.length ){
                        self.outputProblems(pageScope); 
                     }
 
@@ -172,7 +186,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         var sideMargins = 50;
         var contentWidth = windowWidth - ( sideMargins * 2 );
 
-        _.each( self.problemSet, function(problem,key){
+        _.each( self.userData.problemSet, function(problem,key){
             var id = "problem" + key;
             $(pageScope+" .scrollingProblems").append(
                 '<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate +'</div>'
@@ -184,7 +198,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
             $('#'+id+' .problem-title').html(problem.title);
             $('#'+id+' .html-content').html(problem.htmlContent);
-            $('#'+id+' .connectProblemButton').attr("value", problem.name);
+            $('#'+id+' .connectProblemButton').attr("value", problem.problem_name);
 
             if ( problem.principles.length > 0 ) {
                 var principlesList = "";
@@ -197,7 +211,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
 
             if (pageScope === "#taggingProblems") {
-                var equations = self.parseEquationIdsIntoString(problem.equations);
+                var equations = self.parseEquationIdsIntoString(problem.equation_ids);
                 var equationsList = "";
                 _.each( equations, function(equation){
                     equationsList += "<li>"+equation.name+"</li>";
@@ -237,7 +251,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         
         $(pageScope).swipeleft(function(){
             if ( self.currentlyAnimating ) return;
-            if ( self.currentProblemIndex == self.problemSet.length-1 ) return;
+            if ( self.currentProblemIndex == self.userData.problemSet.length-1 ) return;
 
             self.currentProblemIndex++;
             self.animateProblems(pageScope);
@@ -267,10 +281,28 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if ( self.currentProblemIndex > 0 ) {
                 $(pageScope+" .previousProblem").removeClass("ui-disabled");
             }
-            if ( self.currentProblemIndex < self.problemSet.length-1 ) {
+            if ( self.currentProblemIndex < self.userData.problemSet.length-1 ) {
                 $(pageScope+" .nextProblem").removeClass("ui-disabled");
             }
         });
+    };
+
+
+    self.assignProblems = function(students,principles) {
+        var groupProblemSets = _.filter(self.allProblemSets, function(problemSet) {
+            return ( _.find(problemSet.principles, function(p) {
+                if ( _.include(principles, p)) { return true };
+            }) )
+        });
+
+        _.each(groupProblemSets, function(problemSet, i) {                          // Pearl to make awesome optimizations later
+            if (students[i % students.length] === self.userData.name) {
+                self.userData.problemSet.push(problemSet);
+            }
+        });
+
+        $.mobile.changePage('p-taggingProblems.html');
+        //self.getHtmlForProblems();
     };
 
     self.setState = function(activity) {
@@ -281,6 +313,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 user_name:self.userData.name,
                 activity:activity,
                 board:self.currentBoard
+            }
+        } else if (activity === "problems_tagging") {
+            state = {
+                user_name:self.userData.name,
+                activity:activity,
+                problem_set:self.userData.problemSet
             }
         } else {
             state = {
@@ -301,7 +339,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 doneBtn.removeClass("ui-disabled");
             }
         });
-    }
+    };
 
     self.restoreState = function() {
         // set self.visitedVideoBoards to stored visitedboards (from Rollcall)
@@ -310,7 +348,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             type: 'get',
             data: { selector: JSON.stringify(selector) },
             success: function (statesCompleted) {
-                console.log(statesCompleted);
+                console.log('restoring ' + statesCompleted);
 
                 // for each - if state.activity is found, return the first object with that state.activity (true), else will be defined (false)
                 if ( _.find(statesCompleted, function(state){ return state.activity === "variable_writing"}) ) {
@@ -320,7 +358,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     console.log('equations_tagging step restored');
                     $.mobile.changePage('p-taggingEquations.html');
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "problems_tagging"}) ) {
+                    self.userData.problemSet = state.problem_set;
                     $.mobile.changePage('p-taggingProblems.html');
+                    //self.getHtmlForProblems();
                     console.log('problems_tagging step restored');
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "principles_sorting"}) ) {
                     $.mobile.changePage('p-sortPrinciples.html');
@@ -333,10 +373,14 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         }
                     });
                     // self.visitedVideoBoards = _.map(statesCompleted.principles_tagging, function(i) { return i.board });
-                    $.mobile.changePage('p-taggingPrinciplesBoard.html');
+                    if (self.visitedVideoBoards.length === TOTAL_VIDEO_BOARDS) {
+                        $.mobile.changePage('p-taggingPrinciplesFinished.html');
+                    } else {
+                        $.mobile.changePage('p-taggingPrinciplesBoard.html');
+                    }
                 } else {
                     // go to home page or skip of whatever
-                    alert('no saved state');
+                    console.log('no saved state');
                     $.mobile.changePage('p-taggingPrinciplesBoard.html');
                 }
 
@@ -370,7 +414,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
             // Load any JS/JSON objects required for the rest of the app
             self.loadProblemTempate();
-            self.loadAllEquations(); 
+            self.loadAllEquations();
+            self.loadAllClassroomProblems();
 
             // ****************
             //PAGE: By default, on login screen ('#loginScreen')
@@ -381,10 +426,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 // request detailed data about current user from Rollcall
                 Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.session.account.login+".json", "GET", {}, function(data) {
                     console.log("Authenticated user is: ", data);
-
-                    if (data.groups[1]) {
-                        console.log('WARNING: user has been assigned to more than one group, chosing first group in the list');
-                    }
 
                     // save their principles for taggingPrinciples page
                     self.studentPrinciples = JSON.parse(data.metadata.principles);
@@ -467,10 +508,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                             if ( !UI_TESTING_ONLY ) {
                                 // send out check_in (which sends to wait screen)
                                 // go to wait screen
-                                Sail.app.submitCheckIn(self.userData, self.currentBoard);
+                                self.submitCheckIn(self.currentBoard);
+                                $.mobile.changePage('p-taggingPrinciples.html');
+                                //$.mobile.changePage('p-waitScreen.html.html');                  // TODO add me back in                                
                             }else{
                                 //fake it
-                                self.events.sail.activity_started({payload:{activity_name:"video_tagging"}})
+                                self.events.sail.activity_started({payload:{activity_name:"video_tagging"}});
                             }
 
                         });
@@ -499,24 +542,30 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 $('#taggingPrinciples .doneButton').die();
                 $('#taggingPrinciples .doneButton').live("click", function(){
 
+                    // deactive button so only one backend call is made
+                    var doneBtn = $(this);
+                    doneBtn.addClass("ui-disabled");
+
                     //save board so button won't be active later
                     self.visitedVideoBoards.push(self.currentBoard);
 
-                    // update behaviour of done button
+                    self.principlesComplete();
+
+                    // writing state to Mongo
+                    self.setState('principles_tagging');
+
+                    // mobile.changePage('p-waitScreen.html');                       // TODO change to wait screen
+
+
+
+
+                    // update behaviour of done button (can remove all of this when we switch to wait screen version)
                     var nextPage = "p-taggingPrinciplesBoard.html";
                     if ( self.visitedVideoBoards.length == TOTAL_VIDEO_BOARDS ) {
                         nextPage = "p-taggingPrinciplesFinished.html";
                     }
 
                     if ( !UI_TESTING_ONLY ) {
-
-                        //deactive button so only one backend call is made
-                        var doneBtn = $(this);
-                        doneBtn.addClass("ui-disabled");
-
-                        // writing state to Mongo
-                        self.setState('principles_tagging');
-
                         $.mobile.changePage(nextPage);
                     }else{
                         //skip saving
@@ -524,7 +573,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     }
                 });
 
-                //output draggable buttons onto the taggingPrinciples page... need to use for loop here (see Colin for expl.)
                 var output = '';
                 _.each( self.studentPrinciples, function(principleName){ 
                     output += '<div data-role="button" data-inline="true" class="draggable" \
@@ -538,7 +586,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 var pageScope = "#taggingPrinciples";
                 $(pageScope + " .draggableTags").html(output).trigger("create");
                 self.enableDragAndDropPortal(pageScope);
-
                 
             });
 
@@ -569,6 +616,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
             $( '#checkInBoard' ).live( 'pageinit',function(event){
                 console.log("#checkInBoard pageinit");
 
+                $("#checkInBoard .board-number").html(self.currentBoard);
+
+
                 $("#checkInBoard .videoBoardSignInButton").die();
                 $("#checkInBoard .videoBoardSignInButton").live('click', function(){
                     $(this).addClass("ui-disabled");
@@ -578,7 +628,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         // write state to Mongo
                         self.setState('principles_sorting');
                         // send out check_in (which sends to wait screen)
-                        Sail.app.submitCheckIn(self.userData, self.currentBoard);
+                        self.submitCheckIn(self.currentBoard);
+
+                        $.mobile.changePage('p-sortPrinciples.html');                  
+                        //$.mobile.changePage('p-waitScreen.html.html');                  // TODO add me back in
                     }else{
                         self.events.sail.activity_started({payload:{activity_name:"principle_sorting"}});
                     }
@@ -617,13 +670,29 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 if ( !UI_TESTING_ONLY ) {
 
-                    self.getProblemSetRelatedToVideo(); //to populate self.problemSet
-                    // on successful callback: self.getHtmlForProblems();
+                    // self.getProblemSetRelatedToVideo(); //to populate self.problemSet
+                    // self.getHtmlForProblems('#taggingProblems');
+
+                    if ( self.userData.problemSet.length > 1 ) {
+                        $("#taggingProblems .nextProblem").removeClass("ui-disabled");
+                    }
+
+                    $("#taggingProblems .previousProblem").click(function(){
+                        self.currentProblemIndex--;
+                        self.animateProblems("#taggingProblems");
+                    });
+
+                    $("#taggingProblems .nextProblem").click(function(){
+                        self.currentProblemIndex++;
+                        self.animateProblems("#taggingProblems");
+                    });
+
+                    self.getHtmlForProblems("#taggingProblems");             
 
                 }else{
                     //fake it
                     //TODO: need to add in results from classroom activity
-                    self.problemSet = [
+                    self.userData.problemSet = [
                         {   title:"Bowling Ball", 
                             name:"BowlingBall", 
                             principles:["Acceleration", "Newton's First Law"],
@@ -641,7 +710,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         }
                     ];
 
-                    if ( self.problemSet.length > 1 ) {
+                    if ( self.userData.problemSet.length > 1 ) {
                         $("#taggingProblems .nextProblem").removeClass("ui-disabled");
                     }
 
@@ -668,10 +737,17 @@ NEOplace.Tablet.Student = (function(Tablet) {
             });
 
 
+/*            $( '#testScreen' ).live( 'pageinit',function(event){
+                var principles = ["Newton's Second Law", "Fnet = constant"];
+                var students = ["Jim","Mike","Pearl"];
+                self.assignProblems(students, principles)
+            });*/
+
+
             // ****************
             // PAGE: Students have been assigned to a NEW group/videoboard for tagging equations
             // They are being asked to gather in front of board and check in
-            $( '#taggingEquationsBoard' ).live( 'pageinit',function(event){
+/*            $( '#taggingEquationsBoard' ).live( 'pageinit',function(event){
                 console.log("#taggingEquationsBoard pageinit");
 
                 //TODO: When/Where am I getting this # from the agent??
@@ -686,13 +762,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         // write state to Mongo
                         self.setState('equations_tagging');
                         // send out check_in (which sends to wait screen)
-                        Sail.app.submitCheckIn(self.userData, self.currentBoard);
+                        self.submitCheckIn(self.currentBoard);
                     }else{
                         self.events.sail.activity_started({payload:{activity_name:"equation_tagging"}});
                     }
                 });
 
-            });
+            });*/
 
 
             // ****************
@@ -706,12 +782,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 if ( !UI_TESTING_ONLY ) {
 
                     //TODO:
-                    Sail.app.getProblemSetRelatedToVideo();
+                    // Sail.app.getProblemSetRelatedToVideo();
 
                 }else{
                     //fake it
                     //TODO: need to add in results from classroom activity
-                    self.problemSet = [
+                    self.userData.problemSet = [
                         {   title:"Melon Drop", 
                             name:"MellonDrop", 
                             principles:["Acceleration", "Newton's First Law"],
@@ -729,7 +805,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         }
                     ];
 
-                    if ( self.problemSet.length > 1 ) {
+                    if ( self.userData.problemSet.length > 1 ) {
                         $("#taggingEquations .nextProblem").removeClass("ui-disabled");
                     }
 
@@ -760,7 +836,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 var equations = self.parseEquationIdsIntoString(equationIds);
                 console.log("equations",equations);
 
-                //output draggable buttons onto the taggingEquations page... need to use for loop here (see Colin for expl.)
                 var output = '';
                 _.each( equations, function(eq){ 
                     output += '<div data-role="button" data-inline="true" class="draggable" \
@@ -827,34 +902,52 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
     /************************ OUTGOING EVENTS ******************************/
 
-    self.submitLogin = function(userData) {
-        var sev = new Sail.Event('login', {
-            user_name:userData.name,
-            group_name:userData.group,
-        });
-        Sail.app.groupchat.sendEvent(sev);
-    }
-
-    self.submitCheckIn = function(userData, videoBoard) {
+    self.submitCheckIn = function(videoBoard) {
         var sev = new Sail.Event('check_in', {
-            user_name:userData.name,
-            group_name:userData.group,
             location:videoBoard
         });
         Sail.app.groupchat.sendEvent(sev);
+    };
 
-        //$.mobile.changePage('p-wait-screen.html');
-        $.mobile.changePage('p-taggingPrinciples.html');
-    }
-
-    self.getProblemSetRelatedToVideo = function(userName, videoBoard) {
-        //TODO: test this
-        var sev = new Sail.Event('get_problems', {
-            user_name:userName,
-            video_board:videoBoard
+    self.submitPrinciple = function(principleName) {
+        var sev = new Sail.Event('student_principle_submit', {
+            location:self.currentBoard,
+            principle:principleName
         });
         Sail.app.groupchat.sendEvent(sev);
-    }
+    };  
+
+    self.principlesComplete = function() {
+         var sev = new Sail.Event('student_principle_submit', {
+            location:self.currentBoard,
+        });
+        Sail.app.groupchat.sendEvent(sev);       
+    };
+
+    self.submitProblem = function(problemName) {
+        var sev = new Sail.Event('student_problem_submit', {
+            location:self.currentBoard,
+            problem:problemName
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    };
+
+    self.submitEquation = function(equationName) {                          // id or name?
+        var sev = new Sail.Event('student_equation_submit', {                // TODO fix locations
+            location:self.currentBoard,
+            equation_id:equationName
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    };
+
+    self.submitVariableAssumption = function(type, variableAssumptionContent) {
+        var sev = new Sail.Event('student_variable_assupmtion_submit', {
+            location:self.currentBoard,
+            type:type,
+            message:variableAssumptionContent
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    };
 
     /************************ INCOMING EVENTS ******************************/
 
@@ -871,40 +964,61 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         location_assignment: function(sev) {
             if (sev.payload.student === self.userData.name) {
-                if (sev.payload.location === "A") {
-                    $("#checkInBoard .board-number").html("1");                 // WHY YOU NO WORK
-                }
-                else if (sev.payload.location === "B") {
-                    $("#checkInBoard .board-number").html("2");
-                }
-                else if (sev.payload.location === "C") {
-                    $("#checkInBoard .board-number").html("3");
-                }
-                else if (sev.payload.location === "D") {
-                    $("#checkInBoard .board-number").html("4");
-                } else {
-                    $("#checkInBoard .board-number").html("unknown board - please alert teacher");
-                }
+                self.currentBoard = sev.payload.location;
+
                 $.mobile.changePage('p-checkInBoard.html');
             }            
         },
 
-        videowall_principles_commit: function(sev) {
+/*        videowall_principles_commit: function(sev) {
             // sev.payload will look like: {origin: "A", principles: ["Acceleration", "NSL"], students: ["slim","saho", "sliu"]}
+            // the if checks for this tablet user
             if ( _.include(sev.payload.students, self.userData.name) ) {
-                 self.setState('problems_tagging');
-                $.mobile.changePage('p-taggingProblems.html');
+                // save principles             
+            }
+        },*/
+
+        teacher_principles_approve: function(sev) {
+            // the if checks for this tablet user
+            if ( _.include(sev.payload.students, self.userData.name) ) {
+                self.userData.group = sev.payload.students;                 // do I need this?
+                self.assignProblems(sev.payload.students,sev.payload.principles);
+                // assignProblems also moves the tablet to the next page
+            }
+        },          
+
+/*        teacher_principles_approve: function(sev) {
+            // the if checks for this tablet user
+            if ( _.include(sev.payload.students, self.userData.name) ) {
+                self.userData.group = sev.payload.students;                 // do I need this?
+                self.assignProblems(sev.payload.principles);
+                // create bucket o' problems
+                // $.ajax call to DB collection to sort problems
+                $.ajax(self.drowsyURL + '/' + currentDb() + '/MIKES COLLECTION', {          // limit by problems (drawn from where?)
+                    type: 'get',
+                    data: ,
+                    success: function () {
+                        self.userData.problemSet = ["prob1,prob2"];         // these will be prob names, right?
+                        self.setState('problems_tagging');
+                        $.mobile.changePage('p-taggingProblems.html');
+                    },
+                });
+            }
+        },        */
+
+        videowall_equations_commit: function(sev) {
+            if ( _.include(sev.payload.students, self.userData.name) ) {
+                self.setState('equations_tagging');
+                $.mobile.changePage('p-sortVariables.html');                // TODO check if this is right?!
             }
         },
 
-        videowall_equations_commit: function(sev) {
-            if ( _.include(sev.payload.students, self.userData.name) ) {           // TODO for all elements of the student array?
-                self.setState('equations_tagging');
-                $.mobile.changePage('p-taggingEquations.html'); 
-            }
+        tablet_activity_ended: function(sev) {
+            // TODO?
         },
 
         // will always be trigger by teacher (while tablet is sitting on wait screen)
+        // TODO add get group members to activity started - equation_tagging
         activity_started: function(sev) {
             if (sev.payload.activity_name === "video_tagging") {
                 $.mobile.changePage('p-taggingPrinciples.html');
@@ -925,7 +1039,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 $.mobile.changePage('p-taggingEquationsBoard.html');
 
             } else if (sev.payload.activity_name === "equation_tagging") {
-                // do something, go somewhere else
+                // TODO group for bucket
                 $.mobile.changePage('p-taggingEquations.html');
 
             } else if (sev.payload.activity_name === "done_equation_tagging") {

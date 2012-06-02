@@ -1,31 +1,149 @@
 {
-	"1":  {"name": "\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}"},
-	"2":  {"name": "\\vec{v}=\\vec{d}/\\Delta t"},
-	"3":  {"name": "v_{average}=\\Delta d_{total}/\\Delta t"},
-	"4":  {"name": "\\boldsymbol{f}=1/\\boldsymbol{T}"},
-	"5":  {"name": "\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}"},
-	"6":  {"name": "\\vec{a}=\\vec{\\Delta v}/\\Delta{t}"},
-	"7":  {"name": "\\vec{v_{2}}=\\vec{v_{1}}+\\vec{a}\\Delta{t}"},
-	"8":  {"name": "\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}"},
-	"9":  {"name": "\\vec{\\Delta d}=\\vec{v_{2}}\\Delta{t}-1/2\\vec{a}(\\Delta{t})^{2}"},
-	"10": {"name": "\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}"},
-	"11": {"name": "{v_{2}}^{2}={v_{1}}^{2}+2a\\Delta d"},
-	"12": {"name": "{_{A}\\vec{v}_{C}} ={_{A}\\vec{v}_{B}} + {_{B}\\vec{v}_{C}}"},
-	"13": {"name": "F_{g}=mg"},
-	"14": {"name": "F_{g}=\\frac{Gm_{1}m_{2}}{R^{2}}"},
-	"15": {"name": "F_{f}=\\mu _{k}F_{N}"},
-	"16": {"name": "F_{f}=\\mu _{s}F_{N}"},
-	"17": {"name": "\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots"},
-	"18": {"name": "\\vec{F_{net}}=m\\vec{a}"},
-	"19": {"name": "\\vec{_{A}F_{B}}=-\\vec{_{B}F_{A}}"},
-	"20": {"name": "W=\\vec{F}\\cdot \\Delta \\vec{d}"},
-	"21": {"name": "W=F\\Delta cos(\\theta )"},
-	"22": {"name": "P=\\frac{W}{\\Delta t}"},
-	"23": {"name": "W=\\Delta E"},
-	"24": {"name": "\\Delta E=mg\\Delta h"},
-	"25": {"name": "E_{g}=mgh"},
-	"26": {"name": "E_{k}=\\frac{1}{2}mv^{2}" },
-	"27": {"name": "E_{T}=E_{g}+W_{k}" },
-	"28": {"name": "E_{T(before)}=E_{T(after)}" },
-	"29": {"name": "\\vec{A}_{(x/y)} = \\left |\\vec A \\right |(cos/sin)\\theta" }
+	"1":	{
+			"name": "\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}",
+			"img10":"/assets/equations/10/1.png",
+			"img20":"/assets/equations/20/1.png",
+			"imgsvg":"/assets/equations/svg/1.svg"
+			},
+	"2":  	{
+			"name": "\\vec{v}=\\vec{d}/\\Delta t",
+			"img10":"/assets/equations/10/2.png",
+			"img20":"/assets/equations/20/2.png",
+			"imgsvg":"/assets/equations/svg/2.svg"
+			},
+	"3":  	{"name": "v_{average}=\\Delta d_{total}/\\Delta t",
+			"img10":"/assets/equations/10/3.png",
+			"img20":"/assets/equations/20/3.png",
+			"imgsvg":"/assets/equations/svg/3.svg"
+			},
+	"4":  	{"name": "\\boldsymbol{f}=1/\\boldsymbol{T}",
+			"img10":"/assets/equations/10/4.png",
+			"img20":"/assets/equations/20/4.png",
+			"imgsvg":"/assets/equations/svg/4.svg"
+			},
+	"5":  	{"name": "\\vec{\\Delta v}=\\vec{v_{2}}-\\vec{v_{1}}",
+			"img10":"/assets/equations/10/5.png",
+			"img20":"/assets/equations/20/5.png",
+			"imgsvg":"/assets/equations/svg/5.svg"
+			},
+	"6":  	{"name": "\\vec{a}=\\vec{\\Delta v}/\\Delta{t}",
+			"img10":"/assets/equations/10/6.png",
+			"img20":"/assets/equations/20/6.png",
+			"imgsvg":"/assets/equations/svg/6.svg"
+			},
+	"7":  	{"name": "\\vec{v_{2}}=\\vec{v_{1}}+\\vec{a}\\Delta{t}",
+			"img10":"/assets/equations/10/7.png",
+			"img20":"/assets/equations/20/7.png",
+			"imgsvg":"/assets/equations/svg/7.svg"
+			},
+	"8":  	{"name": "\\vec{\\Delta d}=\\vec{v_{1}}\\Delta{t}+1/2\\vec{a}(\\Delta{t})^{2}",
+			"img10":"/assets/equations/10/8.png",
+			"img20":"/assets/equations/20/8.png",
+			"imgsvg":"/assets/equations/svg/8.svg"
+			},
+	"9":  	{"name": "\\vec{\\Delta d}=\\vec{v_{2}}\\Delta{t}-1/2\\vec{a}(\\Delta{t})^{2}",
+			"img10":"/assets/equations/10/9.png",
+			"img20":"/assets/equations/20/9.png",
+			"imgsvg":"/assets/equations/svg/9.svg"
+			},
+	"10": 	{"name": "\\vec{\\Delta d}=\\frac{(\\vec{v_{2}}+\\vec{v_{1}})}{2}\\Delta{t}",
+			"img10":"/assets/equations/10/10.png",
+			"img20":"/assets/equations/20/10.png",
+			"imgsvg":"/assets/equations/svg/10.svg"
+			},
+	"11": 	{"name": "{v_{2}}^{2}={v_{1}}^{2}+2a\\Delta d",
+			"img10":"/assets/equations/10/11.png",
+			"img20":"/assets/equations/20/11.png",
+			"imgsvg":"/assets/equations/svg/11.svg"
+			},
+	"12": 	{"name": "{_{A}\\vec{v}_{C}} ={_{A}\\vec{v}_{B}} + {_{B}\\vec{v}_{C}}",
+			"img10":"/assets/equations/10/12.png",
+			"img20":"/assets/equations/20/12.png",
+			"imgsvg":"/assets/equations/svg/12.svg"
+			},
+	"13": 	{"name": "F_{g}=mg",
+			"img10":"/assets/equations/10/13.png",
+			"img20":"/assets/equations/20/13.png",
+			"imgsvg":"/assets/equations/svg/13.svg"
+			},
+	"14": 	{"name": "F_{g}=\\frac{Gm_{1}m_{2}}{R^{2}}",
+			"img10":"/assets/equations/10/14.png",
+			"img20":"/assets/equations/20/14.png",
+			"imgsvg":"/assets/equations/svg/14.svg"
+			},
+	"15": 	{"name": "F_{f}=\\mu _{k}F_{N}",
+			"img10":"/assets/equations/10/15.png",
+			"img20":"/assets/equations/20/15.png",
+			"imgsvg":"/assets/equations/svg/15.svg"
+			},
+	"16": 	{"name": "F_{f}=\\mu _{s}F_{N}",
+			"img10":"/assets/equations/10/16.png",
+			"img20":"/assets/equations/20/16.png",
+			"imgsvg":"/assets/equations/svg/16.svg"
+			},
+	"17": 	{"name": "\\vec{F_{net}}=\\vec{F_{1}}+\\vec{F_{2}}+\\vec{F_{3}}+\\cdots",
+			"img10":"/assets/equations/10/17.png",
+			"img20":"/assets/equations/20/17.png",
+			"imgsvg":"/assets/equations/svg/17.svg"
+			},
+	"18": 	{"name": "\\vec{F_{net}}=m\\vec{a}",
+			"img10":"/assets/equations/10/18.png",
+			"img20":"/assets/equations/20/18.png",
+			"imgsvg":"/assets/equations/svg/18.svg"
+			},
+	"19": 	{"name": "\\vec{_{A}F_{B}}=-\\vec{_{B}F_{A}}",
+			"img10":"/assets/equations/10/19.png",
+			"img20":"/assets/equations/20/19.png",
+			"imgsvg":"/assets/equations/svg/19.svg"
+			},
+	"20": 	{"name": "W=\\vec{F}\\cdot \\Delta \\vec{d}",
+			"img10":"/assets/equations/10/20.png",
+			"img20":"/assets/equations/20/20.png",
+			"imgsvg":"/assets/equations/svg/20.svg"
+			},
+	"21": 	{"name": "W=F\\Delta cos(\\theta )",
+			"img10":"/assets/equations/10/21.png",
+			"img20":"/assets/equations/20/21.png",
+			"imgsvg":"/assets/equations/svg/21.svg"
+			},
+	"22": 	{"name": "P=\\frac{W}{\\Delta t}",
+			"img10":"/assets/equations/10/22.png",
+			"img20":"/assets/equations/20/22.png",
+			"imgsvg":"/assets/equations/svg/22.svg"
+			},
+	"23": 	{"name": "W=\\Delta E",
+			"img10":"/assets/equations/10/23.png",
+			"img20":"/assets/equations/20/23.png",
+			"imgsvg":"/assets/equations/svg/23.svg"
+			},
+	"24": 	{"name": "\\Delta E=mg\\Delta h",
+			"img10":"/assets/equations/10/24.png",
+			"img20":"/assets/equations/20/24.png",
+			"imgsvg":"/assets/equations/svg/24.svg"
+			},
+	"25": 	{"name": "E_{g}=mgh",
+			"img10":"/assets/equations/10/25.png",
+			"img20":"/assets/equations/20/25.png",
+			"imgsvg":"/assets/equations/svg/25.svg"
+			},
+	"26": 	{"name": "E_{k}=\\frac{1}{2}mv^{2}",
+			"img10":"/assets/equations/10/26.png",
+			"img20":"/assets/equations/20/26.png",
+			"imgsvg":"/assets/equations/svg/26.svg"
+			},
+	"27": 	{"name": "E_{T}=E_{g}+W_{k}",
+			"img10":"/assets/equations/10/27.png",
+			"img20":"/assets/equations/20/27.png",
+			"imgsvg":"/assets/equations/svg/27.svg"
+			},
+	"28": 	{"name": "E_{T(before)}=E_{T(after)}",
+			"img10":"/assets/equations/10/28.png",
+			"img20":"/assets/equations/20/28.png",
+			"imgsvg":"/assets/equations/svg/28.svg"
+			},
+	"29": 	{"name": "\\vec{A}_{(x/y)} = \\left |\\vec A \\right |(cos/sin)\\theta",
+			"img10":"/assets/equations/10/29.png",
+			"img20":"/assets/equations/20/29.png",
+			"imgsvg":"/assets/equations/svg/29.svg"
+			}
 }
