@@ -19,7 +19,7 @@
             .then('js/neoplace.tablet.teacher.js')
             .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
-            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Teacher); });  
+            .thenRun(function() { return Sail.init(NEOplace.Tablet.Teacher); });  
     </script>
 </head>
 <body class="student">
@@ -34,12 +34,16 @@
 
         <div data-role="content">
 
-            <div data-role="controlgroup">
-                <h2>Step 3 of 4: Tagging Equations &amp; Variable/Assumption Writing</h2>
+           <div class="step-instructions">
+                <h2>Step 3 of 4</h2>
+                <h3>Students tag equations &amp; write their variables and assumptions</h3>
+                <p>Tap 'Start' to begin tagging activity.</p>
+                <a href="#" data-role="button" data-icon="star" data-iconpos="top" class="startStepButton">Start</a>
             </div>
 
-            <a href="#" data-role="button" data-icon="star" data-iconpos="top" class="startStepButton">Start</a>
-
+            <div class="text-align-center">
+                <p>When students are done writing their equations, you will see the appropriate approval button light up.</p>
+            </div>
             <div class="ui-grid-a">
                 <div class="ui-block-a">
                     <a href="#" data-role="button" data-icon="check" data-iconpos="left" class="approveButton ui-disabled" value="A">Approve Board "A"</a>
