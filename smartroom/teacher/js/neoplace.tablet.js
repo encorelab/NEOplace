@@ -17,7 +17,7 @@ NEOplace.Tablet = (function() {
         }
 
         Sail.modules
-            .load('Rollcall.Authenticator', {mode: 'picker', askForRun: true, curnit: 'NEOplace', userFilter: self.userFilter})
+            .load('Rollcall.Authenticator', {mode: 'username-and-password', askForRun: true, curnit: 'NEOplace', userFilter: self.userFilter})
             .load('Strophe.AutoConnector')
             .load('AuthStatusWidget')
             .thenRun(function () {
