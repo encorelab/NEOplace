@@ -53,11 +53,11 @@ class SmartroomChoreographer < Sail::Agent
       log "Received student_principles_submit #{data.inspect}"
       if data && data['payload'] && data['payload']['step'] == "principle_sort" then
         # data = JSON.parse('{ "VW1":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}], "VW2":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}] }')
-        vidwall_user_tag_counts = JSON.parse('{ "A":{"bob":3,"jim":4,"tim":1}, "B":{"bob":3,"jim":2,"tim":4} , "C":{"bob":1,"jim":2,"tim":4} }')
+        # vidwall_user_tag_counts = JSON.parse('{ "A":{"bob":3,"jim":4,"tim":1}, "B":{"bob":3,"jim":2,"tim":4} , "C":{"bob":1,"jim":2,"tim":4} }')
         # vidwall_user_tag_counts = JSON.parse('[ {"bob":3,"jim":4,"tim":1}, {"bob":3,"jim":2,"tim":4} ]')
 
         # call function to generate the location assignments
-        @user_wall_assignments = generate_location_assignments(vidwall_user_tag_counts)
+        @user_wall_assignments = generate_location_assignments(@vidwalls_user_tag_counts)
 
         # store user_wall_assignments in database so clients can use it
         store_user_wall_assigments(@user_wall_assignments)
