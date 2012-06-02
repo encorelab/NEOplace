@@ -152,10 +152,10 @@
     var distanceLeft = getLength(players[playerID]["activityHistory"])*10;
     var trophyImgID = "trophy_" + playerID;
     
-    jQuery('#' + playerID).find('.trophies').append('<img id="' + trophyImgID + '" alt="Step ' + taskID + ' Completed!" style="position:relative; left: ' + distanceLeft + 'px;" src="images/icon_' + activities[taskID] + '.png" />');
+    jQuery('#' + playerID).find('.trophies').append('<img id="' + trophyImgID + '" alt="Step ' + taskID + ' Completed!" style="display:none; position:relative; left: ' + distanceLeft + 'px;" src="images/icon_' + activities[taskID] + '.png" />');
     jQuery('#' + playerID).find('.user-name').animate({top: '20px'});
     
-    jQuery('#' + trophyImgID).show('slide', {direction: 'left'}, 'slow');
+    jQuery('#' + trophyImgID).fadeIn('slow');
    
   }
   
@@ -266,7 +266,6 @@ jQuery(function() {
       }
       else if (randomColour == 2) {
          avatarColour = 'purple';
-        
       }
       else if (randomColour == 3) {
          avatarColour = 'yellow';
@@ -277,13 +276,6 @@ jQuery(function() {
       
       jQuery("#locations").append('<div class="user" id="' + playerID +  '"><img alt="' + playerID + '" title="' + playerID + '" src="images/avatar_' + avatarColour + '.png"  width="40" /><div class="triangle-right left"><div class="trophies"></div><div class="user-name">' + playerID +'</div></div></div>');
       movePlayer(playerID, playerInfo["location"]);
-      
-       
-       /*addItem(playerID, 2);
-       addItem(playerID, 6);
-       addItem(playerID, 4);
-       addItem(playerID, 5);
-       addItem(playerID, 1);*/
     
     }
     
@@ -297,6 +289,6 @@ jQuery(function() {
   animateTaskCompletion(1, 1);
  
   animateTaskCompletion(3, 6);
-  animateTaskCompletion(2, 3);
+  //animateTaskCompletion(2, 3);
   jQuery(".user").click(function(){  animateTaskCompletion(2, 1); movePlayer(jQuery(this).attr('id'), Math.floor(Math.random() * numberOfLocations) + 1); });
 });
