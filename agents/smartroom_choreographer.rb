@@ -61,23 +61,16 @@ class SmartroomChoreographer < Sail::Agent
     log "user #{user.inspect} - location #{location.inspect}"
 
     unless @vidwall_user_tag_counts[location] == nil then
-      if @vidwall_user_tag_counts[location].has_key?(user) then
-        # if user key exists update the count
-        old_count = @vidwall_user_tag_counts[location][user]
-        log "Updating old count #{old_count} for user #{user} at location #{location}"
-        @vidwall_user_tag_counts[location][user] = old_count + 1
-        log "#{@vidwall_user_tag_counts.inspect}"
-      else
-        # user does not exist so add the user
-        log "Adding user #{user} to location #{location}"
-        user_tag_count = {user => 1}
-        user_tag_counts = @vidwall_user_tag_counts[location]
-        log "Before #{user_tag_counts}"
-        new_user_tag_counts = user_tag_counts.merge(user_tag_count)
-        log "After #{new_user_tag_counts}"
-        @vidwall_user_tag_counts[location] = new_user_tag_counts
-        log "vidwall_user_tag_counts after adding: #{@vidwall_user_tag_counts.inspect}"
-      end
+      # create Hash with user name and count 1
+      user_tag_count = {user => 1}
+      # Retrieve Has with users and counts for a certain location
+      user_tag_counts = @vidwall_user_tag_counts[location]
+      log "Before #{user_tag_counts}"
+      # Merge the hashes and add counts if user already exists
+      new_user_tag_counts = user_tag_counts.merge(user_tag_count){|key, oldcount, newcount| oldcount + newcount}
+      log "After #{new_user_tag_counts}"
+      @vidwall_user_tag_counts[location] = new_user_tag_counts
+      log "vidwall_user_tag_counts after adding: #{@vidwall_user_tag_counts.inspect}"
     else
       # Create entry for location
       user_tag_count = {user => 1}
