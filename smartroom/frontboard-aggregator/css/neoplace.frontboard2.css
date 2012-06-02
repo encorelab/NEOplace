@@ -1,7 +1,8 @@
 /* this is mostly lifted from common-knowledge-smartboard.css */
 
 body {
-  background-image: url("../images/corkboard.jpg");
+  /*background-image: url("../images/corkboard.jpg");*/
+  background-color:#eee;
   background-size: 70% auto;
   overflow: hidden;
   /*background-position: 0 0px;
@@ -306,11 +307,12 @@ div.none-yet {
     border: 3px solid #AAAAAA;
     border-radius: 10px 10px 10px 10px;
     text-align: center;
+    overflow: auto;
 
 }
 
 #quadrant-A, #quadrant-B, #quadrant-C, #quadrant-D{
-  background: #FFFFFF;
+  background: #FFF;
  
 }
 
@@ -346,9 +348,9 @@ div.none-yet {
     -ms-transform: skew(-5deg) rotate(-5deg);
     -o-transform: skew(-5deg) rotate(-5deg);
     transform: skew(-5deg) rotate(-5deg);
-    -webkit-box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.6);
-    -moz-box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.6);
-    box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.6);
+    -webkit-box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
     z-index: -1;
 }
 
@@ -373,29 +375,29 @@ div.none-yet {
 /*  border: 2px solid;*/
   float: left;
   width: 40%;
-/*  overflow: scroll;*/
+  /*overflow: auto;*/
 }
 
 #quadrant-B{
 /*  border: 2px solid;*/
   width: 40%;
   float: right;
-/*  overflow: scroll;
-*/}
+  /*overflow: auto;*/
+}
 
 #quadrant-C{
 /*  border: 2px solid;*/
   float: left;
   width: 40%;
-/*  overflow: scroll;
-*/}
+  /*overflow: auto;*/
+}
 
 #quadrant-D{
 /*  border: 2px solid;*/
   width: 40%;
   float: right;
-/*  overflow: scroll;
-*/}
+  /*overflow: auto;*/
+}
 
 .principle{
   background: none repeat scroll 0 0 #E6BD07;
