@@ -86,9 +86,13 @@ class SmartroomChoreographer < Sail::Agent
         send_location_assignments(@user_wall_assignments)
       elsif data && data['payload'] && data['payload']['step'] == "equations_step" then
         # call function to generate old location assignments
-        @user_wall_assignments_eq = generate_location_assignments(@vidwalls_user_tag_counts)
+        user_wall_assignments_eq = generate_location_assignments(@vidwalls_user_tag_counts)
         # reshuffle users
-        log "What I got for reshuffling #{@user_wall_assignments_eq}"
+        log "What I got for reshuffling #{user_wall_assignments_eq}"
+        @user_wall_assignments_eq = generate_location_assignments_eq(user_wall_assignments_eq)
+
+        # send out events
+        send_location_assignments(@user_wall_assignments_eq)
       end
     end 
 
@@ -172,6 +176,63 @@ class SmartroomChoreographer < Sail::Agent
     return user_wall_assignments
   end
 
+  # This function is brought to you by Matt Zukowski's brilliance
+  def generate_location_assignments_eq(user_wall_assignments)
+    log "Users and and their assigned wall #{user_wall_assignments.inspect}"
+    # end result structure used to send out messages later on and copy in empty setup
+    user_wall_assignments_eq = {}
+    wall_to_user_assignment = {}
+    wall_users = {}
+
+    # go over user_wall_assigments, e.g. {"Mike"=>"A", "Jim"=>"B", "Pearl"=>"C", "Colin"=>"D", "Armin"=>"A"}
+    # turn it into wall_to_user_assignment {"A"=>["Mike", "Armin"], "B"=>["Jim"], "C"=>["Pearl"], "D"=>["Colin"]}
+    user_wall_assignments.map do |user, wall|
+      unless wall_users[wall] == nil then
+        wall_users[wall] += [user]
+      else
+        wall_users[wall] = [user]
+        # setup target walls with empty user array
+        wall_to_user_assignment[wall] = []
+      end
+    end
+
+    log "walls and their users #{wall_users}"
+    # get the keys in an array ["A", "B", "C", "D"]
+    walls = wall_users.keys
+
+    # using shift is slightly hacky, but ensures that we get a even distribution
+    shift = 0
+    # go through all walls
+    walls.each do |wall|
+      # remove current wall from target_walls
+      target_walls = walls.reject{|w| w == wall}
+      # shift_left takes element of array (first arg) from the beginning and adds it at the end done as N times (second arg)
+      # this ensures an even redistribution of users
+      target_walls = shift_left(target_walls, shift)
+      shift = (shift + 1) % walls.length
+      log "target walls #{target_walls}"
+
+      # retrieve all users for the current wall
+      users = wall_users[wall]
+      log "users #{users.inspect}"
+
+      # now go over all users and assign them to first target wall, shift, repeat
+      users.each do |user|
+        wall_to_user_assignment[target_walls.first] += [user]
+        target_walls = shift_left(target_walls)
+      end
+    end
+    
+    log "Wall with assigned users #{wall_to_user_assignment.inspect}"
+    # now re-organize to get hash with {"user" => "wall", "Colin" => "A"}
+    wall_to_user_assignment.map do |wall, users|
+      users.each {|user| user_wall_assignments_eq[user] = wall}
+    end
+
+    log "User assignment array (equations) to send messages #{user_wall_assignments_eq.inspect}"
+    return user_wall_assignments_eq
+  end
+
   def store_vidwall_user_tag_counts(vidwalls_user_tag_counts)
     log "Store vidwall_user_tag_counts in mongo database #{vidwalls_user_tag_counts}"
     @mongo.collection(:vidwall_user_tag_counts).remove()
@@ -202,6 +263,19 @@ class SmartroomChoreographer < Sail::Agent
       log "Sending location_assignment for user '#{user.inspect}' at videowall '#{wall.inspect}'"
       event!(:location_assignment, {:student => user, :location => wall})
     end
+  end
+
+  def shift_left (array, howOften = 1)
+    unless array == nil || !array.kind_of?(Array) || array.empty? then
+      if howOften > 0 then
+        first_element = array.shift
+        array.push(first_element)
+        return shift_left(array, (howOften - 1))
+      else
+        return array
+      end
+    end
+    return array
   end
   
 end
