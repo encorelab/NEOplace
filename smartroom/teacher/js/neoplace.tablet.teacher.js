@@ -9,6 +9,13 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
     self.currentBoard = 1;
     self.approvedBoards = 0;
 
+    //stuff about boards will be kept here
+    self.boards = { 
+        "A": { students:[], principles:[], problems:[] },
+        "B": { students:[], principles:[], problems:[] },
+        "C": { students:[], principles:[], problems:[] },
+        "D": { students:[], principles:[], problems:[] }
+    }
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false;
@@ -84,6 +91,16 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         //$.mobile.changePage('p-taggingPrinciples.html');
     }
 
+    self.submitTeacherPrinciplesApprove = function(boardLetter) {
+        console.log( "submitTeacherPrinciplesApprove()", boardLetter);
+        var board = self.boards[boardLetter];
+        console.log(board);
+        var sev = new Sail.Event('teacher_principles_approve', {
+            principles: board.principles,
+            students: board.students
+        });
+    }
+
     /************************ INCOMING EVENTS ******************************/
 
     self.events.sail = {
@@ -91,6 +108,9 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             var boardLetter = sev.payload.videowall;
             console.log("Heard that board " + boardLetter + " is done sorting principles.")
             $('#sortPrinciples .approveButton[value="'+boardLetter+'"]').removeClass("ui-disabled");
+            //save principles for this group
+            self.boards[boardLetter].students = sev.payload.students;
+            self.boards[boardLetter].principles = sev.payload.principles;
         }
 
     };
@@ -198,9 +218,13 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         
         $('#sortPrinciples .approveButton').click(function(){
             $(this).addClass("ui-disabled");
+            var boardLetter = $(this).attr("value");
             self.approvedBoards = self.approvedBoards + 1;
             if ( self.approvedBoards == TOTAL_VIDEO_BOARDS ) {
                 $('#sortPrinciples .nextStepButton').removeClass('ui-disabled');
+            }
+            if ( !UI_TESTING_ONLY ) {
+                self.submitTeacherPrinciplesApprove(boardLetter); //xmpp
             }
         });
 

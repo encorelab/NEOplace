@@ -7,20 +7,35 @@
 
     /* INCOMING SAIL EVENTS */
 
+    var forMe = function (sev) {
+        return sev.payload.location === app.location;
+    };
+
     events.sail.student_principle_submit = function(sev) {
-        if (sev.payload.location === app.location) {
-            var tag = new app.model.Tag({
-                location: sev.payload.location,
-                principle: sev.payload.principle,
-                video_url: jQuery('#video-screen iframe').attr('src'),
-                author: sev.origin
-            });
-            tag.save();
+        if (!forMe(sev)) return;
 
-            app.addTag(tag);
+        var tag = new app.model.Tag({
+            location: sev.payload.location,
+            principle: sev.payload.principle,
+            video_url: jQuery('#video-screen iframe').attr('src'),
+            author: sev.origin
+        });
+        tag.save();
 
-            // TODO: consider only creating the balloon after the tag
-            //       has been successfully saved (delay might be annoying though)
+        app.addTag(tag);
+
+        // TODO: consider only creating the balloon after the tag
+        //       has been successfully saved (delay might be annoying though)
+        
+    };
+
+    events.sail.start_sort = function (sev) {
+        if (!forMe(sev)) return;
+
+        switch (sev.payload.step) {
+            case 'principle_sort':
+                app.switchToSortingPrinciples();
+                break;
         }
     };
 
@@ -42,14 +57,11 @@
     };
 
     events['ui.initialized'] = function (ev) {
-        jQuery('.yup-nope-sorting').hide();
     };
 
     // triggered when the user has authenticated but is not yet in the XMPP chat channel
     events.authenticated = function (ev) {
         jQuery('#auth-indicator').addClass('widget-box');
-
-        app.restoreState();
 
         app.rollcall.fetchUser(app.session.account.login, {}, 
             function (data) {
@@ -77,6 +89,7 @@
     events.location_set = function (ev) {
         app.loadVideo(app.location);
         app.identifyBoard(app.location);
+        app.restoreState();
     };
 
     app.events = events;
