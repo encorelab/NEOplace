@@ -1,0 +1,292 @@
+body {
+    overflow: hidden;
+    background: #eee !important;
+}
+
+
+#sideboard {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+#video-screen {
+    position: absolute;
+    /*overflow: hidden;*/
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    height: 47%;
+    
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+
+    /* weird bug in firefox hides flash content when we have border-radius > 0 and overflow is hidden */
+    /*-moz-border-radius: 0;*/
+}
+
+#video-screen iframe {
+    height: 100% !important;
+    width: 100% !important;
+}
+
+#sorting-space {
+    position: absolute;
+    overflow: hidden;
+    bottom: 8px;
+    left: 8px;
+    right: 8px;
+    height: 50%;
+    border-radius: 5px;
+    border: 3px dashed rgba(176, 176, 176, 0.75);
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/*#sorting-space-yup {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 30%;
+    border-left: 3px dashed #71CC91;
+
+    color: #71CC91;
+    font-size: 95px;
+    font-weight: bold;
+    padding-top: 10%;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+#sorting-space-nope {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 30%;
+    border-right: 3px dashed #FD8C8E;
+
+    color: #FD8C8E;
+    font-size: 95px;
+    font-weight: bold;
+    padding-top: 10%;
+    text-align: center;
+    text-transform: uppercase;
+}*/
+
+#sideboard-label {
+    color: rgba(176, 176, 176, 1.0);
+    font-size: 256px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    text-align: center;
+    opacity: 0.25;
+    width: 100%;
+
+    line-height: 0.9;
+}
+
+#sorting-space-label {
+    color: rgba(176, 176, 176, 1.0);
+    font-size: 64px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    text-align: center;
+    margin-top: 10%;
+    opacity: 0.25;
+    margin-top: 12px;
+
+    position: absolute;
+    bottom: 5px;
+    left: 0;
+    right: 0;
+}
+
+#sorting-space-yup {
+    border-left: 3px solid #71CC91;
+    bottom: 0;
+    color: #71CC91;
+    font-size: 64px;
+    font-weight: bold;
+    right: 0;
+    padding-top: 23%;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    top: 0;
+    width: 49%;
+}
+
+#sorting-space-nope {
+    border-right: 3px solid #FD8C8E;
+    bottom: 0;
+    color: #FD8C8E;
+    font-size: 64px;
+    font-weight: bold;
+    left: 0;
+    padding-top: 23%;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    top: 0;
+    width: 49%;
+}
+
+#drag-icon-left {
+    position: absolute;
+    left: 26%;
+    top: 4%;
+    opacity: 0.5;
+}
+
+#drag-icon-right {
+    position: absolute;
+    right: 26%;
+    top: 4%;
+    opacity: 0.5;
+}
+
+#drag-icon-left-right {
+    display: block;
+    margin: auto;
+    margin-top: 10%;
+    opacity: 0.5;
+}
+
+/************************************************************/
+
+#auth-indicator {
+    position: absolute;
+    right: 18px !important;
+    top: -6px !important;
+    padding: 4px;
+}
+
+#auth-indicator * {
+    display: inline-block;
+}
+
+#auth-indicator a {
+    text-decoration: none;
+}
+
+
+/************************************************************/
+
+.balloon {
+    position: absolute;
+    /*width: 300px;*/
+    display: inline-block;
+
+    font-weight: bold;
+    color: #222;
+    border: 1px solid #ccc;
+    border-radius: 1em;
+    background-color: rgba(256,256,256,0.9);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+    background: -moz-linear-gradient(#fff, #eee) repeat scroll 0 0 #eee;
+    text-align: center;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.balloon:hover {
+    cursor: pointer;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+    cursor: grab;
+}
+
+.balloon.ui-draggable-dragging {
+    cursor: move;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+    cursor: grabbing;
+}
+
+.balloon.blurred {
+    opacity: 0.15;
+}
+
+.balloon .author {
+    color: #CCCCCC;
+    font-size: 11px;
+    position: absolute;
+    bottom: 0px;
+    text-shadow: 0 2px 1px #FFFFFF;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.balloon h3.headline {
+    margin: 0;
+}
+
+/*.balloon .tags {
+  font-size: 11px;
+  margin: 0 8px 6px;
+}
+
+.balloon .tag {
+  background: rgba(200,200,200, 0.5);
+  border-radius: 5px;
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 3px;
+  padding: 2px 4px;
+}*/
+
+.balloon .label {
+    margin-bottom: 4px;
+    font-size: 14px;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+}
+
+.balloon .counter {
+    background: none repeat scroll 0 0 #444444;
+    border-radius: 20px 20px 20px 20px;
+    color: white;
+    padding: 5px;
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    width: 20px;
+}
+
+/************************************************************/
+
+@-webkit-keyframes teleportIn {
+    0% { -webkit-transform:scale(2.5); opacity: 0.0;}
+    100% {-webkit-transform:scale(1.0); opacity: 1.0; }
+}
+
+@-moz-keyframes teleportIn {
+    0% { -moz-transform:scale(2.5); opacity: 0.0;}
+    100% {-moz-transform:scale(1.0); opacity: 1.0; }
+}
+
+.balloon.new {
+    -webkit-animation-name: teleportIn;
+    -webkit-animation-duration: 0.5s;
+    -webkit-animation-iteration-count: 1;
+    -webkit-animation-timing-function: ease-out;
+
+    -moz-animation-name: teleportIn;
+    -moz-animation-duration: 0.5s;
+    -moz-animation-iteration-count: 1;
+    -moz-animation-timing-function: ease-out;
+}
