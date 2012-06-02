@@ -1,5 +1,5 @@
 /*jshint browser: true, devel: true */
-/*globals Sail, jQuery, _, NEOplace */
+/*globals Sail, jQuery, _, Rollcall, NEOplace */
 
 NEOplace.Tablet.Teacher = (function(Tablet) {
     "use strict";
@@ -11,7 +11,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
-    var UI_TESTING_ONLY = true;
+    var UI_TESTING_ONLY = false;
     console.log( "ATTN: UI_TESTING_ONLY is set to " + UI_TESTING_ONLY );
     // If set to false, remember to uncomment this line from the .html files
     //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
@@ -46,6 +46,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
                 Sail.app.rollcall.request(Sail.app.rollcall.url + "/users/"+Sail.app.session.account.login+".json", "GET", {}, function(data) {
                     console.log("Authenticated user is: ", data);
                     // user's metadata is in data.metadata
+                    $.mobile.changePage("p-taggingPrinciples.html");
                 });
 
             }
@@ -57,13 +58,29 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         }
     };
 
-    /** sail event wiring (i.e. XMPP events) **/
+    /************************ OUTGOING EVENTS ******************************/
+
+    self.submitStartActivity = function(activityName) {
+        var sev = new Sail.Event('activity_started', {
+            activity_name:activityName,
+        });
+        Sail.app.groupchat.sendEvent(sev);
+
+        //$.mobile.changePage('p-taggingPrinciples.html');
+    }
+
+
+    /************************ INCOMING EVENTS ******************************/
 
     self.events.sail = {
-        some_sail_event: function (sev) {
-
+        student_principle_commit: function (sev) {
+            var boardLetter = sev.payload.location;
+            console.log("Heard that board " + boardLetter + " is done sorting principles.")
+            $('#sortPrinciples .approveButton[value="'+boardLetter+'"]').removeClass("ui-disabled");
         }
     };
+
+    /************************ PUBLIC METHODS ******************************/
 
     // only users matching this filter will be shown in the account picker
     self.userFilter = function (u) {
@@ -108,6 +125,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
         $('#taggingPrinciples .startVideoButton[value="'+self.currentBoard+'"]').removeClass("ui-disabled");
         $('#taggingPrinciples .startVideoButton').click(function(){
+            self.submitStartActivity("video_tagging"); //xmpp msg
             self.updatePrincipleBoardButtons();
         });
 
@@ -138,7 +156,8 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
         $('#sortPrinciples .startStepButton').click(function(){
             $(this).addClass("ui-disabled");
-            $('#sortPrinciples .approveButton').removeClass("ui-disabled");
+            self.submitStartActivity("principle_sorting"); //xmpp msg
+            //$('#sortPrinciples .approveButton').removeClass("ui-disabled");
         });
 
         //TODO: when the tablet hears "done" from the video board, change the color of the button

@@ -17,9 +17,9 @@
             .then('js/jquery.mobile.toast.js')
             .then('js/neoplace.tablet.js')
             .then('js/neoplace.tablet.teacher.js')
-            .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
+            //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
-            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
+            .thenRun(function() { return Sail.init(NEOplace.Tablet.Teacher); });  
     </script>
 </head>
 <body class="student">
