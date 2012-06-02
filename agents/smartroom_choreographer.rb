@@ -21,6 +21,18 @@ class SmartroomChoreographer < Sail::Agent
 
       join_room
       #join_log_room
+
+      @mongo.collection(:vidwall_user_tag_counts).find().each do |row|
+        log "#{row.inspect}"
+        row.map do |key, values|
+          unless key == "_id" then
+            log "key #{key}"
+            @vidwalls_user_tag_counts.merge!({key => values})
+          end
+        end
+      end
+      log "Restored vidwalls_user_tag_counts from MongoDB #{@vidwalls_user_tag_counts}"
+
     end
     
     self_joined_log_room do |stanza|
@@ -80,10 +92,7 @@ class SmartroomChoreographer < Sail::Agent
     end
 
     #store in mongo
-    log "Store vidwall_user_tag_counts in mongo database #{@vidwalls_user_tag_counts}"
-    @vidwalls_user_tag_counts.each do |vidwall|
-      @mongo.collection(:vidwall_user_tag_counts).save(vidwall)
-    end
+    store_vidwall_user_tag_counts(@vidwalls_user_tag_counts)
   end
 
   # This function is brought to you by Matt Zukowski's brilliance
@@ -128,6 +137,18 @@ class SmartroomChoreographer < Sail::Agent
 
     log "User assignment array to send messages #{user_wall_assignments.inspect}"
     return user_wall_assignments
+  end
+
+  def store_vidwall_user_tag_counts(vidwalls_user_tag_counts)
+    log "Store vidwall_user_tag_counts in mongo database #{vidwalls_user_tag_counts}"
+    @mongo.collection(:vidwall_user_tag_counts).remove()
+    vidwalls_user_tag_counts.map do |wall, users|
+      # log "#{wall} #{users}"
+      vidwall = {wall => users}
+      # log "#{vidwall.inspect}"
+      @mongo.collection(:vidwall_user_tag_counts).save(vidwall)
+    end
+    log "Storing done"
   end
 
   def store_user_wall_assigments(user_wall_assignments)
