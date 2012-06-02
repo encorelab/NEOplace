@@ -11,7 +11,7 @@ class SmartroomChoreographer < Sail::Agent
   def initialize(*args)
     super(*args)
     @user_wall_assignments = {}
-    @vidwalls_user_tag_counts = {}
+    @vidwalls_user_tag_counts = {'A' => {}, 'B' => {}, 'C' => {}, 'D' => {}}
   end
 
   def behaviour
@@ -39,7 +39,12 @@ class SmartroomChoreographer < Sail::Agent
       groupchat_logger_ready!
     end
 
-    
+    event :check_in? do |stanza, data|
+      log "Received check_in #{data.inspect}"
+      if data['origin'] && data['payload']['location'] then
+        record_user_presence(data['origin'])
+      end
+    end
     
     # Keep track of who is submitting what principle
     event :student_principle_submit? do |stanza, data|
@@ -63,19 +68,28 @@ class SmartroomChoreographer < Sail::Agent
         store_user_wall_assigments(@user_wall_assignments)
         # send out events
         send_location_assignments(@user_wall_assignments)
+      elsif data && data['payload'] && data['payload']['step'] == "equations_step" then
+
       end
     end 
 
   end
 
+  def record_user_presence(user)
+    log "Recording user #{user} in all locations"
+    @vidwalls_user_tag_counts.map do |location, users|
+      record_principle_submission(user, location, 0)
+    end
+  end
+
   # This function stores the submitted principles for each student
-  def record_principle_submission(user, location)
+  def record_principle_submission(user, location, count=1)
     log "user #{user.inspect} - location #{location.inspect}"
 
     unless @vidwalls_user_tag_counts[location] == nil then
       log "Updating location #{location} with user #{user}"
       # create Hash with user name and count 1
-      user_tag_count = {user => 1}
+      user_tag_count = {user => count}
       # Retrieve Has with users and counts for a certain location
       user_tag_counts = @vidwalls_user_tag_counts[location]
       log "Before #{user_tag_counts}"
@@ -86,7 +100,7 @@ class SmartroomChoreographer < Sail::Agent
       # log "vidwall_user_tag_counts after adding: #{@vidwalls_user_tag_counts.inspect}"
     else
       # Create entry for location
-      user_tag_count = {user => 1}
+      user_tag_count = {user => count}
       @vidwalls_user_tag_counts[location] = user_tag_count
       log "Creating new entry for location #{location} with user #{user} and count 1"
     end
