@@ -60,7 +60,7 @@ NEOplace.FrontBoardAggregator = (function() {
         var winHeight = $(window).height(),
             winWidth = $(window).width(),
             quadrantHeight = (winHeight/2)-30,
-            quadrantWidth = (winWidth/2)-6;
+            quadrantWidth = (winWidth/2)-20;
 
         // show all
         jQuery("#quadrant-A").show();
