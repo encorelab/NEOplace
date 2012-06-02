@@ -61,6 +61,7 @@ class SmartroomChoreographer < Sail::Agent
     log "user #{user.inspect} - location #{location.inspect}"
 
     unless @vidwall_user_tag_counts[location] == nil then
+      log "Updating location #{location} with user #{user}"
       # create Hash with user name and count 1
       user_tag_count = {user => 1}
       # Retrieve Has with users and counts for a certain location
@@ -70,16 +71,17 @@ class SmartroomChoreographer < Sail::Agent
       new_user_tag_counts = user_tag_counts.merge(user_tag_count){|key, oldcount, newcount| oldcount + newcount}
       log "After #{new_user_tag_counts}"
       @vidwall_user_tag_counts[location] = new_user_tag_counts
-      log "vidwall_user_tag_counts after adding: #{@vidwall_user_tag_counts.inspect}"
+      # log "vidwall_user_tag_counts after adding: #{@vidwall_user_tag_counts.inspect}"
     else
       # Create entry for location
       user_tag_count = {user => 1}
       @vidwall_user_tag_counts[location] = user_tag_count
-      log "Creating new entry for location #{location} object is now this: #{@vidwall_user_tag_counts}}"
+      log "Creating new entry for location #{location} with user #{user} and count 1"
     end
-      
-    # user_tag_count = {user => 1}
-    # vidwall_user_tag_counts[location].
+
+    #store in mongo
+    log "Store vidwall_user_tag_counts in mongo database #{@vidwall_user_tag_counts}"
+    @mongo.collection(:vidwall_user_tag_counts).save(@vidwall_user_tag_counts)
   end
 
   # This function is brought to you by Matt Zukowski's brilliance
