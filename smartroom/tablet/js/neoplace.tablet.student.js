@@ -240,6 +240,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             var buttonValue = $(this).attr("value");
             console.log( "click on connect button with value " + buttonValue);
             self.submitProblem(buttonValue);
+            $(this).addClass("ui-disabled");
         });
 
         console.log("windowWidth: " + windowWidth );
@@ -1028,13 +1029,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
         },
 
-        videowall_principles_commit: function(sev) {
+/*        videowall_principles_commit: function(sev) {
             // the if checks for this tablet user
             if ( _.include(sev.payload.students, self.userData.name) ) {
                 $.mobile.changePage('p-waitScreen.html');
                 // assignProblems also moves the tablet to the next page          
             }
-        },        
+        },   */     
 
         videowall_equations_commit: function(sev) {
             if ( _.include(sev.payload.students, self.userData.name) ) {
