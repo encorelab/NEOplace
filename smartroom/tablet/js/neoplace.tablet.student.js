@@ -1048,7 +1048,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if ( _.include(sev.payload.students, self.userData.name) ) {
                 $.mobile.changePage('p-finishPage.html');
             }
-        }
+        },
 
         // will always be trigger by teacher (while tablet is sitting on wait screen)
         activity_started: function(sev) {
