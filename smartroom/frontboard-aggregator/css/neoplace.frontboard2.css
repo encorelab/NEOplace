@@ -310,7 +310,6 @@ div.none-yet {
 /*    border: 3px solid #AAAAAA;
 */    border-radius: 10px 10px 10px 10px;
     text-align: center;
-    overflow: auto;
 
 }
 
@@ -319,6 +318,7 @@ div.none-yet {
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
+  overflow: auto;
 }
 
 #aggregator-label {
