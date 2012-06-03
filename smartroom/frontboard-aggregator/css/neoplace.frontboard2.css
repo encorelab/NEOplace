@@ -1,11 +1,13 @@
 /* this is mostly lifted from common-knowledge-smartboard.css */
 
 body {
-  /*background: url("/images/common_habitats.png");*/
+  /*background-image: url("../images/corkboard.jpg");*/
+  background-color:#eee;
   background-size: 70% auto;
-  background-position: 0 100px;
   overflow: hidden;
-  background: #eee;
+  /*background-position: 0 0px;
+  
+  /*background: #eee;*/
 }
 
 header {
@@ -15,6 +17,7 @@ header {
 a {
   color: inherit;
   text-decoration: none;
+  font-size:12px;
 }
 
 #wall {
@@ -302,15 +305,67 @@ div.none-yet {
 
 /* adding CSS specific to neoplace.frontboard2 */
 #quadrant-content-A div, #quadrant-content-B div, #quadrant-content-C div, #quadrant-content-D div, .board-name {
-    border: 3px solid #AAAAAA;
-    border-radius: 10px 10px 10px 10px;
+/*    border: 3px solid #AAAAAA;
+*/    border-radius: 10px 10px 10px 10px;
     text-align: center;
+    overflow: auto;
+
 }
 
 #quadrant-A, #quadrant-B, #quadrant-C, #quadrant-D{
-  background: #FFFFFF;
-  
+  background: #FFF;
+ 
 }
+
+/* adding the paper effect to the quadrants */
+
+.paper {
+/*    padding: 1.5em 50px 30px 50px;*/
+    /*width: 725px;*/
+    margin: 10px 10px 10px 10px;
+    font-size: 1.2em;
+    position: relative;
+    background: #fff;
+    -webkit-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    -moz-box-shadow: 0 0 4px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1);  
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2), inset 0 0 50px rgba(0, 0, 0, 0.1); 
+}
+
+/*.paper h2 {
+    margin-top: 0;
+    text-align: center;
+}*/
+
+.paper:before, .paper:after {
+    position: absolute;
+    width: 40%;
+    height: 10px;
+    content: ' ';
+    left: 12px;
+    bottom: 15px;
+    background: transparent;
+    -webkit-transform: skew(-5deg) rotate(-5deg);
+    -moz-transform: skew(-5deg) rotate(-5deg);
+    -ms-transform: skew(-5deg) rotate(-5deg);
+    -o-transform: skew(-5deg) rotate(-5deg);
+    transform: skew(-5deg) rotate(-5deg);
+    -webkit-box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px 2px rgba(0, 0, 0, 0.3);
+    z-index: -1;
+}
+
+.paper:after {
+    left: auto;
+    right: 12px;
+    -webkit-transform: skew(5deg) rotate(5deg);
+    -moz-transform: skew(5deg) rotate(5deg);
+    -ms-transform: skew(5deg) rotate(5deg);
+    -o-transform: skew(5deg) rotate(5deg);
+    transform: skew(5deg) rotate(5deg);
+}
+
+/* end of paper effect */
 
 #board {
   border-right: 1px solid #999999;
@@ -318,31 +373,35 @@ div.none-yet {
 }
 
 #quadrant-A{
-  border: 2px solid;
+/*  border: 2px solid;*/
   float: left;
-  width: 50%;
-  overflow: auto;
+  width: 40%;
+  /*overflow: auto;*/
 }
 
 #quadrant-B{
-  border: 2px solid;
-  overflow: auto;
+/*  border: 2px solid;*/
+  width: 40%;
+  float: right;
+  /*overflow: auto;*/
 }
 
 #quadrant-C{
-  border: 2px solid;
+/*  border: 2px solid;*/
   float: left;
-  width: 50%;
-  overflow: auto;
+  width: 40%;
+  /*overflow: auto;*/
 }
 
 #quadrant-D{
-  border: 2px solid;
-  overflow: auto;
+/*  border: 2px solid;*/
+  width: 40%;
+  float: right;
+  /*overflow: auto;*/
 }
 
 .principle{
-  background: none repeat scroll 0 0 #E6BD07;
+  background: none repeat scroll 0 0 rgba(69, 111, 154, 0.4);
   padding: 2px;
   width: 112px;
   margin: 5px;
@@ -350,7 +409,7 @@ div.none-yet {
 }
 
 .problem{
-  background: none repeat scroll 0 0 #4B57FA;
+  background: none repeat scroll 0 0 rgba(63, 157, 127, 0.4);
   padding: 2px;
   width: 112px;
   margin: 5px;
@@ -365,7 +424,7 @@ div.none-yet {
 }
 
 .assumption{
-  background: none repeat scroll 0 0 #CCADA3;
+  background: none repeat scroll 0 0 rgba(86, 80, 165, 0.4);
   padding: 2px;
   width: 150px;
   margin: 5px;
@@ -373,7 +432,7 @@ div.none-yet {
 }
 
 .variable{
-  background: none repeat scroll 0 0 #F25805;
+  background: none repeat scroll 0 0 rgba(237, 180, 95, 0.4);
   padding: 2px;
   width: 112px;
   margin: 5px;
@@ -391,7 +450,7 @@ div.none-yet {
   margin: 5px;
   float: left;
   padding: 10px;
-  font-size: 2em;
+  font-size: 1em;
 }
 
 .assumption-fulltext{
