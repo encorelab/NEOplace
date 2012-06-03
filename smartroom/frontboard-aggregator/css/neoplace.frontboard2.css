@@ -302,7 +302,8 @@ div.none-yet {
   margin-top: 4px;
   padding: 5px;
   text-align: center;
-  background-image: -webkit-linear-gradient( #DDD /*{b-body-background-start}*/, #CCC /*{b-body-background-end}*/)
+  background: -webkit-linear-gradient( #DDD, #CCC);
+  background: -moz-linear-gradient( #DDD, #CCC);
 }
 
 /* adding CSS specific to neoplace.frontboard2 */
@@ -473,9 +474,9 @@ div.none-yet {
 .widget-box-selected{
   border:1px solid #044062;
   background-color: #396B9E;
-  color: #FFFFFF;
-  -webkit-linear-gradient(#5F9CC5, #396B9E);
-
+  color: #F3F3F3;
+  background: -webkit-linear-gradient(#5F9CC5, #396B9E);
+  background: -moz-linear-gradient(#5F9CC5, #396B9E);
   }
 
 #widget-box .a{
