@@ -8,6 +8,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.userData = {
         name:null,
         id:null,
+        problemSet:[]
     };
 
     self.currentBoard = null;
@@ -16,16 +17,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.visitedVideoBoards = []; //nb: current video board is visitedVideoBoards[ visitedVideoBoards.length-1 ], as long as the DB isn't full of junk;
 
     self.studentPrinciples = [];
+    //self.groupPrinciples = [];
 
     self.problemWidth = 0;
     self.currentlyAnimating = false;
     self.currentProblemIndex = 0;
 
     self.problemTemplate = "";
-    self.problemSet = [];
-    self.problemSetForEquationTagging = [];
+    // self.problemSet = [];    // added to userData
+    // self.problemSetForEquationTagging = [];
 
     self.allEquations = {};
+    self.allProblemSets = {};
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
     var UI_TESTING_ONLY = false;
@@ -124,6 +127,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
         });
     };
 
+    // called on app load
+    self.loadAllClassroomProblems = function() {
+        console.log("loadAllClassroomProblems");
+        $.ajax({
+            url: '/assets/classroom.json',
+            success: function(data, textStatus, jqXHR){
+                self.allProblemSets = data;
+                console.log("loaded problem sets");
+            },
+            dataType: 'json'
+        });
+    };    
+
     //helper method
     self.parseEquationIdsIntoString = function(equationIds){
 
@@ -140,10 +156,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         var loadedProblems = 0;
 
-        _.each( self.problemSet, function(problem){
+        _.each( self.userData.problemSet, function(problem){
             // grab problem body html from json files
             $.ajax({
-                url: '/assets/problems/'+problem.name+'.html',
+                url: '/assets/problems/'+problem.problem_name+'.html',
                 success: function(data, textStatus, jqXHR){
 
                     //save the html for later
@@ -151,7 +167,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     //if all problems loaded, output
                     loadedProblems++;
-                    if (loadedProblems === self.problemSet.length ){
+                    if (loadedProblems === self.userData.problemSet.length ){
                        self.outputProblems(pageScope); 
                     }
 
@@ -170,7 +186,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         var sideMargins = 50;
         var contentWidth = windowWidth - ( sideMargins * 2 );
 
-        _.each( self.problemSet, function(problem,key){
+        _.each( self.userData.problemSet, function(problem,key){
             var id = "problem" + key;
             $(pageScope+" .scrollingProblems").append(
                 '<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate +'</div>'
@@ -182,7 +198,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
             $('#'+id+' .problem-title').html(problem.title);
             $('#'+id+' .html-content').html(problem.htmlContent);
-            $('#'+id+' .connectProblemButton').attr("value", problem.name);
+            $('#'+id+' .connectProblemButton').attr("value", problem.problem_name);
 
             if ( problem.principles.length > 0 ) {
                 var principlesList = "";
@@ -195,7 +211,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
 
             if (pageScope === "#taggingProblems") {
-                var equations = self.parseEquationIdsIntoString(problem.equations);
+                var equations = self.parseEquationIdsIntoString(problem.equation_ids);
                 var equationsList = "";
                 _.each( equations, function(equation){
                     equationsList += "<li>"+equation.name+"</li>";
@@ -235,7 +251,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         
         $(pageScope).swipeleft(function(){
             if ( self.currentlyAnimating ) return;
-            if ( self.currentProblemIndex == self.problemSet.length-1 ) return;
+            if ( self.currentProblemIndex == self.userData.problemSet.length-1 ) return;
 
             self.currentProblemIndex++;
             self.animateProblems(pageScope);
@@ -265,10 +281,28 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if ( self.currentProblemIndex > 0 ) {
                 $(pageScope+" .previousProblem").removeClass("ui-disabled");
             }
-            if ( self.currentProblemIndex < self.problemSet.length-1 ) {
+            if ( self.currentProblemIndex < self.userData.problemSet.length-1 ) {
                 $(pageScope+" .nextProblem").removeClass("ui-disabled");
             }
         });
+    };
+
+
+    self.assignProblems = function(students,principles) {
+        var groupProblemSets = _.filter(self.allProblemSets, function(problemSet) {
+            return ( _.find(problemSet.principles, function(p) {
+                if ( _.include(principles, p)) { return true };
+            }) )
+        });
+
+        _.each(groupProblemSets, function(problemSet, i) {                          // Pearl to make awesome optimizations later
+            if (students[i % students.length] === self.userData.name) {
+                self.userData.problemSet.push(problemSet);
+            }
+        });
+
+        $.mobile.changePage('p-taggingProblems.html');
+        //self.getHtmlForProblems();
     };
 
     self.setState = function(activity) {
@@ -280,12 +314,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 activity:activity,
                 board:self.currentBoard
             }
+        } else if (activity === "problems_tagging") {
+            state = {
+                user_name:self.userData.name,
+                activity:activity,
+                problem_set:self.userData.problemSet
+            }
         } else {
             state = {
                 user_name:self.userData.name,
                 activity:activity
             }            
         }
+
 
         $.ajax(self.drowsyURL + '/' + currentDb() + '/restore_states', {
             type: 'post',
@@ -298,7 +339,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 doneBtn.removeClass("ui-disabled");
             }
         });
-    }
+    };
 
     self.restoreState = function() {
         // set self.visitedVideoBoards to stored visitedboards (from Rollcall)
@@ -317,7 +358,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     console.log('equations_tagging step restored');
                     $.mobile.changePage('p-taggingEquations.html');
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "problems_tagging"}) ) {
+                    self.userData.problemSet = state.problem_set;
                     $.mobile.changePage('p-taggingProblems.html');
+                    //self.getHtmlForProblems();
                     console.log('problems_tagging step restored');
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "principles_sorting"}) ) {
                     $.mobile.changePage('p-sortPrinciples.html');
@@ -371,7 +414,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
             // Load any JS/JSON objects required for the rest of the app
             self.loadProblemTempate();
-            self.loadAllEquations(); 
+            self.loadAllEquations();
+            self.loadAllClassroomProblems();
 
             // ****************
             //PAGE: By default, on login screen ('#loginScreen')
@@ -626,13 +670,29 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 if ( !UI_TESTING_ONLY ) {
 
-                    self.getProblemSetRelatedToVideo(); //to populate self.problemSet
-                    // on successful callback: self.getHtmlForProblems();
+                    // self.getProblemSetRelatedToVideo(); //to populate self.problemSet
+                    // self.getHtmlForProblems('#taggingProblems');
+
+                    if ( self.userData.problemSet.length > 1 ) {
+                        $("#taggingProblems .nextProblem").removeClass("ui-disabled");
+                    }
+
+                    $("#taggingProblems .previousProblem").click(function(){
+                        self.currentProblemIndex--;
+                        self.animateProblems("#taggingProblems");
+                    });
+
+                    $("#taggingProblems .nextProblem").click(function(){
+                        self.currentProblemIndex++;
+                        self.animateProblems("#taggingProblems");
+                    });
+
+                    self.getHtmlForProblems("#taggingProblems");             
 
                 }else{
                     //fake it
                     //TODO: need to add in results from classroom activity
-                    self.problemSet = [
+                    self.userData.problemSet = [
                         {   title:"Bowling Ball", 
                             name:"BowlingBall", 
                             principles:["Acceleration", "Newton's First Law"],
@@ -650,7 +710,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         }
                     ];
 
-                    if ( self.problemSet.length > 1 ) {
+                    if ( self.userData.problemSet.length > 1 ) {
                         $("#taggingProblems .nextProblem").removeClass("ui-disabled");
                     }
 
@@ -675,6 +735,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 }
 
             });
+
+
+/*            $( '#testScreen' ).live( 'pageinit',function(event){
+                var principles = ["Newton's Second Law", "Fnet = constant"];
+                var students = ["Jim","Mike","Pearl"];
+                self.assignProblems(students, principles)
+            });*/
 
 
             // ****************
@@ -715,12 +782,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 if ( !UI_TESTING_ONLY ) {
 
                     //TODO:
-                    Sail.app.getProblemSetRelatedToVideo();
+                    // Sail.app.getProblemSetRelatedToVideo();
 
                 }else{
                     //fake it
                     //TODO: need to add in results from classroom activity
-                    self.problemSet = [
+                    self.userData.problemSet = [
                         {   title:"Melon Drop", 
                             name:"MellonDrop", 
                             principles:["Acceleration", "Newton's First Law"],
@@ -738,7 +805,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         }
                     ];
 
-                    if ( self.problemSet.length > 1 ) {
+                    if ( self.userData.problemSet.length > 1 ) {
                         $("#taggingEquations .nextProblem").removeClass("ui-disabled");
                     }
 
@@ -842,15 +909,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
         Sail.app.groupchat.sendEvent(sev);
     };
 
-/*    self.getProblemSetRelatedToVideo = function(userName, videoBoard) {
-        //TODO: test this
-        var sev = new Sail.Event('get_problems', {                      // we don't have this in the UML... where does it belong?
-            user_name:userName,                                         // should also likely be 'location' instead of videoBoard
-            video_board:videoBoard
-        });
-        Sail.app.groupchat.sendEvent(sev);
-    };*/
-
     self.submitPrinciple = function(principleName) {
         var sev = new Sail.Event('student_principle_submit', {
             location:self.currentBoard,
@@ -912,15 +970,41 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }            
         },
 
-        videowall_principles_commit: function(sev) {
+/*        videowall_principles_commit: function(sev) {
             // sev.payload will look like: {origin: "A", principles: ["Acceleration", "NSL"], students: ["slim","saho", "sliu"]}
             // the if checks for this tablet user
             if ( _.include(sev.payload.students, self.userData.name) ) {
-                // TODO grab group for bucket                
-                 self.setState('problems_tagging');
-                $.mobile.changePage('p-taggingProblems.html');
+                // save principles             
             }
-        },
+        },*/
+
+        teacher_principles_approve: function(sev) {
+            // the if checks for this tablet user
+            if ( _.include(sev.payload.students, self.userData.name) ) {
+                self.userData.group = sev.payload.students;                 // do I need this?
+                self.assignProblems(sev.payload.students,sev.payload.principles);
+                // assignProblems also moves the tablet to the next page
+            }
+        },          
+
+/*        teacher_principles_approve: function(sev) {
+            // the if checks for this tablet user
+            if ( _.include(sev.payload.students, self.userData.name) ) {
+                self.userData.group = sev.payload.students;                 // do I need this?
+                self.assignProblems(sev.payload.principles);
+                // create bucket o' problems
+                // $.ajax call to DB collection to sort problems
+                $.ajax(self.drowsyURL + '/' + currentDb() + '/MIKES COLLECTION', {          // limit by problems (drawn from where?)
+                    type: 'get',
+                    data: ,
+                    success: function () {
+                        self.userData.problemSet = ["prob1,prob2"];         // these will be prob names, right?
+                        self.setState('problems_tagging');
+                        $.mobile.changePage('p-taggingProblems.html');
+                    },
+                });
+            }
+        },        */
 
         videowall_equations_commit: function(sev) {
             if ( _.include(sev.payload.students, self.userData.name) ) {

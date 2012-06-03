@@ -76,5 +76,27 @@ body {
     margin-top: 40px;
 }
 
+.step-instructions {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.step-instructions h2 {
+  margin-bottom: 0px;
+}
+.step-instructions h3 {
+  margin-top: 0px;
+  color: #666;
+}
+
 /* Styles exclusively for: p-loginScreen.html */
 /* END Styles exclusively for: p-loginScreen.html */
+
+/* Styles exclusively for: p-taggingPrinciples.html */
+#taggingPrinciples .round-header {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+/* END Styles exclusively for: p-taggingPrinciples.html */

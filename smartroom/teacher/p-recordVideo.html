@@ -19,7 +19,7 @@
             .then('js/neoplace.tablet.teacher.js')
             .then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
-            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Teacher); });  
+            .thenRun(function() { return Sail.init(NEOplace.Tablet.Teacher); });  
     </script>
 </head>
 <body class="student">
@@ -34,9 +34,31 @@
 
         <div data-role="content">
 
-        <h2>Step 4 of 4: Record Video</h2>
+           <div class="step-instructions">
+                <h2>Step 4 of 4</h2>
+                <h3>Students record their final video response</h3>
+                <p>Tap 'Start' to start timing the video recording activity.</p>
+                <a href="#" data-role="button" data-icon="star" data-iconpos="top" class="startStepButton">Start</a>
+            </div>
 
-            <a href="#" data-role="button" data-icon="check" data-iconpos="top" class="doneButton" value="1">Finish</a>
+            <div class="text-align-center">
+                <p>To wrap up the entire in-class activity, tap 'Finish' for each group.</p>
+            </div>
+            <div class="ui-grid-a">
+                <div class="ui-block-a">
+                    <a href="#" data-role="button" data-icon="check" data-iconpos="top" class="doneButton ui-disabled" value="A">Mark "A" as Finished</a>
+                </div>
+                <div class="ui-block-b">
+                    <a href="#" data-role="button" data-icon="check" data-iconpos="top" class="doneButton ui-disabled" value="B">Mark "B" as Finished</a>
+                </div>
+                <div class="ui-block-a">
+                    <a href="#" data-role="button" data-icon="check" data-iconpos="top" class="doneButton ui-disabled" value="C">Mark "C" as Finished</a>
+                </div>
+                <div class="ui-block-b">
+                    <a href="#" data-role="button" data-icon="check" data-iconpos="top" class="doneButton ui-disabled" value="D">Mark "D" as Finished</a>
+                </div>
+            </div>
+            
 
             <!-- for UI_TESTING_ONLY -->
             <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
