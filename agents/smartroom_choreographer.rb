@@ -68,7 +68,7 @@ class SmartroomChoreographer < Sail::Agent
         # This couldn't hurt. We might have missed check_in, so why not record the precense
         record_user_presence(data['origin'])
         # And now count the submission
-        record_principle_submission(data['origin'], data['payload']['location'],)
+        record_principle_submission(data['origin'], data['payload']['location'])
       end
     end
 

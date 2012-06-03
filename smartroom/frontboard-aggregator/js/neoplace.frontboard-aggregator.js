@@ -58,10 +58,8 @@ NEOplace.FrontBoardAggregator = (function() {
     var viewAllQuadrants = function () {
         var winHeight = jQuery(window).height(),
             winWidth = jQuery(window).width(),
-            quadrantHeight = (winHeight/2)-20,
-            // mike's suggestion
-            //quadrantWidth = (winWidth/2)-20; messing thigs when combined with the css
-            quadrantWidth = (winWidth/2)-6;
+            quadrantHeight = (winHeight/2)-46,
+            quadrantWidth = (winWidth/2)-22;
 
         // show all
         jQuery("#quadrant-A").show();
@@ -273,7 +271,9 @@ NEOplace.FrontBoardAggregator = (function() {
             left = 0,
             top = 0;
 
-        if (obj.board=="A") {
+        // Think this works for all quadrants after Mike's and Pearl's change to CSS
+        //if (obj.board=="A") {
+        if (obj.board=="A" || obj.board=="B" || obj.board=="C" || obj.board=="D") {
             Min = 0;
             Max = quadrantWidth-tolerance;
             left = Min + (Math.random() * ((Max - Min) + 1));
