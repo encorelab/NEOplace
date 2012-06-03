@@ -271,7 +271,9 @@ NEOplace.FrontBoardAggregator = (function() {
             left = 0,
             top = 0;
 
-        if (obj.board=="A") {
+        // Think this works for all quadrants after Mike's and Pearl's change to CSS
+        //if (obj.board=="A") {
+        if (obj.board=="A" || obj.board=="B" || obj.board=="C" || obj.board=="D") {
             Min = 0;
             Max = quadrantWidth-tolerance;
             left = Min + (Math.random() * ((Max - Min) + 1));
