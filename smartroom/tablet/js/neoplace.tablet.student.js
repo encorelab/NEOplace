@@ -366,7 +366,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         return state.activity === "equations_tagging"
                     }).problem_set);
 
-                    console.log('equations_tagging step restored');
+                    console.log('equations_tagging step restored. User at  ' + self.currentBoard);
                     $.mobile.changePage('p-taggingEquations.html');
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "problems_tagging"}) ) {
                     self.currentBoard = _.find(statesCompleted, function(state) {
@@ -378,13 +378,13 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     }).problem_set);
                     
                     $.mobile.changePage('p-taggingProblems.html');
-                    console.log('problems_tagging step restored');
+                    console.log('problems_tagging step restored. User at ' + self.currentBoard);
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "principles_sorting"}) ) {
                     self.currentBoard = _.find(statesCompleted, function(state) {
                         return state.activity === "principles_sorting"
                     }).board;
                     $.mobile.changePage('p-sortPrinciples.html');
-                    console.log('principles_sorting step restored');
+                    console.log('principles_sorting step restored. User at ' + self.currentBoard);
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "principles_tagging"}) ){
                     console.log('principles_tagging step restored');
                     _.each(statesCompleted, function(state) {
@@ -400,7 +400,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 } else {
                     // go to home page or skip of whatever
                     console.log('no saved state');
-                    $.mobile.changePage('p-taggingPrinciplesBoard.html');
+                    $.mobile.changePage('p-waitScreen.html');
                 }
 
             }
@@ -526,8 +526,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
                                 // send out check_in (which sends to wait screen)
                                 // go to wait screen
                                 self.submitCheckIn(self.currentBoard);
-                                $.mobile.changePage('p-taggingPrinciples.html');
-                                //$.mobile.changePage('p-waitScreen.html.html');                  // TODO add me back in WAIT SCREEN                             
+                                //$.mobile.changePage('p-taggingPrinciples.html');
+                                $.mobile.changePage('p-waitScreen.html');                  // TODO add me back in WAIT SCREEN                             
                             }else{
                                 //fake it
                                 self.events.sail.activity_started({payload:{activity_name:"video_tagging"}});
@@ -571,13 +571,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     // writing state to Mongo
                     self.setState('principles_tagging');
 
-                    // mobile.changePage('p-waitScreen.html');                       // TODO change to wait screen
-
-
-
-
-                    // update behaviour of done button (can remove all of this when we switch to wait screen version)
-                    var nextPage = "p-taggingPrinciplesBoard.html";
+                    // update behaviour of done button
+                    var nextPage = "p-waitScreen.html";
                     if ( self.visitedVideoBoards.length == TOTAL_VIDEO_BOARDS ) {
                         nextPage = "p-taggingPrinciplesFinished.html";
                     }
@@ -649,8 +644,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         // send out check_in (which sends to wait screen)
                         self.submitCheckIn(self.currentBoard);
 
-                        $.mobile.changePage('p-taggingEquations.html');                  
-                        //$.mobile.changePage('p-waitScreen.html.html');                  // TODO add me back in WAIT SCREEN
+                        //$.mobile.changePage('p-taggingEquations.html');                  
+                        $.mobile.changePage('p-waitScreen.html');                  // TODO add me back in WAIT SCREEN
                     }else{
                         self.events.sail.activity_started({payload:{activity_name:"principle_sorting"}});
                     }
@@ -1033,15 +1028,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
         },
 
+        videowall_principles_commit: function(sev) {
+            // the if checks for this tablet user
+            if ( _.include(sev.payload.students, self.userData.name) ) {
+                $.mobile.changePage('p-waitScreen.html');
+                // assignProblems also moves the tablet to the next page          
+            }
+        },        
+
         videowall_equations_commit: function(sev) {
             if ( _.include(sev.payload.students, self.userData.name) ) {
                 self.setState("variable_writing");
                 $.mobile.changePage('p-variableWriter.html');
             }
-        },
-
-        tablet_activity_ended: function(sev) {
-            // TODO?
         },
 
         teacher_assumptions_variables_approve: function(sev) {
