@@ -18,6 +18,7 @@ a {
   color: inherit;
   text-decoration: none;
   font-size:12px;
+  background:#000;
 }
 
 #wall {
@@ -139,14 +140,14 @@ a {
 
 .toolbars-bottom .widget-box {
   display: inline-block;
-  border-radius: 13px 13px 0px 0px;
+  border-radius: 7px 7px 0px 0px;
   padding: 4px;
 }
 
 .toolbars-bottom .widget-box a {
   /* background-color: #444444;*/
-  border: 3px solid #AAAAAA;
-  border-radius: 10px 10px 10px 10px;
+  border: 1px solid #044062;
+  border-radius: 5px 5px 5px 5px;
   margin-bottom: 6px;
   overflow: hidden;
   padding: 3px 8px;
@@ -301,6 +302,7 @@ div.none-yet {
   margin-top: 4px;
   padding: 5px;
   text-align: center;
+  background-image: -webkit-linear-gradient( #DDD /*{b-body-background-start}*/, #CCC /*{b-body-background-end}*/)
 }
 
 /* adding CSS specific to neoplace.frontboard2 */
@@ -314,9 +316,22 @@ div.none-yet {
 
 #quadrant-A, #quadrant-B, #quadrant-C, #quadrant-D{
   background: #FFF;
- 
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
 }
 
+#aggregator-label {
+    color: rgba(176, 176, 176, 1.0);
+    font-size: 64px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    text-align: center;
+
+    opacity: 0.25;
+    
+}
 /* adding the paper effect to the quadrants */
 
 .paper {
@@ -374,6 +389,10 @@ div.none-yet {
 
 #quadrant-A{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("/images/a.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   float: left;
   width: 40%;
   /*overflow: auto;*/
@@ -381,6 +400,10 @@ div.none-yet {
 
 #quadrant-B{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("/images/b.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   width: 40%;
   float: right;
   /*overflow: auto;*/
@@ -388,6 +411,10 @@ div.none-yet {
 
 #quadrant-C{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("/images/c.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   float: left;
   width: 40%;
   /*overflow: auto;*/
@@ -395,6 +422,10 @@ div.none-yet {
 
 #quadrant-D{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("/images/d.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   width: 40%;
   float: right;
   /*overflow: auto;*/
@@ -440,8 +471,15 @@ div.none-yet {
 }
 
 .widget-box-selected{
-  background-color: #1B50E0;
+  border:1px solid #044062;
+  background-color: #396B9E;
   color: #FFFFFF;
+  -webkit-linear-gradient(#5F9CC5, #396B9E);
+
+  }
+
+#widget-box .a{
+  background: black;
 }
 
 .board-name{
