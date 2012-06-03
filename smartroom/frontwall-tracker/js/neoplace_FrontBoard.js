@@ -17,7 +17,7 @@
   
   var taskTimeBoundariesInMinutes = [
                           [],
-                          [0.2,0.5,0.6],
+                          [0.1,0.2,0.3],
                           [1.5, 2.0, 2.0],
                           [8.0, 13.0, 15.0],
                           [10.0, 18.0, 20.0],
@@ -33,10 +33,12 @@
   var currentTask = null;
   var currentTaskTickTimer = 0;
   var tickInterval = 200;
+  var timeExpired = false;
   
   /// GLOBAL FUNCTIONS //////
   function setCurrentTask(taskID) {
     currentTaskTickTimer = 0;
+    timeExpired = false;
     currentTask = taskID;
   }
   
@@ -73,11 +75,26 @@
     else if (ticksInSeconds >= maxTaskTimeBoundaryInSeconds) {
       jQuery('#progress-bar').removeClass('good-time').removeClass('caution-time').removeClass('stop-time');
       jQuery('#progress-text').html(statusCaptions[4]);
+      showTaskGameOverScreen(statusCaptions[4]);
     }
     else {
       jQuery('#progress-bar').removeClass('stop-time').removeClass('caution-time').addClass('good-time');
       jQuery('#progress-text').html(statusCaptions[1]);
     }
+  }
+  
+  // GAME OVER!!!
+  function showTaskGameOverScreen(str) {
+    if (timeExpired) return;
+    timeExpired = true;
+    var backgroundModal = jQuery("#modal-background");
+    //jQuery('#achievement-symbol').hide();
+     jQuery('#achievement-description').html(str);
+     
+    jQuery(backgroundModal).fadeIn(800, "linear", function(){
+        jQuery("#epic-task-completed-container").fadeIn(1500).effect('pulsate', 'slow');
+      });
+    setTimeout("animateTaskCompletion(2, 5);animateTaskCompletion(3, 3); animateTaskCompletion(1, 6);", 5000);
   }
   
   function animateTaskCompletionAnimationProcessor() {
@@ -174,6 +191,7 @@
   function animateTaskCompletion(groupID, taskID) {
     taskRewardsAnimationQueue[groupID] = taskID;
   }
+  
   
 jQuery(function() {
  // Handler for .ready() called.
@@ -288,7 +306,7 @@ jQuery(function() {
   
   animateTaskCompletion(1, 1);
  
-  animateTaskCompletion(3, 6);
+  //animateTaskCompletion(3, 6);
   //animateTaskCompletion(2, 3);
   jQuery(".user").click(function(){  animateTaskCompletion(2, 1); movePlayer(jQuery(this).attr('id'), Math.floor(Math.random() * numberOfLocations) + 1); });
 });
