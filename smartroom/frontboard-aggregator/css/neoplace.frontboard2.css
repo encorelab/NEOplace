@@ -390,7 +390,7 @@ div.none-yet {
 #quadrant-A{
 /*  border: 2px solid;*/
   background:#fff;
-  background-image: url("/images/a.png"); 
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/a.png"); 
   background-position: 50% 50%;
   background-repeat:no-repeat;
   float: left;
@@ -401,7 +401,7 @@ div.none-yet {
 #quadrant-B{
 /*  border: 2px solid;*/
   background:#fff;
-  background-image: url("/images/b.png"); 
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/b.png"); 
   background-position: 50% 50%;
   background-repeat:no-repeat;
   width: 40%;
@@ -412,7 +412,7 @@ div.none-yet {
 #quadrant-C{
 /*  border: 2px solid;*/
   background:#fff;
-  background-image: url("/images/c.png"); 
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/c.png"); 
   background-position: 50% 50%;
   background-repeat:no-repeat;
   float: left;
@@ -423,7 +423,7 @@ div.none-yet {
 #quadrant-D{
 /*  border: 2px solid;*/
   background:#fff;
-  background-image: url("/images/d.png"); 
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/d.png"); 
   background-position: 50% 50%;
   background-repeat:no-repeat;
   width: 40%;
