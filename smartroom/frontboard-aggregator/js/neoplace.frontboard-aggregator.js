@@ -155,7 +155,28 @@ NEOplace.FrontBoardAggregator = (function() {
     var dbRestoreState = function(){
         
 
-        $.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator_states', function(data) {
+        jQuery.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator', function(data) {
+        
+        jQuery("#status").html("Restoring...");
+          
+        console.log("frontboard_aggregator loaded");
+
+        _.each(data, function(obj){
+            
+            addElementToBoard(obj);
+        });
+
+        jQuery("#status").html("State Restored");
+    });
+           
+            
+
+    }
+    // get db collection
+    var dbRestoreState1 = function(){
+        
+
+        jQuery.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator_states', function(data) {
             //alert(_.last(data).state);
             jQuery('#board').html(_.last(data).state);
             jQuery("#status").html("State Restored");
@@ -166,12 +187,33 @@ NEOplace.FrontBoardAggregator = (function() {
             jQuery("#quadrant-content-C div").draggable({ containment: "#quadrant-C"});
             jQuery("#quadrant-content-D div").draggable({ containment: "#quadrant-D"});
 
-            // restore event listeners for collapsable elements (i.e. assumptions)
+            // expand on double click
+            jQuery("#board .assumption").dblclick(function () {
+                
+                var theFullText = jQuery(this).text();
+                var myDivId = jQuery(this).attr("id");
+                jQuery("#"+myDivId + " span").first().fadeIn("slow");
+                jQuery("#"+myDivId + " span").first().show();
+                jQuery("#"+myDivId).mousedown(bringDraggableToFront);
 
-            // re set z-index 
-            // removeAttr("z-index")
+            });
 
-  
+
+            // contract on click
+            jQuery("#board .assumption").click(function () {
+
+                var myDivId = jQuery(this).attr("id");
+                jQuery("#"+myDivId + " span").first().fadeIn("slow");
+                jQuery("#"+myDivId + " span").first().hide();
+                jQuery("#"+myDivId).mousedown(bringDraggableToFront);
+
+            });
+
+            // bring element to front
+            jQuery("#board .paper div").focusin(function () {
+                jQuery(this).mousedown(bringDraggableToFront);
+            });
+
         }
     )};
 
@@ -273,6 +315,7 @@ NEOplace.FrontBoardAggregator = (function() {
 
         // Think this works for all quadrants after Mike's and Pearl's change to CSS
         //if (obj.board=="A") {
+        /// we wont need this for each quadrant ;)
         if (obj.board=="A" || obj.board=="B" || obj.board=="C" || obj.board=="D") {
             Min = 0;
             Max = quadrantWidth-tolerance;
