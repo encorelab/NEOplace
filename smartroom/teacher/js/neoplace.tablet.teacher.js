@@ -79,6 +79,13 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         Sail.app.groupchat.sendEvent(sev);
     }
 
+    self.submitStartSort = function(stepName) {
+        var sev = new Sail.Event('start_sort', {
+            step: stepName,
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    }
+
     self.submitTeacherAssumptionsVariablesApprove = function(boardLetter) {
         console.log( "submitTeacherAssumptionsVariablesApprove()", boardLetter);
         var sev = new Sail.Event('teacher_assumptions_variables_approve', {
@@ -225,6 +232,14 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
         self.approvedBoards = 0;
 
+        $('#sortPrinciples .resortButton').click(function(){
+            $(this).addClass("ui-disabled");
+            if ( !UI_TESTING_ONLY ) {
+                self.submitStartSort("principle_sort"); //xmpp msg
+            }
+            $('#sortPrinciples .startStepButton').removeClass('ui-disabled');
+        });
+
         $('#sortPrinciples .startStepButton').click(function(){
             $(this).addClass("ui-disabled");
             if ( !UI_TESTING_ONLY ) {
@@ -260,6 +275,14 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         console.log("#taggingEquations pageinit");
 
         self.approvedBoards = 0;
+
+        $('#taggingEquations .resortButton').click(function(){
+            $(this).addClass("ui-disabled");
+            if ( !UI_TESTING_ONLY ) {
+                self.submitStartSort("equation_step"); //xmpp msg
+            }
+            $('#taggingEquations .startStepButton').removeClass('ui-disabled');
+        });
 
         $('#taggingEquations .startStepButton').click(function(){
             $(this).addClass("ui-disabled");
