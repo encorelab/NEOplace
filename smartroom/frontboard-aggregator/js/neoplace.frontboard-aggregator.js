@@ -6,7 +6,7 @@ var NEOplace = window.NEOplace || {};
 NEOplace.FrontBoardAggregator = (function() {
 
     // Set this to true only on one saving data.
-    var saveModeOn = false;
+    var saveModeOn = true;
 
 
     // TODO: move this out to config.json
