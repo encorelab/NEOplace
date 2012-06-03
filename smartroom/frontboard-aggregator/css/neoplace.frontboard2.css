@@ -402,7 +402,7 @@ div.none-yet {
 
 .principle{
   background: none repeat scroll 0 0 rgba(69, 111, 154, 0.4);
-  padding: 2px;
+  padding: 2px 1px 4px 1px;
   width: 112px;
   margin: 5px;
   float: left;
@@ -410,7 +410,7 @@ div.none-yet {
 
 .problem{
   background: none repeat scroll 0 0 rgba(63, 157, 127, 0.4);
-  padding: 2px;
+  padding: 1px 2px 4px 1px;
   width: 112px;
   margin: 5px;
   float: left;
@@ -418,14 +418,14 @@ div.none-yet {
 
 .equation{
   background: none repeat scroll 0 0 #FFFFFF;
-  padding: 2px;
+  padding: 1px 2px 4px 1px;
   margin: 5px;
   float: left;
 }
 
 .assumption{
   background: none repeat scroll 0 0 rgba(86, 80, 165, 0.4);
-  padding: 2px;
+  padding: 1px 2px 4px 1px;
   width: 150px;
   margin: 5px;
   float: left;
@@ -433,7 +433,7 @@ div.none-yet {
 
 .variable{
   background: none repeat scroll 0 0 rgba(237, 180, 95, 0.4);
-  padding: 2px;
+  padding: 1px 2px 4px 1px;
   width: 112px;
   margin: 5px;
   float: left;
@@ -449,8 +449,9 @@ div.none-yet {
   color: black;
   margin: 5px;
   float: left;
-  padding: 10px;
+  padding: 5px 5px 3px 5px;
   font-size: 1em;
+  border-radius: 5px 5px 5px 5px;
 }
 
 .assumption-fulltext{
