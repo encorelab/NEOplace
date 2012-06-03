@@ -507,10 +507,11 @@ table.dragAndDropContainer .draggableTags {
 #taggingEquations .attachProblemContainer {
     float: left;
     /*border: 1px solid green;*/
+    margin-right: 30px;
 }
 
 #taggingEquations .problem {
-    margin: 0 20px;
+    margin: 0 auto;
     /*border: 1px solid red;*/
 }
 
@@ -553,3 +554,19 @@ h3.label-replacement {
     width: 100%;
 }
 /* END Styles exclusively for: p-variableWriter.html */
+
+
+/* END Styles exclusively for: p-waitScreen.html */
+
+.wait-instructions {
+    margin: 50px 0 30px 0;
+}
+
+.lolcat img {
+    background-color: #fff;
+    padding: 20px;
+    -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    -moz-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+/* END Styles exclusively for: p-waitScreen.html */
