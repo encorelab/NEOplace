@@ -44,7 +44,7 @@ body {
 
 #achievement-description {
     position:relative;
-    top: -120px;
+    top: -170px;
     font-size: 3em;
     text-align: center;
     color: #FFFFFF;
@@ -115,13 +115,14 @@ body {
 #progress-bar {
     position:absolute;
     text-align: left;
-    background-color: #4DBD5C;
+    background-color: #7E9FC0;
     opacity: 1.0;
     width: 1024px;
     height: 30px;
     left: 0px;
     color: #ffffff;
     text-shadow: 0.1em 0.1em 0.2em black;
+    z-index: 1000;
 }
 
 .bar-dialog {
@@ -227,13 +228,33 @@ from {
 	-webkit-box-shadow: 0 0 2px 2px #88d392;
 	box-shadow: 0 0 2px 2px #88d392;
 }
-50% {
+25% {
     background-color: #4DBD5C;
     -moz-box-shadow: 0 0 9px 9px #4DBD5C;
     -webkit-box-shadow: 0 0 9px 9px #4DBD5C;
     box-shadow: 0 0 9px 9px #4DBD5C;
     
      }
+     
+40% {
+	background-color: #88d392;
+	-moz-box-shadow: 0 0 2px 2px #88d392;
+	-webkit-box-shadow: 0 0 2px 2px #88d392;
+	box-shadow: 0 0 2px 2px #88d392;
+}
+60% {
+    background-color: #4DBD5C;
+    -moz-box-shadow: 0 0 9px 9px #4DBD5C;
+    -webkit-box-shadow: 0 0 9px 9px #4DBD5C;
+    box-shadow: 0 0 9px 9px #4DBD5C;
+    
+     }
+75% {
+    background-color: #88d392;
+    -moz-box-shadow: 0 0 2px 2px #88d392;
+    -webkit-box-shadow: 0 0 2px 2px #88d392;
+    box-shadow: 0 0 2px 2px #88d392;
+    }
 to {
     background-color: #88d392;
     -moz-box-shadow: 0 0 2px 2px #88d392;
@@ -244,46 +265,82 @@ to {
 
 @-webkit-keyframes redPulse {
 from {
-	background-color: #2e88c4;
-	-moz-box-shadow: 0 0 2px 2px #2e88c4;
-	-webkit-box-shadow: 0 0 2px 2px #2e88c4;
-	box-shadow: 0 0 2px 2px #2e88c4;
+	background-color: #ff9999;
+	-moz-box-shadow: 0 0 2px 2px #ff9999;
+	-webkit-box-shadow: 0 0 2px 2px #ff9999;
+	box-shadow: 0 0 2px 2px #ff9999;
 }
-50% {
-    background-color: #AC0B2C;
-    -moz-box-shadow: 0 0 9px 9px #AC0B2C;
-    -webkit-box-shadow: 0 0 9px 9px #AC0B2C;
-    box-shadow: 0 0 9px 9px #AC0B2C;
+25% {
+    background-color: #ff585d;
+    -moz-box-shadow: 0 0 12px 12px #ff585d;
+    -webkit-box-shadow: 0 0 12px 12px #ff585d;
+    box-shadow: 0 0 12px 12px #ff585d;
     
      }
+40% {
+    background-color: #ff9999;
+    -moz-box-shadow: 0 0 2px 2px #ff9999;
+    -webkit-box-shadow: 0 0 2px 2px #ff9999;
+    box-shadow: 0 0 2px 2px #ff9999;
+     }
+60% {
+     background-color: #ff585d;
+    -moz-box-shadow: 0 0 15px 15px #ff585d;
+    -webkit-box-shadow: 0 0 15px 15px #ff585d;
+    box-shadow: 0 0 15px 15px #ff585d;
+     }
+75% {
+    background-color: #ff9999;
+    -moz-box-shadow: 0 0 2px 2px #ff9999;
+    -webkit-box-shadow: 0 0 2px 2px #ff9999;
+    box-shadow: 0 0 2px 2px #ff9999;
+     }
 to {
-    background-color: #2e88c4;
-    -moz-box-shadow: 0 0 2px 2px #2e88c4;
-    -webkit-box-shadow: 0 0 2px 2px #2e88c4;
-    box-shadow: 0 0 2px 2px #2e88c4;
+    background-color: #ff9999;
+    -moz-box-shadow: 0 0 2px 2px #ff9999;
+    -webkit-box-shadow: 0 0 2px 2px #ff9999;
+    box-shadow: 0 0 2px 2px #ff9999;
     }
 }
 
 
 @-webkit-keyframes yellowPulse {
 from {
-	background-color: #2e88c4;
-	-moz-box-shadow: 0 0 2px 2px #2e88c4;
-	-webkit-box-shadow: 0 0 2px 2px #2e88c4;
-	box-shadow: 0 0 2px 2px #2e88c4;
+	background-color: #fbc36b;
+	-moz-box-shadow: 0 0 2px 2px #fbc36b;
+	-webkit-box-shadow: 0 0 2px 2px #fbc36b;
+	box-shadow: 0 0 2px 2px #fbc36b;
 }
-50% {
-    background-color: #FFF640;
-    -moz-box-shadow: 0 0 9px 9px #FFF640;
-    -webkit-box-shadow: 0 0 9px 9px #FFF640;
-    box-shadow: 0 0 9px 9px #FFF640;
+25% {
+    background-color: #faaf3a;
+    -moz-box-shadow: 0 0 12px 12px #faaf3a;
+    -webkit-box-shadow: 0 0 12px 12px #faaf3a;
+    box-shadow: 0 0 12px 12px #faaf3a;
     
      }
+40% {
+    background-color: #fbc36b;
+    -moz-box-shadow: 0 0 2px 2px #fbc36b;
+    -webkit-box-shadow: 0 0 2px 2px #fbc36b;
+    box-shadow: 0 0 2px 2px #fbc36b;
+     }
+60% {
+    background-color: #faaf3a;
+    -moz-box-shadow: 0 0 12px 12px #faaf3a;
+    -webkit-box-shadow: 0 0 12px 12px #faaf3a;
+    box-shadow: 0 0 12px 12px #faaf3a;
+     }
+75% {
+    background-color: #fbc36b;
+    -moz-box-shadow: 0 0 2px 2px #fbc36b;
+    -webkit-box-shadow: 0 0 2px 2px #fbc36b;
+    box-shadow: 0 0 2px 2px #fbc36b;
+    }
 to {
-    background-color: #2e88c4;
-    -moz-box-shadow: 0 0 2px 2px #2e88c4;
-    -webkit-box-shadow: 0 0 2px 2px #2e88c4;
-    box-shadow: 0 0 2px 2px #2e88c4;
+    background-color: #fbc36b;
+    -moz-box-shadow: 0 0 2px 2px #fbc36b;
+    -webkit-box-shadow: 0 0 2px 2px #fbc36b;
+    box-shadow: 0 0 2px 2px #fbc36b;
     }
 }
 
@@ -307,7 +364,7 @@ to {
 
 .user-name {
     position: relative;
-    top: 22px;
+    top: 32px;
     left: -42px;
     color: #000000; 
 }
@@ -322,24 +379,31 @@ to {
 .good-time {
 
 	-webkit-animation-name: greenPulse;
-	-webkit-animation-duration: 2s;
+	-webkit-animation-duration: 1.5s;
 	-webkit-animation-iteration-count: infinite;
 }
 
-/*
-.triangle-right.caution {
+
+.caution-time {
 
 	-webkit-animation-name: yellowPulse;
-	-webkit-animation-duration: 2s;
+	-webkit-animation-duration: 1.2s;
 	-webkit-animation-iteration-count: infinite;
 }
 
-.triangle-right.stop {
+.stop-time {
 
 	-webkit-animation-name: redPulse;
-	-webkit-animation-duration: 2s;
+	-webkit-animation-duration: 0.8s;
 	-webkit-animation-iteration-count: infinite;
-} */
+}
+
+.end-time {
+    background-color: #ff9999;
+    -moz-box-shadow: 0 0 2px 2px #ff9999;
+    -webkit-box-shadow: 0 0 2px 2px #ff9999;
+    box-shadow: 0 0 2px 2px #ff9999;
+}
 
 
 /* Variant : for left positioned triangle
