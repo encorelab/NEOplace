@@ -158,7 +158,7 @@ NEOplace.FrontBoardAggregator = (function() {
         jQuery.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator', function(data) {
         
         jQuery("#status").html("Restoring...");
-          
+
         console.log("frontboard_aggregator loaded");
 
         _.each(data, function(obj){
@@ -173,7 +173,7 @@ NEOplace.FrontBoardAggregator = (function() {
 
     }
     // get db collection
-    var dbRestoreState1 = function(){
+    var dbRestoreStateBoard = function(){
         
 
         jQuery.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator_states', function(data) {
@@ -307,51 +307,20 @@ NEOplace.FrontBoardAggregator = (function() {
             winWidth = jQuery(window).width(),
             quadrantHeight = winHeight/2,
             quadrantWidth = winWidth/2,
-            tolerance = 185,
+            tolerance = 200,
             Min = 0,
             Max = 0,
             left = 0,
             top = 0;
 
-        // Think this works for all quadrants after Mike's and Pearl's change to CSS
-        //if (obj.board=="A") {
-        /// we wont need this for each quadrant ;)
-        if (obj.board=="A" || obj.board=="B" || obj.board=="C" || obj.board=="D") {
             Min = 0;
-            Max = quadrantWidth-tolerance;
+            Max = winWidth-tolerance;
             left = Min + (Math.random() * ((Max - Min) + 1));
     
             Min = 0;
-            Max = quadrantHeight-tolerance;
+            Max = winHeight-100;
             top = Min + (Math.random() * ((Max - Min) + 1));
 
-        } else if (obj.board=="B") {
-            Min = winWidth-quadrantWidth;
-            Max = winWidth-tolerance;
-            left = Min + (Math.random() * ((Max - Min) + 1));
-    
-            Min = 0;
-            Max = quadrantHeight-tolerance;
-            top = Min + (Math.random() * ((Max - Min) + 1));
-            
-        } else if (obj.board=="C") {
-            Min = 0;
-            Max = quadrantWidth-tolerance;
-            left = Min + (Math.random() * ((Max - Min) + 1));
-    
-            Min = quadrantHeight;
-            Max = (quadrantHeight*2)-tolerance;
-            top = Min + (Math.random() * ((Max - Min) + 1));
-        } else if (obj.board=="D") {
-            Min = winWidth-quadrantWidth;
-            Max = winWidth-tolerance;
-            left = Min + (Math.random() * ((Max - Min) + 1));
-    
-            Min = quadrantHeight;
-            Max = (quadrantHeight*2)-tolerance;
-            top = Min + (Math.random() * ((Max - Min) + 1));
-        }
-        
         // set position 
         element.css('left', left + 'px');
         element.css('top', top + 'px');
@@ -519,11 +488,17 @@ NEOplace.FrontBoardAggregator = (function() {
             });
 
 
-            // db-restore and db-clean functions
+            // db-restore from single elements frontboard_aggregator
             jQuery('#db-restore-state').click(function () {
                 dbRestoreState();
             });
 
+            // db-restore from single elements frontboard_aggregator
+            jQuery('#db-restore-state-board').click(function () {
+                dbRestoreStateBoard();
+            });
+
+// db-restore entire board including position of elements
             jQuery('#db-save-state').click(function () {
                 dbSaveState();
             });
@@ -578,6 +553,7 @@ NEOplace.FrontBoardAggregator = (function() {
                     addElementToBoard(assumption);
                     submitFrontboardAggregatorData(assumption);
                 });
+                dbSaveState();
             },
 
             videowall_equations_commit: function (sev) {
@@ -590,6 +566,8 @@ NEOplace.FrontBoardAggregator = (function() {
                     addElementToBoard(equation);
                     submitFrontboardAggregatorData(equation);
                 });
+
+                dbSaveState();
             },
 
             videowall_problems_commit: function (sev) {
@@ -602,6 +580,8 @@ NEOplace.FrontBoardAggregator = (function() {
                     addElementToBoard(problem);
                     submitFrontboardAggregatorData(problem);
                 });
+
+                dbSaveState();
             },
 
             videowall_principles_commit: function (sev) {
@@ -614,6 +594,8 @@ NEOplace.FrontBoardAggregator = (function() {
                     addElementToBoard(principle);
                     submitFrontboardAggregatorData(principle);
                 });
+
+                dbSaveState();
             }
         }
     };
