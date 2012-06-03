@@ -316,9 +316,22 @@ div.none-yet {
 
 #quadrant-A, #quadrant-B, #quadrant-C, #quadrant-D{
   background: #FFF;
- 
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
 }
 
+#aggregator-label {
+    color: rgba(176, 176, 176, 1.0);
+    font-size: 64px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    text-align: center;
+
+    opacity: 0.25;
+    
+}
 /* adding the paper effect to the quadrants */
 
 .paper {
@@ -376,6 +389,10 @@ div.none-yet {
 
 #quadrant-A{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("/images/a.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   float: left;
   width: 40%;
   /*overflow: auto;*/
@@ -383,6 +400,10 @@ div.none-yet {
 
 #quadrant-B{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("/images/b.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   width: 40%;
   float: right;
   /*overflow: auto;*/
@@ -390,6 +411,10 @@ div.none-yet {
 
 #quadrant-C{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("/images/c.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   float: left;
   width: 40%;
   /*overflow: auto;*/
@@ -397,6 +422,10 @@ div.none-yet {
 
 #quadrant-D{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("/images/d.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   width: 40%;
   float: right;
   /*overflow: auto;*/
