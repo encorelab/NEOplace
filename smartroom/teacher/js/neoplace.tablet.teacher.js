@@ -74,26 +74,25 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
     self.submitStartActivity = function(activityName) {
         var sev = new Sail.Event('activity_started', {
-            activity_name:activityName,
+            activity_name: activityName,
         });
         Sail.app.groupchat.sendEvent(sev);
     }
 
-    self.submitVideoAnswerComplete = function(videoBoardLetter, studentNames) {
+    self.submitTeacherAssumptionsVariablesApprove = function(boardLetter) {
+        console.log( "submitTeacherAssumptionsVariablesApprove()", boardLetter);
+        var sev = new Sail.Event('teacher_assumptions_variables_approve', {
+            location: boardLetter,
+            students: self.boards[boardLetter].students
+        });
+        Sail.app.groupchat.sendEvent(sev);
+    }
+
+    self.submitVideoAnswerComplete = function(boardLetter) {
+        console.log( "submitVideoAnswerComplete()", boardLetter);
         var sev = new Sail.Event('video_answer_complete', {
-            location:videoBoardLetter,
-            students:studentNames
-        });
-        Sail.app.groupchat.sendEvent(sev);
-    }
-
-    self.submitTeacherProblemsApprove = function(boardLetter) {
-        console.log( "submitTeacherProblemsApprove()", boardLetter);
-        //var board = self.boards[boardLetter];
-        //console.log("board:", board);
-        var sev = new Sail.Event('teacher_problems_approve', {
-            //principles: board.principles,
-            //students: board.students
+            location: boardLetter,
+            students: self.boards[boardLetter].students
         });
         Sail.app.groupchat.sendEvent(sev);
     }
@@ -126,13 +125,14 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         videowall_assumptions_variables_commit: function (sev) {
             var boardLetter = sev.payload.videowall;
             console.log("Heard that board " + boardLetter + " is done writing assumptions.")
+            self.boards[boardLetter].students = sev.payload.students;
             $('#taggingEquations .approveButton[value="'+boardLetter+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b").removeClass("ui-disabled");
         },
 
         videowall_assumptions_variables_commit_cancel: function (sev) {
             var boardLetter = sev.payload.videowall;
             console.log("Heard that board " + boardLetter + " needs more time to write assumptions.")
-            $('#taggingEquations .approveButton[value="'+boardLetter+'"]').addClass("ui-disabled");
+            $('#taggingEquations .approveButton[value="'+boardLetter+'"]').attr("data-theme","c").removeClass("ui-btn-up-b").addClass("ui-btn-up-c").addClass("ui-disabled");
         }
 
     };
@@ -281,7 +281,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
                 $('#taggingEquations .nextStepButton').removeClass('ui-disabled');
             }
             if ( !UI_TESTING_ONLY ) {
-                self.submitTeacherProblemsApprove(boardLetter); //xmpp
+                self.submitTeacherAssumptionsVariablesApprove(boardLetter); //xmpp
             }
         });
 
@@ -309,16 +309,15 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             $(this).addClass("ui-disabled");
             if ( !UI_TESTING_ONLY ) {
                 self.submitStartActivity("video_answer"); //xmpp msg
-            }else{
-                $('#recordVideo .doneButton').removeClass("ui-disabled");
             }
+            $('#recordVideo .doneButton').removeClass("ui-disabled");
         });
 
         $('#recordVideo .doneButton').click(function(){
             $(this).addClass("ui-disabled");
-            var videoBoardLetter = $(this).attr("value");
+            var boardLetter = $(this).attr("value");
             if ( !UI_TESTING_ONLY ) {
-                self.submitVideoAnswerComplete(videoBoardLetter,["slim","aho","sliu"]); //xmpp msg //TODO: get rid of hardcoded students
+                self.submitVideoAnswerComplete(boardLetter,self.boards[boardLetter].students); //xmpp msg
             }
         });
     });
