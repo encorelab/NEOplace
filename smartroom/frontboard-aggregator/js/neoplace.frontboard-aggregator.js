@@ -5,6 +5,10 @@ var NEOplace = window.NEOplace || {};
 
 NEOplace.FrontBoardAggregator = (function() {
 
+    // Set this to true only on one saving data.
+    var saveModeOn = false;
+
+
     // TODO: move this out to config.json
     var assetsUrl="http://neoplace.aardvark.encorelab.org/assets/equations/20pt/";
     
@@ -159,7 +163,14 @@ NEOplace.FrontBoardAggregator = (function() {
         
         jQuery("#status").html("Restoring...");
 
+        // empty quadrants
+        jQuery("#quadrant-content-A").html("");
+        jQuery("#quadrant-content-B").html("");
+        jQuery("#quadrant-content-C").html("");
+        jQuery("#quadrant-content-D").html("");
+
         console.log("frontboard_aggregator loaded");
+
 
         _.each(data, function(obj){
             
@@ -500,9 +511,12 @@ NEOplace.FrontBoardAggregator = (function() {
 
 // db-restore entire board including position of elements
             jQuery('#db-save-state').click(function () {
-                dbSaveState();
+                if(saveModeOn) {
+                    dbSaveState();
+                } else {
+                    alert("Save mode is not ON \nThis board is only watching");
+                }
             });
-
         },
 
         connected: function (ev) {
@@ -531,7 +545,9 @@ NEOplace.FrontBoardAggregator = (function() {
                         css_class:"variable"
                     }
                     addElementToBoard(variable);
-                    submitFrontboardAggregatorData(variable);
+                    if(saveModeOn) {
+                        submitFrontboardAggregatorData(variable);
+                    }
                 });
 
                 _.each(sev.payload.assumptions, function (i) {
@@ -551,9 +567,14 @@ NEOplace.FrontBoardAggregator = (function() {
                         text:text
                     }
                     addElementToBoard(assumption);
-                    submitFrontboardAggregatorData(assumption);
+                    if(saveModeOn) {
+                        submitFrontboardAggregatorData(assumption);
+                    }
+
                 });
-                dbSaveState();
+                if(saveModeOn) {
+                    dbSaveState();
+                }
             },
 
             videowall_equations_commit: function (sev) {
@@ -564,10 +585,13 @@ NEOplace.FrontBoardAggregator = (function() {
                         css_class:"equation"
                     }
                     addElementToBoard(equation);
-                    submitFrontboardAggregatorData(equation);
+                    if(saveModeOn) {
+                        submitFrontboardAggregatorData(equation);
+                    }
                 });
-
-                dbSaveState();
+                if(saveModeOn) {
+                    dbSaveState();
+                }
             },
 
             videowall_problems_commit: function (sev) {
@@ -578,10 +602,13 @@ NEOplace.FrontBoardAggregator = (function() {
                         css_class:"problem"
                     }
                     addElementToBoard(problem);
-                    submitFrontboardAggregatorData(problem);
+                    if(saveModeOn) {
+                        submitFrontboardAggregatorData(problem);
+                    }
                 });
-
-                dbSaveState();
+                if(saveModeOn) {
+                    dbSaveState();
+                }
             },
 
             videowall_principles_commit: function (sev) {
@@ -592,10 +619,15 @@ NEOplace.FrontBoardAggregator = (function() {
                         css_class:"principle"
                     };
                     addElementToBoard(principle);
-                    submitFrontboardAggregatorData(principle);
+                    if(saveModeOn) { 
+                        submitFrontboardAggregatorData(principle);
+                    }
+
                 });
 
-                dbSaveState();
+                if(saveModeOn) {
+                    dbSaveState();
+                }
             }
         }
     };
