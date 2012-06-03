@@ -100,3 +100,16 @@ body {
   text-transform: uppercase;
 }
 /* END Styles exclusively for: p-taggingPrinciples.html */
+
+/* Styles exclusively for: p-sortPrinciples.html */
+.board-header {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.board-vspacer {
+  height: 60px;
+}
+/* END Styles exclusively for: p-sortPrinciples.html */
