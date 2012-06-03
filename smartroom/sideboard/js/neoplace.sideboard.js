@@ -1,5 +1,5 @@
 /*jshint browser: true, devel: true */
-/*globals Sail, jQuery, _, Rollcall, NEOplace */
+/*globals Sail, jQuery, _, Rollcall, NEOplace, MD5 */
 
 NEOplace.SideBoard = (function() {
     var app = {};
@@ -46,6 +46,9 @@ NEOplace.SideBoard = (function() {
             });
 
         app.rollcall = new Rollcall.Client(app.config.rollcall.url);
+
+        app.loadEquations();
+        app.loadProblems();
     };
 
     app.authenticate = function () {
@@ -68,10 +71,10 @@ NEOplace.SideBoard = (function() {
         }
     };
 
-    app.loadVideo = function (videoId) {
-        jQuery.ajax('http://neoplace.aardvark.encorelab.org/assets/videos.html', {
+    app.loadVideo = function (key) {
+        jQuery.ajax(Sail.app.config.assets.url + '/videos.html', {
             success: function (html) {
-                var iframe = jQuery(html).filter('iframe#'+videoId);
+                var iframe = jQuery(html).filter('iframe#'+key);
                 jQuery('#video-screen')
                     .append(iframe);
             }
@@ -84,148 +87,331 @@ NEOplace.SideBoard = (function() {
             .text(board);
     };
 
+    app.loadChallengeQuestion = function (key) {
+        jQuery.ajax(Sail.app.config.assets.url + '/challenge_questions.json', {
+            dataType: 'json',
+            success: function (data) {
+                var cq = jQuery('#challenge-question');
+                if (cq.length === 0) {
+                    cq = jQuery('<div id="challenge-question" class="widget-box"></div>');
+                    cq.css('top', '-100px');
+                    jQuery('#right-half').prepend(cq);
+                    setTimeout(function () {
+                        cq.css('top', '0px');
+                    }, 1000);
+                    
+                }
+
+                if (data[key])
+                    cq.text(data[key]);
+                else
+                    console.log("No challenge question found under key '"+key+"'!", data);
+            }
+        });
+    };
+
+    app.loadEquations = function () {
+        jQuery.ajax(Sail.app.config.assets.url + '/equations.json', {
+            dataType: 'json',
+            success: function (data) {
+                app.equations = data;
+                jQuery(app).trigger('equations_loaded');
+            }
+        });
+    };
+
+    app.loadProblems = function () {
+        jQuery.ajax(Sail.app.config.assets.url + '/problems.json', {
+            dataType: 'json',
+            success: function (data) {
+                app.problems = data;
+                jQuery(app).trigger('problems_loaded');
+            }
+        });
+    };
+
+    // not really used right now
+    app.loadPrinciples = function () {
+        jQuery.ajax(Sail.app.config.assets.url + '/principles.json', {
+            dataType: 'json',
+            success: function (data) {
+                app.principles = data;
+                jQuery(app).trigger('principles_loaded');
+            }
+        });
+    };
+
+
+    /*** STATES *****/
+
     app.restoreState = function () {
-        if (true /* initial */) {
-            jQuery('.yup-nope-sorting').hide();
-            var tags = new app.model.Tags();
-            tags.on('reset', function (coll) {
-                this.each(function (t) {
-                    app.addTag(t, true);
-                });
-            });
-            tags.fetch();
-        } else if (false /* we're sorting */) {
-            jQuery('.yup-nope-sorting').show();
-        } 
-    };
+        app.balloons = new app.model.TagBalloons();
+        app.committed = new app.model.TagBalloons();
 
-    app.positionTagBalloon = function (balloon) {
-        var left, top;
-
-        var boardWidth = jQuery("#sorting-space").width();
-        var boardHeight = jQuery("#sorting-space").height();
-        
-        
-        left = Math.random() * (boardWidth - balloon.width());
-        top = Math.random() * (boardHeight - balloon.height());
-        
-        balloon.css({
-            left: left + 'px',
-            top: top + 'px'
+        // FIXME: kind of an odd place to put this
+        app.committed.on('add', function (b) {
+            new app.view.CommittedBalloonView({model: b})
+                        .render();
         });
-        
-        var tags = balloon.data('tags');
 
-        _.each(tags, function (t) {
-            t.save({pos: {left: left, top: top}}); // TODO: do all of the updates in one request or save group positions instead of each individual tag position
+        if (!app.location)
+            throw "Cannot restore state because this board's location has not yet been set!";
+
+        var restore = function (state) {
+            switch (state.get('step')) {
+                case 'principle-tagging': // default state
+                case null:
+                case undefined:
+                    app.restoreToPrincipleTagging();
+                    break;
+                case 'principle-sorting':
+                    app.restoreToPrincipleSorting();
+                    break;
+                case 'problem-tagging':
+                    app.restoreToProblemTagging();
+                    break;
+                case 'problem-sorting':
+                    app.restoreToProblemSorting();
+                    break;
+                case 'equation-tagging':
+                    app.restoreToEquationTagging();
+                    break;
+                case 'equation-sorting':
+                    app.restoreToEquationSorting();
+                    break;
+                case 'assvar-tagging':
+                    app.restoreToAssvarTagging();
+                    break;
+                case 'assvar-sorting':
+                    app.restoreToAssvarTagging();
+                    break;
+            }
+        };
+
+        new app.model.BoardStates().fetch({
+            data: {selector: JSON.stringify({location: app.location})},
+            success: function (states) {
+                var state = states.first();
+                if (!state) {
+                    console.log("No state found for board '"+app.location+"'...");
+                    state = new app.model.BoardState({location: app.location});
+                } else {
+                    console.log("Restoring board '"+app.location+"' with state: ", state);
+                }
+                
+                app.state = state;
+
+                restore(state);
+            }
         });
     };
 
-    app.addTag = function (tag, restoring) {
-        existingBalloon = jQuery("#principle-" + MD5.hexdigest(tag.get('principle')));
-            
-        if (existingBalloon.length == 0) {
-            app.createTagBalloon(tag, restoring);
-        } else {
-            app.incrementTagBalloon(existingBalloon, tag, restoring);
-        }
-    };
-
-    app.createTagBalloon = function (tag, restoring) {
-        // this function creates the balloon, adds the text, positions it on the board
-        var balloon = jQuery("<div class='balloon'></div>");
-
-        balloon.data('tags', [tag]);
-        balloon.addClass('author-' + tag.get('author'));
-        balloon.addClass('tag-' + tag.id);
-
-        // md5tags = _.map(contribution.tags, function(t) {return MD5.hexdigest(t);});
-        // _.each(md5tags, function (t) {
-        //     balloon.addClass('-' + t);
-        // });
-
-        balloon.hide(); // initially hidden, we call show() with an effect later
-
-        // var author = jQuery("<div class='author'>");
-        // author.text(tag.get('author'));
-        // balloon.prepend(author);
-
-        var labelText;
-        switch(tag.getType()) {
-            case 'principle':
-                var principle = tag.get('principle');
-                var label = jQuery("<div class='label'></div>");
-                label.text(principle);
-                balloon.append(label);
-
-                balloon.attr('id', "principle-" + MD5.hexdigest(principle));
-                break;
-        }        
-
-        balloon.draggable({
-            stop: function (ev, ui) {
-                _.each(jQuery(this).data('tags'), function (t) {
-                    t.save({pos: ui.position}); // TODO: do all of the updates in one request or save group positions instead of each individual tag position
+    app.restoreBalloons = function () {
+        this.balloons.fetch({
+            data: { 
+                selector: JSON.stringify({
+                    '$or': [
+                        {committed: {'$exists': false}},
+                        {committed: false}
+                    ],
+                    location: app.location
+                }) 
+            },
+            success: function (balloons) {
+                balloons.each(function (b) {
+                    new app.view.TagBalloonView({model: b})
+                        .render();
                 });
             }
         });
+    };
 
-        // BANDAID: For some reason in Chrome draggable() makes balloon's position 'relative'...
-        //          Need to reset it back to absolute for proper positioning within the wall.
-        balloon.css('position', 'absolute');
+    app.restoreCommitted = function () {
+        this.committed.fetch({
+            data: { 
+                selector: JSON.stringify({
+                    sorted_as: 'accepted',
+                    committed: true,
+                    location: app.location
+                }) 
+            },
+            success: function (balloons) {
+                balloons.each(function (b) {
+                    new app.view.CommittedBalloonView({model: b})
+                        .render();
+                });
+            }
+        });
+    };
 
-        // bring the balloon to the top when clicked
-        balloon.mousedown(app.bringDraggableToFront);
+    app.restoreToPrincipleTagging = function () {
+        console.log("Restoring to principle tagging activity...");
+        app.restoreBalloons();
+    };
 
-        jQuery("#sorting-space").append(balloon);
-        
-        if (tag.has('pos')) {
+    app.restoreToPrincipleSorting = function () {
+        console.log("Restoring to principle sorting activity...");
+        app.restoreBalloons();
+        jQuery('#sideboard').attr('class', 'step-principle-sorting');
+        app.view.makeSortingSpaceDroppable(app.events.doneSortingPrinciples); 
+        app.loadChallengeQuestion(app.location);
+    };
+
+    app.restoreToProblemTagging = function () {
+        console.log("Restoring to problem tagging activity...");
+        app.restoreBalloons();
+        jQuery('#sideboard').attr('class', 'step-problem-tagging');
+        app.view.unmakeSortingSpaceDroppable();
+        app.loadChallengeQuestion(app.location);
+        app.restoreCommitted();
+    };
+
+    app.restoreToProblemSorting = function () {
+        console.log("Restoring to problem sorting activity...");
+        app.restoreBalloons();
+        jQuery('#sideboard').attr('class', 'step-problem-sorting');
+        app.view.makeSortingSpaceDroppable(app.events.doneSortingProblems); 
+        app.loadChallengeQuestion(app.location);
+        app.restoreCommitted();
+    };
+
+    app.restoreToEquationTagging = function () {
+        console.log("Restoring to equation tagging activity...");
+        app.restoreBalloons();
+        jQuery('#sideboard').attr('class', 'step-equation-tagging');
+        app.view.unmakeSortingSpaceDroppable();
+        app.loadChallengeQuestion(app.location);
+        app.restoreCommitted();
+    };
+
+    app.restoreToEquationSorting = function () {
+        console.log("Restoring to equation sorting activity...");
+        app.restoreBalloons();
+        jQuery('#sideboard').attr('class', 'step-equation-sorting');
+        app.view.makeSortingSpaceDroppable(app.events.doneSortingEquations); 
+        app.loadChallengeQuestion(app.location);
+        app.restoreCommitted();
+    };
+
+    app.restoreToAssvarTagging = function () {
+        console.log("Restoring to assvar tagging activity...");
+        app.restoreBalloons();
+        jQuery('#sideboard').attr('class', 'step-assvar-tagging');
+        app.view.unmakeSortingSpaceDroppable();
+        app.loadChallengeQuestion(app.location);
+        app.restoreCommitted();
+    };
+
+    app.restoreToAssvarSorting = function () {
+        console.log("Restoring to assvar sorting activity...");
+        app.restoreBalloons();
+        jQuery('#sideboard').attr('class', 'step-assvar-sorting');
+        app.view.makeSortingSpaceDroppable(app.events.doneSortingAssvars); 
+        app.loadChallengeQuestion(app.location);
+        app.restoreCommitted();
+    };
+
+
+
+    /*** TRANSITIONS *****/
+
+    app.switchToPrincipleSorting = function () {
+        console.log("Switching to principle sorting activity...");
+
+        // TODO: move this to app.view
+        jQuery('.balloon').each(function () {
+            var balloon = jQuery(this);
             balloon.css({
-                left: tag.get('pos').left + 'px',
-                top: tag.get('pos').top + 'px'
+                '-moz-transition': 'all 1s ease-out',
+                '-webkit-transition': 'all 1s ease-out',
+                'transition': 'all 1s ease-out'
             });
-        } else { 
-            app.positionTagBalloon(balloon);
-        }
+            balloon.css('left', ((balloon.position().left - balloon.width()/2) * 0.5) + 'px');
+
+            setTimeout(function () {
+                balloon.css({
+                    '-moz-transition': '',
+                    '-webkit-transition': '',
+                    'transition': ''
+                });
+
+                balloon.data('view').model.save({pos: balloon.position()});
+            }, 1500);
+        });
+
+        setTimeout(function () {
+            app.loadChallengeQuestion(app.location);
+        }, 2000);
+
+        jQuery('#sideboard').attr('class', 'step-principle-sorting');
+        app.view.makeSortingSpaceDroppable(app.events.doneSortingPrinciples);
         
-        if (!restoring)
-            balloon.addClass('new');
-        
-        balloon.show();
-
-        return balloon;
-    };
-
-    app.incrementTagBalloon = function (balloon, tag, restoring) {
-        balloon.data('tags').push(tag);
-        balloon.addClass('author-' + tag.get('author'));
-        balloon.addClass('tag-' + tag.id);
-
-        tag.save({pos: balloon.position()});
-
-        var counter = balloon.find('.counter');
-        if (counter.length == 0) {
-            counter = jQuery("<div class='counter'></div>");
-            counter.data('count', 1);
-            balloon.append(counter);
-        }
-
-        if (!restoring)
-            counter.effect('highlight', 'slow');
-        
-        counter.data('count', counter.data('count') + 1);
-        counter.text(counter.data('count'));
+        app.state.save({step: 'principle-sorting'});
 
     };
 
-    app.bringDraggableToFront = function () {
-        var zs = jQuery('.ui-draggable').map(function() {
-            var z = jQuery(this).css('z-index'); 
-            return z === 'auto' ? 100 : parseInt(z, 10);
-        }).toArray();
-        var maxZ = Math.max.apply(Math, zs);
-        jQuery(this).css('z-index', maxZ + 1);
+    app.switchToProblemTagging = function () {
+        console.log("Switching to problem tagging activity...");
+
+        app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
+
+        jQuery('#sideboard').attr('class', 'step-problem-tagging');
+        app.view.unmakeSortingSpaceDroppable();
+        
+        app.state.save({step: 'problem-tagging'});
     };
+
+    app.switchToProblemSorting = function () {
+        console.log("Switching to problem sorting activity...");
+
+        jQuery('#sideboard').attr('class', 'step-problem-sorting');
+        app.view.makeSortingSpaceDroppable(app.events.doneSortingProblems);
+        
+        app.state.save({step: 'problem-sorting'});
+
+    };
+
+    app.switchToEquationTagging = function () {
+        console.log("Switching to equation tagging activity...");
+
+        app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
+
+        jQuery('#sideboard').attr('class', 'step-equation-tagging');
+        app.view.unmakeSortingSpaceDroppable();
+        
+        app.state.save({step: 'equation-tagging'});
+    };
+
+    app.switchToEquationSorting = function () {
+        console.log("Switching to problem sorting activity...");
+
+        jQuery('#sideboard').attr('class', 'step-equation-sorting');
+        app.view.makeSortingSpaceDroppable(app.events.doneSortingEquations);
+        
+        app.state.save({step: 'equation-sorting'});
+    };
+
+    app.switchToAssvarTagging = function () {
+        console.log("Switching to assvar tagging activity...");
+
+        app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
+
+        jQuery('#sideboard').attr('class', 'step-assvar-tagging');
+        app.view.unmakeSortingSpaceDroppable();
+        
+        app.state.save({step: 'assvar-tagging'});
+    };
+
+    app.switchToAssvarSorting = function () {
+        console.log("Switching to assvar sorting activity...");
+
+        jQuery('#sideboard').attr('class', 'step-assvar-sorting');
+        app.view.makeSortingSpaceDroppable(app.events.doneSortingAssvars);
+        
+        app.state.save({step: 'assvar-sorting'});
+    };
+
+    
     
     return app;
 })();
