@@ -5,6 +5,10 @@ var NEOplace = window.NEOplace || {};
 
 NEOplace.FrontBoardAggregator = (function() {
 
+    // Set this to true only on one saving data.
+    var saveModeOn = false;
+
+
     // TODO: move this out to config.json
     var assetsUrl="http://neoplace.aardvark.encorelab.org/assets/equations/20pt/";
     
@@ -45,7 +49,6 @@ NEOplace.FrontBoardAggregator = (function() {
     var variablesOn = true;
     var assumptionsOn = true;
     var absolutePositionOn = false;
-    var saveModeOn = false;
 
     // Shows board and toolbars. This function is called when sail is connected.
     var showHtmlContent = function() {
