@@ -37,7 +37,7 @@
 
             <div class="ui-grid-b">
                 <div class="ui-block-a">
-                    <a href="#" data-role="button" data-transition="slide" data-direction="reverse" data-icon="arrow-l" data-iconpos="left" class="previousProblem ui-disabled">
+                    <a href="#" data-role="button" data-icon="arrow-l" data-iconpos="left" class="previousProblem ui-disabled">
                         Previous Problem
                     </a>
                 </div>
@@ -45,7 +45,7 @@
                     <!-- empty -->
                 </div>
                 <div class="ui-block-c">
-                    <a href="#" data-role="button" data-transition="slide" data-icon="arrow-r" data-iconpos="right" class="nextProblem ui-disabled">
+                    <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="right" class="nextProblem ui-disabled">
                         Next Problem
                     </a>
                 </div>
@@ -54,37 +54,6 @@
             <div class="scrollingProblems">
                 <!-- will be dynamically replaced -->
             </div>
-            
-            <br clear="all" />
-
-            <table class="dragAndDropContainer" width="730">
-                <tr>
-                    <th width="450">
-                        Will this problem help you solve the <em>Challenge Question</em>?
-                    </th>
-                    <th colspan="2" width="300">
-                        If so, send it to the shared videoboard<br />
-                      by dragging it into the portal.
-                    </th>
-                </tr>
-                <tr>
-                    <td>
-                         <div class="draggableTags">
-                            <!-- to be dynamically populated -->
-                            <div data-role="button" data-inline="true" class="draggable" id="drag-eq-1" value="1">$$\\vec{\\Delta d}=\\vec{d_{2}}-\\vec{d_{1}}$$</div>
-                             <div data-role="button" data-inline="true" class="draggable" id="drag-eq-2" value="2">$$\\vec{v}=\\vec{d}/\\Delta t$$</div>
-                        </div>
-                    </td>
-                    <td width="130">
-                        <img src="/assets/img/drag_icon.png" width="100" height="150" alt="drag gesture" />
-                    </td>
-                    <td width="170">
-                        <div class="tagDropArea circle idle-glowing">
-                            <div class="droparea-label">Portal</div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
 
             <!-- for UI_TESTING_ONLY -->
             <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Debug: Skip</a>
