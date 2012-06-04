@@ -431,6 +431,7 @@ button:hover {
     /*width: 300px;*/
     display: inline-block;
 
+    font-size: 13px;
     font-weight: bold;
     color: #222;
     border: 1px solid #ccc;
@@ -506,7 +507,7 @@ button:hover {
 
 .balloon .label {
     margin-bottom: 4px;
-    font-size: 14px;
+    font-size: 13px;
 
     padding-top: 10px;
     padding-bottom: 10px;
