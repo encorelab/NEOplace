@@ -73,22 +73,12 @@
             app.stopTask();
             app.hideGameOverScreen();
        },
-       start_sort: function(sev) {
-            if (app.localeHasPlayers(localeMapper['A'])) {
-                app.animateTaskCompletion(localeMapper['A'], 1);
+       video_tagging_complete: function(sev) {
+        for (i in localeMapper) {
+            if (app.localeHasPlayers(localeMapper[i])) {
+                app.animateTaskCompletion(localeMapper[i], 1);
             }
-            
-            if (app.localeHasPlayers(localeMapper['B'])) {
-                app.animateTaskCompletion(localeMapper['B'], 1);
-            }
-            
-            if (app.localeHasPlayers(localeMapper['C'])) {
-                app.animateTaskCompletion(localeMapper['C'], 1);
-            }
-            
-            if (app.localeHasPlayers(localeMapper['D'])) {
-                app.animateTaskCompletion(localeMapper['D'], 1);
-            }
+        }    
        },
        videowall_principles_commit: function(sev) {
             var locale = sev.payload.videowall.toUpperCase(); //A,B,C,D;
