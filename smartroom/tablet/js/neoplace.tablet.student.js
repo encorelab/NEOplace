@@ -955,7 +955,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.submitVariableAssumption = function(type,variableAssumptionContent) {
         var sev = new Sail.Event('student_assumption_variable_submit', {
             type:type,
-            message:variableAssumptionContent
+            message:variableAssumptionContent,
+            location:self.currentBoard
         });
         Sail.app.groupchat.sendEvent(sev);
     };
