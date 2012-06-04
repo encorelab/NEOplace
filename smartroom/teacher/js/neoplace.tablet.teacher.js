@@ -271,11 +271,11 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
         //if ( UI_TESTING_ONLY ) {
             //skip button for testing only
-            // $("#sortPrinciples .skipButton").css("display","block");
-            // $("#sortPrinciples .skipButton").die();
-            // $("#sortPrinciples .skipButton").live("click", function(){
-            //     $.mobile.changePage('p-taggingEquations.html');
-            // });
+            $("#sortPrinciples .skipButton").css("display","block");
+            $("#sortPrinciples .skipButton").die();
+            $("#sortPrinciples .skipButton").live("click", function(){
+                $.mobile.changePage('p-taggingEquations.html');
+            });
         //}
 
     });
