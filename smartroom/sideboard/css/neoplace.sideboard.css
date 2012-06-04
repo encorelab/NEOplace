@@ -316,7 +316,7 @@ button:hover {
 
 /****** principle-tagging ***********************************/
 
-.step-principle-tagging .yup-nope-sorting { opacity: 0; }
+.step-principle-tagging .yup-nope-sorting { opacity: 0 !important; }
 
 .step-principle-tagging #principles-committed { opacity: 0.0; }
 .step-principle-tagging #problems-committed { opacity: 0.0; }
@@ -336,7 +336,7 @@ button:hover {
 
 /****** problem-tagging ***********************************/
 
-.step-problem-tagging .yup-nope-sorting { opacity: 0; }
+.step-problem-tagging .yup-nope-sorting { opacity: 0 !important; }
 .step-problem-tagging #video-screen { right: 50%; }
 .step-problem-tagging #sorting-space-container { right: 50%; }
 
@@ -358,7 +358,7 @@ button:hover {
 
 /****** equation-tagging ***********************************/
 
-.step-equation-tagging .yup-nope-sorting { opacity: 0.0; }
+.step-equation-tagging .yup-nope-sorting { opacity: 0.0 !important; }
 .step-equation-tagging #video-screen { right: 50%; }
 .step-equation-tagging #sorting-space-container { right: 50%; }
 
@@ -380,7 +380,7 @@ button:hover {
 
 /****** assvar-tagging ***********************************/
 
-.step-assvar-tagging .yup-nope-sorting { opacity: 0.0; }
+.step-assvar-tagging .yup-nope-sorting { opacity: 0.0 !important; }
 .step-assvar-tagging #video-screen { right: 50%; }
 .step-assvar-tagging #sorting-space-container { right: 50%; }
 
