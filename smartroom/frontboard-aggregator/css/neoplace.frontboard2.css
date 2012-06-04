@@ -506,3 +506,7 @@ div.none-yet {
 .hide-div{
   display: none; 
 }
+#status{
+    color: #000000;
+    font-size: 0.7em;
+}
