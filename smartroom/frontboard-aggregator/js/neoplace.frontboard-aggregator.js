@@ -39,38 +39,7 @@ NEOplace.FrontBoardAggregator = (function() {
                 jQuery(Sail.app).trigger('initialized');
                 return true;
             });
-
-
     };
-
-    /*
-    self.init = function() {
-        Sail.app.groupchatRoom = 'neo-a@conference.' + Sail.app.xmppDomain;
-
-        // TODO: move this out to config.json
-        Sail.app.username = "neo-frontwall-2";
-        Sail.app.password = "22d5d010a45fac5b72bc151e60bf60dc8bc089a8";
-
-        Sail.modules
-            .load('Strophe.AutoConnector', {mode: 'pseudo-anon'})
-            .load('AuthStatusWidget')
-            .thenRun(function () {
-                Sail.autobindEvents(NEOplace.FrontBoardAggregator);
-                jQuery(Sail.app).trigger('initialized');
-
-                // TODO: add click bindings here
-
-                return true;
-            });
-    };
-    //*/
-
-    // old authenticate
-    /*
-    self.authenticate = function () {
-        jQuery(self).trigger('authenticated');
-    };
-    */
 
     self.authenticate = function () {
         Sail.app.token = Sail.app.rollcall.getCurrentToken();
@@ -100,7 +69,24 @@ NEOplace.FrontBoardAggregator = (function() {
     var variablesOn = true;
     var assumptionsOn = true;
     var absolutePositionOn = false;
+    var problems = {};
 
+    var loadProblems = function () {
+
+        jQuery.ajax(Sail.app.config.assets.url + '/problems.json', {
+           dataType: 'json',
+           success: function (data) {
+               
+               _.each(data, function (p) {
+                   problems[p.name] = p.title;
+               });
+               console.log("Problems Loaded");
+               //console.log("Testing problem Title: ", problems["Cheetah"]);
+               
+           }
+       });
+
+   };
     // Shows board and toolbars. This function is called when sail is connected.
     var showHtmlContent = function() {
         jQuery("#board").fadeIn("slow");
@@ -288,13 +274,17 @@ NEOplace.FrontBoardAggregator = (function() {
         
         //alert(Sail.app.config.mongo.url);
 
-        jQuery.ajax(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator', {
+        jQuery.ajax(Sail.app.config.mongo.url + '' + Sail.app.run.name + '/frontboard_aggregator', {
             type: 'post',
             data: obj,
 
             success: function () {
                 console.log("Frontboard Aggregator saved: ", obj);
                 //Sail.app.groupchat.sendEvent(sev);
+                if(saveModeOn) {
+                    dbSaveState();
+                }
+
             },
             error: function (e) {
                 console.log('some error when saving  frontboard_aggregator.');
@@ -349,6 +339,9 @@ NEOplace.FrontBoardAggregator = (function() {
             // TODO: force render here? : NOT USED NOW
             //MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
+        } else if (obj.css_class=="problem" && obj.name!="") {
+            var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.title+"</div>");
+            
         } else {
             var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"</div>");
         }
@@ -575,6 +568,7 @@ NEOplace.FrontBoardAggregator = (function() {
             
             // Displaying content only when sails is connected.
             //loadAllEquations();
+            loadProblems();
             showHtmlContent();
             viewAllQuadrants();
         },
@@ -623,9 +617,6 @@ NEOplace.FrontBoardAggregator = (function() {
                     }
 
                 });
-                if(saveModeOn) {
-                    dbSaveState();
-                }
             },
 
             videowall_equations_commit: function (sev) {
@@ -640,9 +631,6 @@ NEOplace.FrontBoardAggregator = (function() {
                         submitFrontboardAggregatorData(equation);
                     }
                 });
-                if(saveModeOn) {
-                    dbSaveState();
-                }
             },
 
             videowall_problems_commit: function (sev) {
@@ -650,19 +638,20 @@ NEOplace.FrontBoardAggregator = (function() {
                     var problem = {
                         board:sev.payload.videowall,
                         name:i,
+                        title:problems[i],
                         css_class:"problem"
                     }
+
                     addElementToBoard(problem);
                     if(saveModeOn) {
                         submitFrontboardAggregatorData(problem);
                     }
                 });
-                if(saveModeOn) {
-                    dbSaveState();
-                }
             },
 
             videowall_principles_commit: function (sev) {
+                var eachFinished = false;
+
                 _.each(sev.payload.principles, function (i) {
                     var principle = {
                         board:sev.payload.videowall,
@@ -675,10 +664,6 @@ NEOplace.FrontBoardAggregator = (function() {
                     }
 
                 });
-
-                if(saveModeOn) {
-                    dbSaveState();
-                }
             }
         }
     };

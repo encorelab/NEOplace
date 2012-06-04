@@ -396,6 +396,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 // for each - if state.activity is found, return the objects with that state.activity (true), else will be defined (false)
                 if ( _.find(statesCompleted, function(state){ return state.activity === "variable_writing";}) ) {
+                    self.currentBoard = _.find(statesCompleted, function(state) {
+                        return state.activity === "problems_tagging";
+                    }).board;
+
                     console.log('variable_writing step restored');
                     jQuery.mobile.changePage('p-variableWriter.html');
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "equations_tagging";}) ) {
@@ -953,9 +957,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
 
     self.submitVariableAssumption = function(type,variableAssumptionContent) {
-        var sev = new Sail.Event('student_variable_assumption_submit', {
+        var sev = new Sail.Event('student_assumption_variable_submit', {
             type:type,
-            message:variableAssumptionContent
+            message:variableAssumptionContent,
+            location:self.currentBoard
         });
         Sail.app.groupchat.sendEvent(sev);
     };
@@ -995,14 +1000,31 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
         },
 
-        videowall_principles_commit: function(sev) {
+/*        videowall_principles_commit: function(sev) {
             // the if checks for this tablet user
             if ( _.include(sev.payload.students, self.userData.name) ) {
                 self.userData.group = sev.payload.students;                 // do we need this?
                 self.assignProblems(sev.payload.students,sev.payload.principles,'p-taggingProblems.html');
                 // assignProblems also moves the tablet to the next page          
             }
+        },*/
+
+        videowall_principles_commit: function(sev) {
+            // the if checks for this tablet user
+            if (sev.payload.videowall === self.currentBoard) {
+                self.assignProblems(sev.payload.students,sev.payload.principles,'p-taggingProblems.html');
+                // assignProblems also moves the tablet to the next page          
+            }
         },
+
+        videowall_problems_commit: function(sev) {
+            // the if checks for this tablet user
+            if (sev.payload.videowall === self.currentBoard) {
+                jQuery.mobile.changePage('p-waitScreen.html');
+                // assignProblems also moves the tablet to the next page          
+            }
+        },
+
 
 /*        videowall_principles_commit: function(sev) {
             // the if checks for this tablet user
@@ -1012,15 +1034,22 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
         },   */     
 
-        videowall_equations_commit: function(sev) {
-            if ( _.include(sev.payload.students, self.userData.name) ) {
+/*        videowall_equations_commit: function(sev) {
+            if ( _.include(sev.payload.videowall, self.userData.name) ) {
                 self.setState("variable_writing");
                 jQuery.mobile.changePage('p-variableWriter.html');
             }
-        },
+        },*/
+
+        videowall_equations_commit: function(sev) {
+            if (sev.payload.videowall === self.currentBoard) {
+                self.setState("variable_writing");
+                jQuery.mobile.changePage('p-variableWriter.html');
+            }
+        },        
 
         teacher_assumptions_variables_approve: function(sev) {
-            if ( _.include(sev.payload.students, self.userData.name) ) {
+            if ( sev.payload.location === self.currentBoard ) {
                 jQuery.mobile.changePage('p-finishPage.html');
             }
         },
