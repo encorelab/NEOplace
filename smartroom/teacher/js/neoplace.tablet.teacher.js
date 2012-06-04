@@ -157,15 +157,15 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         if ( eventString === "allowSignIn" ) {
             self.currentBoard = roundNum; //self.currentBoard + 1;
             $('#taggingPrinciples .allowSignInButton[value="'+roundNum+'"]').addClass('ui-disabled');
-            $('#taggingPrinciples .startVideoButton[value="'+roundNum+'"]').removeClass('ui-disabled');
+            $('#taggingPrinciples .startVideoButton[value="'+roundNum+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b").removeClass('ui-disabled');
         
         } else if ( eventString === "startVideo" ) {
             $('#taggingPrinciples .startVideoButton[value="'+roundNum+'"]').addClass('ui-disabled');
-            if ( roundNum === TOTAL_VIDEO_BOARDS ) {
-                $('#taggingPrinciples .nextStepButton').removeClass('ui-disabled');
-            }else{
-                $('#taggingPrinciples .allowSignInButton[value="'+(roundNum+1)+'"]').removeClass('ui-disabled');
-            }
+            //if ( roundNum === TOTAL_VIDEO_BOARDS ) {
+            //    $('#taggingPrinciples .nextStepButton').removeClass('ui-disabled');
+            //}else{
+                $('#taggingPrinciples .allowSignInButton[value="'+(roundNum+1)+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b").removeClass('ui-disabled');
+            //}
 
         }
     
@@ -213,15 +213,6 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             $.mobile.changePage('p-sortPrinciples.html');
         });
 
-        //if ( UI_TESTING_ONLY ) {
-            //skip button for testing only
-            $("#taggingPrinciples .skipButton").css("display","block");
-            $("#taggingPrinciples .skipButton").die();
-            $("#taggingPrinciples .skipButton").live("click", function(){
-                $.mobile.changePage('p-sortPrinciples.html');
-            });
-        //}
-
     });
 
     // ****************
@@ -237,7 +228,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             if ( !UI_TESTING_ONLY ) {
                 self.submitStartSort("principle_sort"); //xmpp msg
             }
-            $('#sortPrinciples .startStepButton').removeClass('ui-disabled');
+            //$('#sortPrinciples .startStepButton').removeClass('ui-disabled');
         });
 
         $('#sortPrinciples .startStepButton').click(function(){
@@ -248,7 +239,6 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
                 $('#sortPrinciples .donePrinciples').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
                 $('#sortPrinciples .doneProblems').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
             }
-            $('#sortPrinciples .nextStepButton').removeClass('ui-disabled');
         });
 
         //When the tablet hears "done" from the video board, update the fake buttons
@@ -260,11 +250,11 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
 
         //if ( UI_TESTING_ONLY ) {
             //skip button for testing only
-            $("#sortPrinciples .skipButton").css("display","block");
-            $("#sortPrinciples .skipButton").die();
-            $("#sortPrinciples .skipButton").live("click", function(){
-                $.mobile.changePage('p-taggingEquations.html');
-            });
+            // $("#sortPrinciples .skipButton").css("display","block");
+            // $("#sortPrinciples .skipButton").die();
+            // $("#sortPrinciples .skipButton").live("click", function(){
+            //     $.mobile.changePage('p-taggingEquations.html');
+            // });
         //}
 
     });
