@@ -204,7 +204,7 @@ NEOplace.FrontBoardAggregator = (function() {
            dataType: 'json',
            success: function (data) {
 
-            console.log("frontboard_aggregator loaded");
+            console.log("frontboard_aggregator Restored successfully");
 
             // empty quadrants
             jQuery("#quadrant-content-A").html("");
@@ -217,11 +217,11 @@ NEOplace.FrontBoardAggregator = (function() {
                 addElementToBoard(obj);
             });
 
-            jQuery("#status").html("State Restored");
+            jQuery("#status").html("Data Restored");
                
            },
            error: function (e) {
-                console.log("error restoring frontboard_aggregator ", e);
+                console.log("error restoring frontboard_aggregator", e);
                 jQuery("#status").html("");
            }
        });
@@ -232,10 +232,13 @@ NEOplace.FrontBoardAggregator = (function() {
     // Restores the last html board saved 
     var dbRestoreStateBoard = function(){
 
-        jQuery.getJSON(Sail.app.config.mongo.url + Sail.app.run.name + '/frontboard_aggregator_states', function(data) {
-            //alert(_.last(data).state);
+        jQuery.ajax(Sail.app.config.mongo.url + "/" + Sail.app.run.name + '/frontboard_aggregator_states', {
+           dataType: 'json',
+           success: function (data) {
+
+            console.log("Last Capture Restored");
             jQuery('#board').html(_.last(data).state);
-            jQuery("#status").html("State Restored");
+            jQuery("#status").html("Last Capture Restored");
 
             // make all draggable again
             jQuery("#quadrant-content-A div").draggable({ containment: "#quadrant-A"});
@@ -251,7 +254,6 @@ NEOplace.FrontBoardAggregator = (function() {
                 jQuery("#"+myDivId + " span").first().fadeIn("slow");
                 jQuery("#"+myDivId + " span").first().show();
                 jQuery("#"+myDivId).mousedown(bringDraggableToFront);
-
             });
 
 
@@ -269,8 +271,14 @@ NEOplace.FrontBoardAggregator = (function() {
             jQuery("#board .paper div").focusin(function () {
                 jQuery(this).mousedown(bringDraggableToFront);
             });
-
-        });
+            
+               
+           },
+           error: function (e) {
+                console.log("error restoring last Capture", e);
+                jQuery("#status").html("");
+           }
+       });
     };
 
     // saves incomming event into db: this is kind of redundant!!
@@ -370,18 +378,18 @@ NEOplace.FrontBoardAggregator = (function() {
             winWidth = jQuery(window).width(),
             quadrantHeight = winHeight/2,
             quadrantWidth = winWidth/2,
-            tolerance = 200,
+            tolerance = 100,
             Min = 0,
             Max = 0,
             left = 0,
             top = 0;
 
             Min = 0;
-            Max = winWidth-tolerance;
+            Max = quadrantWidth-tolerance;
             left = Min + (Math.random() * ((Max - Min) + 1));
     
             Min = 0;
-            Max = winHeight-100;
+            Max = quadrantHeight-60;
             top = Min + (Math.random() * ((Max - Min) + 1));
 
         // set position 
