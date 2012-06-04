@@ -38,6 +38,11 @@
             app.view.disableDoneSortingButton(); // disable until sorted
         }
 
+        if (!b.getType()) {
+            console.warn("Ignoring student submit with bad data!", sev.payload);
+            return;
+        }
+
         b.addTag(tag);
         
         new app.view.TagBalloonView({model: b})
