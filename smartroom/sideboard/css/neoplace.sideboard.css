@@ -172,7 +172,7 @@ button:hover {
 }
 
 #sorting-space-yup {
-    border-left: 3px solid #71CC91;
+    border-left: 3px dotted rgba(113, 204, 145, 0.2);
     bottom: 0;
     color: #71CC91;
     font-size: 64px;
@@ -188,7 +188,7 @@ button:hover {
 }
 
 #sorting-space-nope {
-    border-right: 3px solid #FD8C8E;
+    border-right: 3px dotted rgba(253, 140, 142, 0.2);
     bottom: 0;
     color: #FD8C8E;
     font-size: 64px;
