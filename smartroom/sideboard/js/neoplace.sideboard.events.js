@@ -154,6 +154,7 @@
         var sev = new Sail.Event('videowall_problems_commit', {
             problems: problems,
             students: students,
+            rationale: rationale,
             videowall: app.location
         });
 
