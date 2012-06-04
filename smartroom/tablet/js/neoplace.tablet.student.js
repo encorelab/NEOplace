@@ -35,6 +35,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
     // If set to false, remember to uncomment this line from the .html files
     //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
 
+    
+
     /****************************** private functions ********************************/
 
     var currentDb = function () {
@@ -884,13 +886,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     console.log( inputtedText );
 
-                    var type = null;
+/*                    var type = null;
                     if (jQuery('input:checked').attr("value") === "choice-1") {
                         type = "variable";
                     } else {
                         type = "assumption";
-                    }
+                    }*/
 
+                    var type = null;                // attempted fix
+                    if (jQuery('input:checked').attr("id") === "radio-choice-1") {
+                        type = "variable";
+                    } else {
+                        type = "assumption";
+                    }
 
                     self.submitVariableAssumption(type,inputtedText);
 

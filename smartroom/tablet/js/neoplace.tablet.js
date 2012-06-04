@@ -16,8 +16,12 @@ NEOplace.Tablet = (function() {
             Sail.app.groupchatRoom = Sail.app.run.name + '@conference.' + Sail.app.xmppDomain;
         }
 
+        var userFilter = function (u) {
+            return u.account.kind === 'Student';
+        };
+
         Sail.modules
-            .load('Rollcall.Authenticator', {mode: 'username-and-password', askForRun: true, curnit: 'NEOplace', userFilter: self.userFilter})
+            .load('Rollcall.Authenticator', {mode: 'username-and-password', askForRun: true, curnit: 'NEOplace', userFilter: userFilter})
             .load('Strophe.AutoConnector')
             .load('AuthStatusWidget')
             .thenRun(function () {

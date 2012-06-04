@@ -357,11 +357,12 @@ NEOplace.SideBoard = (function() {
             }, 1500);
         });
 
-        app.view.toggleDoneSortingButton();
+        
 
         setTimeout(function () {
             app.loadChallengeQuestion(app.location);
-        }, 2000);
+            app.view.disableDoneSortingButton();
+        }, 1000);
 
         jQuery('#sideboard').attr('class', 'step-principle-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingPrinciples);
@@ -384,7 +385,7 @@ NEOplace.SideBoard = (function() {
     app.switchToProblemSorting = function () {
         app.updateStatus('problem sorting');
 
-        app.view.toggleDoneSortingButton();
+        app.view.disableDoneSortingButton();
 
         jQuery('#sideboard').attr('class', 'step-problem-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingProblems);
@@ -407,7 +408,7 @@ NEOplace.SideBoard = (function() {
     app.switchToEquationSorting = function () {
         app.updateStatus('equation sorting');
 
-        app.view.toggleDoneSortingButton();
+        app.view.disableDoneSortingButton();
 
         jQuery('#sideboard').attr('class', 'step-equation-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingEquations);
@@ -429,7 +430,7 @@ NEOplace.SideBoard = (function() {
     app.switchToAssvarSorting = function () {
         app.updateStatus('assvar sorting');
 
-        app.view.toggleDoneSortingButton();
+        app.view.disableDoneSortingButton();
 
         jQuery('#sideboard').attr('class', 'step-assvar-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingAssvars);

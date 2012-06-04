@@ -181,6 +181,8 @@
         app.groupchat.sendEvent(sev);
 
         commitBalloons();
+
+        app.view.addProblemsRationale(rationale);
     };
 
     events.doneSortingEquations = function() {
