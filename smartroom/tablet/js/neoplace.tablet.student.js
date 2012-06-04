@@ -177,7 +177,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }else{
                 eq.name += "/assets";
             }
-            eq.name += self.allEquations[id].img10 + '" alt="" />';
+            eq.name += self.allEquations[id].img20 + '" alt="" />';
             return eq;
         });
         return equations;
@@ -224,7 +224,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             var id = "problem" + key;
 
             if (pageScope === "#taggingEquations") {
-                jQuery(pageScope+" .scrollingProblems").append('<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate + ' ' + self.equationDragDropTemplate +'</div>').trigger("create");
+                jQuery(pageScope+" .scrollingProblems").append('<div class="attachProblemContainer" id="'+id+'">'+ self.equationDragDropTemplate + ' ' + self.problemTemplate +'</div>').trigger("create");
                 jQuery('#'+id+' .connectButton').replaceWith("");
             }else{
                 jQuery(pageScope+" .scrollingProblems").append('<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate +'</div>').trigger("create");
