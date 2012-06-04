@@ -396,6 +396,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                 // for each - if state.activity is found, return the objects with that state.activity (true), else will be defined (false)
                 if ( _.find(statesCompleted, function(state){ return state.activity === "variable_writing";}) ) {
+                    self.currentBoard = _.find(statesCompleted, function(state) {
+                        return state.activity === "problems_tagging";
+                    }).board;
+                                        
                     console.log('variable_writing step restored');
                     jQuery.mobile.changePage('p-variableWriter.html');
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "equations_tagging";}) ) {
