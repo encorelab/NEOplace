@@ -119,7 +119,7 @@
     };
 
     events.sail.check_in = function (sev) {
-        var username = sev.origin;;
+        var username = sev.origin;
         if (sev.payload.location === app.location) {
             app.view.addCheckedInUser(username);
         } else {
@@ -135,7 +135,7 @@
         });
 
         app.committed.add(app.balloons.filter(function (b) {
-            return b.get('sorted_as') == 'accepted';
+            return b.get('sorted_as') === 'accepted';
         }));
     };
 
@@ -144,8 +144,12 @@
         jQuery('.tag-balloon')
             .hide('fade', 'fast');
 
-        var principles = _.uniq(app.balloons.pluck('principle'));
-        var students = _.uniq(_.flatten(app.balloons.pluck('contributors')));
+        var acceptedFilter = function (b) {return b.get('sorted_as') === 'accepted';};
+
+        var acceptedBalloons = app.balloons.filter(acceptedFilter);
+
+        var principles = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('principle');}));
+        var students = _.uniq(_.flatten(_.map(acceptedBalloons, function (b) {return b.get('contributors');})));
 
         var sev = new Sail.Event('videowall_principles_commit', {
             principles: principles,
@@ -163,8 +167,12 @@
         jQuery('.tag-balloon')
             .hide('fade', 'fast');
 
-        var problem_keys = _.uniq(app.balloons.pluck('problem'));
-        var students = _.uniq(_.flatten(app.balloons.pluck('contributors')));
+        var acceptedFilter = function (b) {return b.get('sorted_as') === 'accepted';};
+
+        var acceptedBalloons = app.balloons.filter(acceptedFilter);
+
+        var problem_keys = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('problem');}));
+        var students = _.uniq(_.flatten(_.map(acceptedBalloons, function (b) {return b.get('contributors');})));
 
         var problem_titles = _.map(problem_keys, function (k) {
             return app.problems[k];
@@ -190,8 +198,12 @@
         jQuery('.tag-balloon')
             .hide('fade', 'fast');
 
-        var equations = _.uniq(app.balloons.pluck('equation'));
-        var students = _.uniq(_.flatten(app.balloons.pluck('contributors')));
+        var acceptedFilter = function (b) {return b.get('sorted_as') === 'accepted';};
+
+        var acceptedBalloons = app.balloons.filter(acceptedFilter);
+
+        var equations = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('equation');}));
+        var students = _.uniq(_.flatten(_.map(acceptedBalloons, function (b) {return b.get('contributors');})));
 
         var sev = new Sail.Event('videowall_equations_commit', {
             equation_ids: equations,
@@ -215,7 +227,7 @@
 
         app.view.disableDoneSortingButton();
         jQuery('#done-sorting')
-            .text("Waiting for teacher")
+            .text("Waiting for teacher");
 
         app.balloons.on('change', function () {
             jQuery('#done-sorting')
@@ -231,9 +243,16 @@
         jQuery('.tag-balloon')
             .hide('fade', 'fast');
 
-        var assumptions = _.without(_.uniq(app.balloons.pluck('assumption')), null);
-        var variables = _.without(_.uniq(app.balloons.pluck('variable')), null);
-        var students = _.uniq(_.flatten(app.balloons.pluck('contributors')));
+        var acceptedFilter = function (b) {return b.get('sorted_as') === 'accepted';};
+
+        var acceptedBalloons = app.balloons.filter(acceptedFilter);
+
+        var assumptions = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('assumptions');}));
+        var variables = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('assumptions');}));
+        var students = _.uniq(_.flatten(_.map(acceptedBalloons, function (b) {return b.get('contributors');})));
+
+        assumptions = _.without(assumptions, null);
+        variables = _.without(variables, null);
 
         var sev = new Sail.Event('videowall_assumptions_variables_commit', {
             assumptions: assumptions,
