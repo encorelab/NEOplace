@@ -81,7 +81,6 @@ NEOplace.FrontBoardAggregator = (function() {
                });
                console.log("Problems Loaded");
                //console.log("Testing problem Title: ", problems["Cheetah"]);
-               
            }
        });
 
@@ -168,7 +167,11 @@ NEOplace.FrontBoardAggregator = (function() {
 
     };
 
-    // cleans db collection. CAREFULL JUST FOR TESTING. It basically puts an empy object
+    /*
+        Saves the current html content of the boad. 
+        This can be restored with function "dbRestoreStateBoard"
+        uses frontboard_aggregator collection_states collection
+    */
     var dbSaveState = function () {
         var boardHtml = jQuery('#board').html();
 
@@ -176,7 +179,7 @@ NEOplace.FrontBoardAggregator = (function() {
             state:boardHtml
         };
 
-        jQuery.ajax(Sail.app.config.mongo.url + Sail.app.run.name + '/frontboard_aggregator_states', {
+        jQuery.ajax(Sail.app.config.mongo.url + '/' + Sail.app.run.name + '/frontboard_aggregator_states', {
             type: 'post',
             data: stateObj,
 
@@ -191,10 +194,17 @@ NEOplace.FrontBoardAggregator = (function() {
         });
     };
 
-    // get db collection
+    /* 
+        Restores the data sent by _commit events
+        uses frontboard_aggregator collection
+    */ 
     var dbRestoreState = function(){
-        jQuery.getJSON(Sail.app.config.mongo.url + Sail.app.run.name + '/frontboard_aggregator', function(data) {
-            jQuery("#status").html("Restoring...");
+        jQuery("#status").html("Restoring...");
+        jQuery.ajax(Sail.app.config.mongo.url + '/' + Sail.app.run.name + '/frontboard_aggregator', {
+           dataType: 'json',
+           success: function (data) {
+
+            console.log("frontboard_aggregator loaded");
 
             // empty quadrants
             jQuery("#quadrant-content-A").html("");
@@ -202,20 +212,25 @@ NEOplace.FrontBoardAggregator = (function() {
             jQuery("#quadrant-content-C").html("");
             jQuery("#quadrant-content-D").html("");
 
-            console.log("frontboard_aggregator loaded");
-
-
             _.each(data, function(obj){
                 
                 addElementToBoard(obj);
             });
 
             jQuery("#status").html("State Restored");
-        });
-    };
-    // get db collection
-    var dbRestoreStateBoard = function(){
+               
+           },
+           error: function (e) {
+                console.log("error restoring frontboard_aggregator ", e);
+                jQuery("#status").html("");
+           }
+       });
+    
         
+    };
+    
+    // Restores the last html board saved 
+    var dbRestoreStateBoard = function(){
 
         jQuery.getJSON(Sail.app.config.mongo.url + Sail.app.run.name + '/frontboard_aggregator_states', function(data) {
             //alert(_.last(data).state);
@@ -261,13 +276,11 @@ NEOplace.FrontBoardAggregator = (function() {
     // saves incomming event into db: this is kind of redundant!!
     var submitFrontboardAggregatorData = function(obj) {
         
-        console.log('Starting to save frontboard_aggregator.');
+        //console.log('Starting to save frontboard_aggregator.');
 
-        var sev = new Sail.Event('aggregator_submit', obj);
+        //var sev = new Sail.Event('aggregator_submit', obj);
         
-        //alert(Sail.app.config.mongo.url);
-
-        jQuery.ajax(Sail.app.config.mongo.url + '' + Sail.app.run.name + '/frontboard_aggregator', {
+        jQuery.ajax(Sail.app.config.mongo.url + '/' + Sail.app.run.name + '/frontboard_aggregator', {
             type: 'post',
             data: obj,
 
@@ -275,7 +288,7 @@ NEOplace.FrontBoardAggregator = (function() {
                 console.log("Frontboard Aggregator saved: ", obj);
                 //Sail.app.groupchat.sendEvent(sev);
                 if(saveModeOn) {
-                    dbSaveState();
+                    dbSaveState(); // we don't need this, the user can triger this function any time.
                 }
 
             },
@@ -284,7 +297,6 @@ NEOplace.FrontBoardAggregator = (function() {
             }
         });
     };
-
 
     /* 
         Adds element to target quadrant. 
@@ -582,70 +594,79 @@ NEOplace.FrontBoardAggregator = (function() {
 
             videowall_assumptions_variables_commit: function (sev) {
                 _.each(sev.payload.variables, function (i) {
-                    var variable = {
-                        board:sev.payload.videowall,
-                        name:i,
-                        css_class:"variable"
-                    };
-                    addElementToBoard(variable);
-                    if(saveModeOn) {
-                        submitFrontboardAggregatorData(variable);
+                    if(i!=null){
+                        var variable = {
+                            board:sev.payload.videowall,
+                            name:i,
+                            css_class:"variable"
+                        };
+                        addElementToBoard(variable);
+                        if(saveModeOn) {
+                            submitFrontboardAggregatorData(variable);
+                        }
                     }
                 });
 
                 _.each(sev.payload.assumptions, function (i) {
-                    var shortName = "";
-                    var text = "";
-                    
-                    // cut text in assumption
-                    if(i.length>30){
-                        shortName = i.substr(0,30)+ " ...";
-                        text = i;
-                    } else {
-                        shortName = i;
-                        text = "";
-                    }
-                    var assumption = {
-                        board:sev.payload.videowall,
-                        name:shortName,
-                        css_class:"assumption",
-                        text:text
-                    };
-                    addElementToBoard(assumption);
-                    if(saveModeOn) {
-                        submitFrontboardAggregatorData(assumption);
+                    if(i!=null){
+                        var shortName = "";
+                        var text = "";
+                        
+                        // cut text in assumption
+                        if(i.length>30){
+                            shortName = i.substr(0,30)+ " ...";
+                            text = i;
+                        } else {
+                            shortName = i;
+                            text = "";
+                        }
+                        var assumption = {
+                            board:sev.payload.videowall,
+                            name:shortName,
+                            css_class:"assumption",
+                            text:text
+                        };
+                        addElementToBoard(assumption);
+                        if(saveModeOn) {
+                            submitFrontboardAggregatorData(assumption);
+                        }
                     }
 
                 });
             },
 
             videowall_equations_commit: function (sev) {
-                _.each(sev.payload.equations, function (i) {
-                    var equation = {
-                        board:sev.payload.videowall,
-                        name:i,
-                        css_class:"equation"
-                    };
-                    addElementToBoard(equation);
-                    if(saveModeOn) {
-                        submitFrontboardAggregatorData(equation);
+                _.each(sev.payload.equation_ids, function (i) {
+                    if(i!=null){
+                        var equation = {
+                            board:sev.payload.videowall,
+                            name:i,
+                            css_class:"equation"
+                        };
+                        addElementToBoard(equation);
+
+                        if(saveModeOn) {
+                            submitFrontboardAggregatorData(equation);
+                        }
                     }
                 });
             },
 
             videowall_problems_commit: function (sev) {
                 _.each(sev.payload.problems, function (i) {
-                    var problem = {
-                        board:sev.payload.videowall,
-                        name:i,
-                        title:problems[i],
-                        css_class:"problem"
-                    };
+                    if(i!=null){
+                        var problem = {
+                            board:sev.payload.videowall,
+                            name:i,
+                            title:problems[i],
+                            css_class:"problem"
+                        };
 
-                    addElementToBoard(problem);
-                    if(saveModeOn) {
-                        submitFrontboardAggregatorData(problem);
-                    }
+                        addElementToBoard(problem);
+                        if(saveModeOn) {
+                            submitFrontboardAggregatorData(problem);
+                        }
+                    }   
                 });
             },
 
@@ -653,14 +674,17 @@ NEOplace.FrontBoardAggregator = (function() {
                 var eachFinished = false;
 
                 _.each(sev.payload.principles, function (i) {
-                    var principle = {
-                        board:sev.payload.videowall,
-                        name:i,
-                        css_class:"principle"
-                    };
-                    addElementToBoard(principle);
-                    if(saveModeOn) { 
-                        submitFrontboardAggregatorData(principle);
+                    if(i!=null){
+
+                        var principle = {
+                            board:sev.payload.videowall,
+                            name:i,
+                            css_class:"principle"
+                        };
+                        addElementToBoard(principle);
+                        if(saveModeOn) { 
+                            submitFrontboardAggregatorData(principle);
+                        }
                     }
 
                 });
