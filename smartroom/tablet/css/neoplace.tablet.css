@@ -491,6 +491,10 @@ table.dragAndDropContainer .draggableTags {
     margin: 0 2%;
     float: left;
 }
+
+#taggingProblems .ui-li-thumb {
+    margin: 10px 10px 0 10px;
+}
 /* END Styles exclusively for: p-taggingProblems.html */
 
 

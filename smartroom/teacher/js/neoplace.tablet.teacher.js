@@ -136,7 +136,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         },
 
         check_assumptions_variables_alert: function (sev) {
-            var boardLetter = sev.payload.videowall;
+            var boardLetter = sev.payload.location;
             console.log("Heard that board " + boardLetter + " is done writing assumptions.")
             self.boards[boardLetter].students = sev.payload.students;
             $('#taggingEquations .approveButton[value="'+boardLetter+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b").removeClass("ui-disabled");
