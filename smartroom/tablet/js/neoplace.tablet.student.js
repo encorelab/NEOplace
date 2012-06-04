@@ -35,6 +35,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
     // If set to false, remember to uncomment this line from the .html files
     //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
 
+    
+
     /****************************** private functions ********************************/
 
     var currentDb = function () {
