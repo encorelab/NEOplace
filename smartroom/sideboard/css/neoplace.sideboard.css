@@ -298,6 +298,10 @@ button:hover {
     margin-bottom: 0;
 }
 
+.committed-box .balloon:hover {
+    cursor: default;
+}
+
 #principles-committed {
 
 }
