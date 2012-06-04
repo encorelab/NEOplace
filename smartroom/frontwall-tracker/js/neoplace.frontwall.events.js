@@ -66,6 +66,7 @@
        },
        activity_started: function(sev) {
             var activity = sev.payload.activity_name.toLowerCase();
+            app.hideGameOverScreen();
             app.setCurrentTask(activityMapper[activity]);
        },
        next_video: function(sev) {
@@ -90,23 +91,23 @@
             }
        },
        videowall_principles_commit: function(sev) {
-            var locale = sev.payload.origin.toUpperCase(); //A,B,C,D;
+            var locale = sev.payload.videowall.toUpperCase(); //A,B,C,D;
             app.animateTaskCompletion(localeMapper[locale], 2);
        },
        videowall_problems_commit: function(sev) {
-            var locale = sev.payload.origin.toUpperCase(); //A,B,C,D;
+            var locale = sev.payload.videowall.toUpperCase(); //A,B,C,D;
             app.animateTaskCompletion(localeMapper[locale], 3);
        },
        videowall_equations_commit: function(sev) {
-            var locale = sev.payload.origin.toUpperCase(); //A,B,C,D;
+            var locale = sev.payload.videowall.toUpperCase(); //A,B,C,D;
             app.animateTaskCompletion(localeMapper[locale], 4);
        },
        videowall_assumptions_variables_commit: function(sev) {
-            var locale = sev.payload.origin.toUpperCase(); //A,B,C,D;
+            var locale = sev.payload.videowall.toUpperCase(); //A,B,C,D;
             app.animateTaskCompletion(localeMapper[locale], 5);
        },
        video_answer_complete: function(sev) {
-            var locale = sev.payload.origin.toUpperCase(); //A,B,C,D;
+            var locale = sev.payload.location.toUpperCase(); //A,B,C,D;
             app.animateTaskCompletion(localeMapper[locale], 6);
        }
     };
