@@ -567,7 +567,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     //save board so button won't be active later
                     self.visitedVideoBoards.push(self.currentBoard);
 
-                    self.principlesComplete();
+                    // self.principlesComplete();               // removed
 
                     // writing state to Mongo
                     self.setState('principles_tagging');
@@ -954,12 +954,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
         Sail.app.groupchat.sendEvent(sev);
     };  
 
-    self.principlesComplete = function() {
-         var sev = new Sail.Event('student_principle_submit', {
+/*    self.principlesComplete = function() {
+         var sev = new Sail.Event('student_principle_submit', {             // fix me
             location:self.currentBoard,
         });
         Sail.app.groupchat.sendEvent(sev);       
-    };
+    };*/
 
     self.submitProblem = function(problemName) {
         var sev = new Sail.Event('student_problem_submit', {
