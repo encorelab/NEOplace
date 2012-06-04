@@ -995,14 +995,22 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
         },
 
-        videowall_principles_commit: function(sev) {
+/*        videowall_principles_commit: function(sev) {
             // the if checks for this tablet user
             if ( _.include(sev.payload.students, self.userData.name) ) {
                 self.userData.group = sev.payload.students;                 // do we need this?
                 self.assignProblems(sev.payload.students,sev.payload.principles,'p-taggingProblems.html');
                 // assignProblems also moves the tablet to the next page          
             }
-        },
+        },*/
+
+        videowall_principles_commit: function(sev) {
+            // the if checks for this tablet user
+            if (sev.payload.videowall === self.currentBoard) {
+                self.assignProblems(sev.payload.students,sev.payload.principles,'p-taggingProblems.html');
+                // assignProblems also moves the tablet to the next page          
+            }
+        },        
 
 /*        videowall_principles_commit: function(sev) {
             // the if checks for this tablet user
@@ -1012,12 +1020,19 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
         },   */     
 
-        videowall_equations_commit: function(sev) {
-            if ( _.include(sev.payload.students, self.userData.name) ) {
+/*        videowall_equations_commit: function(sev) {
+            if ( _.include(sev.payload.videowall, self.userData.name) ) {
                 self.setState("variable_writing");
                 jQuery.mobile.changePage('p-variableWriter.html');
             }
-        },
+        },*/
+
+        videowall_equations_commit: function(sev) {
+            if (sev.payload.videowall === self.currentBoard) ) {
+                self.setState("variable_writing");
+                jQuery.mobile.changePage('p-variableWriter.html');
+            }
+        },        
 
         teacher_assumptions_variables_approve: function(sev) {
             if ( _.include(sev.payload.students, self.userData.name) ) {
