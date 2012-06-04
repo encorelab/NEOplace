@@ -44,13 +44,8 @@
                 break;
             case 'problem':
                 var pid = balloon.get('problem');
-                var problem = app.problems[pid];
-                var txt;
-                if (problem)
-                    txt = problem.title;
-                else
-                    txt = "!!! " + pid + " !!!";
-                label.text(txt);
+                var problem = app.problems[pid] || ("!!! " + pid + " !!!");
+                label.text(problem);
                 break;
             case 'equation':
                 var eqid = balloon.get('equation');
