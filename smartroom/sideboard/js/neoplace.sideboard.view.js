@@ -209,7 +209,6 @@
                 this.$el.addClass('new');
 
                 // fix for firefox; seems to somehow set display: block automatically
-                this.$el.css('display', 'inline-block');
                 this.$el.show();
             }
 

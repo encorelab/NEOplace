@@ -307,7 +307,6 @@ button:hover {
     position: static;
     margin-bottom: 4px;
     margin-right: 3px;
-    display: inline-block;
 }
 
 .committed-box .equation-svg {
@@ -478,7 +477,7 @@ button:hover {
 .balloon {
     position: absolute;
     /*width: 300px;*/
-    display: inline-block;
+    display: block;
 
     font-size: 12px;
     font-weight: bold;
