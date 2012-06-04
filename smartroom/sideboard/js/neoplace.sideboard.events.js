@@ -56,7 +56,7 @@
     };
 
     events.sail.student_problem_submit = function(sev) {
-        student_submit(sev, 'problem', sev.payload.problem_name);
+        student_submit(sev, 'problem', sev.payload.problem);
     };
 
     events.sail.student_equation_submit = function(sev) {
