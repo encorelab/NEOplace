@@ -107,10 +107,37 @@ button:hover {
     z-index: 1;
     position: relative;
     top: -25px;
+
+    border: 1px solid #aa2;
+    border-radius: 1em;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+    background: -moz-linear-gradient(#fe9, #aa2) repeat scroll 0 0 #aa2;
+    background: -webkit-linear-gradient(#fe9, #aa2) repeat scroll 0 0 #aa2;
+    background: linear-gradient(#fe9, #aa2) repeat scroll 0 0 #aa2;
+
+    -moz-box-shadow: 0 0 15px #aa2; 
+    box-shadow:0 0 45px #BA2; 
+
+    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    transition: all 1s ease-out;
 }
 
 #done-sorting.disabled {
     opacity: 0.4;
+
+    border: 1px solid #aaa;
+    border-radius: 1em;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+    background: -moz-linear-gradient(#eee, #aaa) repeat scroll 0 0 #aaa;
+    background: -webkit-linear-gradient(#eee, #aaa) repeat scroll 0 0 #aaa;
+    background: linear-gradient(#eee, #aaa) repeat scroll 0 0 #aaa;
+
+    -webkit-box-shadow: 0 0 0px #aa2; 
+    -moz-box-shadow: 0 0 0px #aa2; 
+    box-shadow: 0 0 0px #aa2; 
 }
 
 #sideboard-label {
@@ -509,10 +536,7 @@ button:hover {
     margin-bottom: 4px;
     font-size: 13px;
 
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 6px;
 }
 
 .balloon .counter {
