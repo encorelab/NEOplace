@@ -12,6 +12,7 @@
     
         Sail.load()
             .then('js/neoplace.frontboard-aggregator.js')
+            .then('js/sail.js/rollcall.js')
             //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
             .thenRun(function() { return Sail.init(NEOplace.FrontBoardAggregator); });  
@@ -20,19 +21,27 @@
 <body>
     <div id="board" class="hide-div">
         <div id="quadrant-A" class="paper">
-            <span class="board-name">Video A</span>
+            <span class="board-name">
+                <iframe id="A" src="http://player.vimeo.com/video/42745622" width="165" height="71" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+            </span>
             <div id="quadrant-content-A"></div>
         </div>
         <div id="quadrant-B" class="paper">
-            <span class="board-name">Video B</span>
+            <span class="board-name">
+                <iframe id="B" src="http://player.vimeo.com/video/42745621" width="165" height="71" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+            </span>
             <div id="quadrant-content-B"></div>
         </div>
         <div id="quadrant-C" class="paper">
-            <span class="board-name">Video C</span>
+            <span class="board-name">
+                <iframe src="http://player.vimeo.com/video/42745623" width="165" height="71" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+            </span>
             <div id="quadrant-content-C"></div>
         </div>
         <div id="quadrant-D" class="paper">
-            <span class="board-name">Video D</span>
+            <span class="board-name">
+                <iframe id="D" src="http://player.vimeo.com/video/42712975" width="149" height="83" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+            </span>
             <div id="quadrant-content-D"></div>
         </div>
     </div>
@@ -56,6 +65,15 @@
         </div>
         <div class="widget-box">
             <a id="absolute-pos" alt="Absolute Position On/Off" class="" href="#">Floating</a>
+        </div>
+
+        <div class="widget-box">
+            <a id="db-save-state" class="" href="#">Save</a>
+            <a id="db-restore-state" class="" href="#">Restore</a>
+            <a id="db-restore-state-board" class="" href="#">Restore-Pos</a>
+        </div>
+        <div class="widget-box">
+            <div id="status"></div>
         </div>
 
     </div>

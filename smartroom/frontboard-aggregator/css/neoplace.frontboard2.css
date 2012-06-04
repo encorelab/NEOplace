@@ -17,6 +17,8 @@ header {
 a {
   color: inherit;
   text-decoration: none;
+  font-size:12px;
+  background:#000;
 }
 
 #wall {
@@ -138,14 +140,14 @@ a {
 
 .toolbars-bottom .widget-box {
   display: inline-block;
-  border-radius: 13px 13px 0px 0px;
+  border-radius: 7px 7px 0px 0px;
   padding: 4px;
 }
 
 .toolbars-bottom .widget-box a {
   /* background-color: #444444;*/
-  border: 3px solid #AAAAAA;
-  border-radius: 10px 10px 10px 10px;
+  border: 1px solid #044062;
+  border-radius: 5px 5px 5px 5px;
   margin-bottom: 6px;
   overflow: hidden;
   padding: 3px 8px;
@@ -300,22 +302,37 @@ div.none-yet {
   margin-top: 4px;
   padding: 5px;
   text-align: center;
+  background: -webkit-linear-gradient( #DDD, #CCC);
+  background: -moz-linear-gradient( #DDD, #CCC);
 }
 
 /* adding CSS specific to neoplace.frontboard2 */
 #quadrant-content-A div, #quadrant-content-B div, #quadrant-content-C div, #quadrant-content-D div, .board-name {
-    border: 3px solid #AAAAAA;
-    border-radius: 10px 10px 10px 10px;
+/*    border: 3px solid #AAAAAA;
+*/    border-radius: 10px 10px 10px 10px;
     text-align: center;
-    overflow: auto;
 
 }
 
 #quadrant-A, #quadrant-B, #quadrant-C, #quadrant-D{
   background: #FFF;
- 
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+  overflow: auto;
 }
 
+#aggregator-label {
+    color: rgba(176, 176, 176, 1.0);
+    font-size: 64px;
+    font-weight: bold;
+    text-transform: uppercase;
+
+    text-align: center;
+
+    opacity: 0.25;
+    
+}
 /* adding the paper effect to the quadrants */
 
 .paper {
@@ -373,6 +390,10 @@ div.none-yet {
 
 #quadrant-A{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/a.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   float: left;
   width: 40%;
   /*overflow: auto;*/
@@ -380,6 +401,10 @@ div.none-yet {
 
 #quadrant-B{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/b.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   width: 40%;
   float: right;
   /*overflow: auto;*/
@@ -387,6 +412,10 @@ div.none-yet {
 
 #quadrant-C{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/c.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   float: left;
   width: 40%;
   /*overflow: auto;*/
@@ -394,22 +423,26 @@ div.none-yet {
 
 #quadrant-D{
 /*  border: 2px solid;*/
+  background:#fff;
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/d.png"); 
+  background-position: 50% 50%;
+  background-repeat:no-repeat;
   width: 40%;
   float: right;
   /*overflow: auto;*/
 }
 
 .principle{
-  background: none repeat scroll 0 0 #E6BD07;
-  padding: 2px;
+  background: none repeat scroll 0 0 rgba(69, 111, 154, 0.4);
+  padding: 2px 1px 4px 1px;
   width: 112px;
   margin: 5px;
   float: left;
 }
 
 .problem{
-  background: none repeat scroll 0 0 #4B57FA;
-  padding: 2px;
+  background: none repeat scroll 0 0 rgba(63, 157, 127, 0.4);
+  padding: 1px 2px 4px 1px;
   width: 112px;
   margin: 5px;
   float: left;
@@ -417,30 +450,37 @@ div.none-yet {
 
 .equation{
   background: none repeat scroll 0 0 #FFFFFF;
-  padding: 2px;
+  padding: 1px 2px 4px 1px;
   margin: 5px;
   float: left;
 }
 
 .assumption{
-  background: none repeat scroll 0 0 #CCADA3;
-  padding: 2px;
+  background: none repeat scroll 0 0 rgba(86, 80, 165, 0.4);
+  padding: 1px 2px 4px 1px;
   width: 150px;
   margin: 5px;
   float: left;
 }
 
 .variable{
-  background: none repeat scroll 0 0 #F25805;
-  padding: 2px;
+  background: none repeat scroll 0 0 rgba(237, 180, 95, 0.4);
+  padding: 1px 2px 4px 1px;
   width: 112px;
   margin: 5px;
   float: left;
 }
 
 .widget-box-selected{
-  background-color: #1B50E0;
-  color: #FFFFFF;
+  border:1px solid #044062;
+  background-color: #396B9E;
+  color: #F3F3F3;
+  background: -webkit-linear-gradient(#5F9CC5, #396B9E);
+  background: -moz-linear-gradient(#5F9CC5, #396B9E);
+  }
+
+#widget-box .a{
+  background: black;
 }
 
 .board-name{
@@ -448,8 +488,9 @@ div.none-yet {
   color: black;
   margin: 5px;
   float: left;
-  padding: 10px;
-  font-size: 2em;
+  padding: 5px 5px 3px 5px;
+  font-size: 1em;
+  border-radius: 5px 5px 5px 5px;
 }
 
 .assumption-fulltext{

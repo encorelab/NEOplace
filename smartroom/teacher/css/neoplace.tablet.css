@@ -72,13 +72,15 @@ body {
   text-align: right;
 }
 
-.skipButton, .nextStepButton {
+.skipButton {
     margin-top: 40px;
 }
 
 .step-instructions {
+  background-color: #e6e6e6;
   text-align: center;
   margin-bottom: 50px;
+  padding: 5px;
 }
 
 .step-instructions h2 {
@@ -89,14 +91,38 @@ body {
   color: #666;
 }
 
+.ui-grid-c .ui-block-a, .ui-grid-c .ui-block-b, .ui-grid-c .ui-block-c, .ui-grid-c .ui-block-d {
+  width: 24%;
+  margin-left: 1%;
+}
+
+.button-group-layer {
+  margin: 40px 0 0 0;
+}
+
 /* Styles exclusively for: p-loginScreen.html */
 /* END Styles exclusively for: p-loginScreen.html */
 
 /* Styles exclusively for: p-taggingPrinciples.html */
 #taggingPrinciples .round-header {
+  background-color: #e6e6e6;
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 5px;
+}
+/* END Styles exclusively for: p-taggingPrinciples.html */
+
+/* Styles exclusively for: p-sortPrinciples.html */
+.board-header {
   text-align: center;
   font-size: 1.2em;
   font-weight: bold;
   text-transform: uppercase;
 }
-/* END Styles exclusively for: p-taggingPrinciples.html */
+
+.board-vspacer {
+  height: 60px;
+}
+/* END Styles exclusively for: p-sortPrinciples.html */
