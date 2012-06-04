@@ -453,7 +453,7 @@ div.none-yet {
   padding: 2px 2px 2px 2px;
   margin: 5px;
   float: left;
-  border: 1px solid rgba(17, 176, 176, 075);
+  border: 1px solid rgba(176, 176, 176, 0.75);
 }
 
 .assumption{
