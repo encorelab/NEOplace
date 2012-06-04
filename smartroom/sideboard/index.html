@@ -15,24 +15,49 @@
             .then('js/sail.js/rollcall.js', 'js/sail.js/deps/backbone-0.9.2.js')
             .then('js/neoplace.js')
             .then('js/neoplace.sideboard.js')
-            .then('js/neoplace.sideboard.events.js', 'js/neoplace.sideboard.model.js')
+            .then('js/neoplace.sideboard.events.js', 'js/neoplace.sideboard.model.js', 'js/neoplace.sideboard.view.js')
             //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             .thenRun(function() { return Sail.init(NEOplace.SideBoard); });  
     </script>
 </head>
 <body>
-    <div id="sideboard">
+    <div id="sideboard" class="step-principle-tagging">
 
         <div id="video-screen" class="widget-box">
+            <div id="sideboard-label"></div>
         </div>
 
-        <div id="sorting-space">
-            <div id="sideboard-label" style="display: none"></div>
-            <div id="sorting-space-label" class="tagging">(your tags)</div>
-            <div id="sorting-space-nope" class="yup-nope-sorting" style="display: none">Nope</div>
-            <div id="sorting-space-yup" class="yup-nope-sorting" style="display: none">Yup</div>
-            <img src="images/drag_icon_left_right.png" id="drag-icon-left-right" alt="Drag Left-Right" class="yup-nope-sorting" style="display: none" />
+        <div id="sorting-space-container">
+            <button id="done-sorting" class="yup-nope-sorting">Done Sorting</button>
+            <div id="sorting-space">
+                <div id="sorting-space-label" class="tagging">your tags</div>
+                <div id="sorting-space-nope" data-sorted-as='rejected' class="yup-nope-sorting">Nope</div>
+                <div id="sorting-space-yup" data-sorted-as='accepted' class="yup-nope-sorting">Yup</div>
+                <!--<img src="images/drag_icon_left_right.png" id="drag-icon-left-right" alt="Drag Left-Right" class="yup-nope-sorting" />-->
+            </div>
         </div>
+
+        <div id="right-half">
+
+            <div id="committed-boxes-container">
+                <div id="principles-committed" class="committed-box principle">
+                    <h1>Principles</h1> 
+                </div>
+
+                <div id="problems-committed" class="committed-box problem">
+                    <h1>Problems</h1>
+                </div>
+
+                <div id="equations-committed" class="committed-box equation">
+                    <h1>Equations</h1>
+                </div>
+
+                <div id="assvars-committed" class="committed-box assvar">
+                    <h1>Assumptions &amp; Variables</h1>
+                </div>
+            </div>
+        </div>
+
 
     </div>
 </body>

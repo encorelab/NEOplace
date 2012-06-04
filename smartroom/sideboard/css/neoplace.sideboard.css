@@ -3,6 +3,39 @@ body {
     background: #eee !important;
 }
 
+button {
+    display: inline-block;
+
+    font-weight: bold;
+    color: #222;
+    border: 1px solid #aaa;
+    border-radius: 1em;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+
+    background: -moz-linear-gradient(#eee, #aaa) repeat scroll 0 0 #aaa;
+    background: -webkit-linear-gradient(#eee, #aaa) repeat scroll 0 0 #aaa;
+    background: linear-gradient(#eee, #aaa) repeat scroll 0 0 #aaa;
+    text-align: center;
+    
+    font-size: 14px;
+
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 14px;
+    padding-right: 14px;
+
+    text-transform: uppercase;
+}
+
+button:hover {
+    cursor: pointer;
+
+    background: -moz-linear-gradient(#aaa, #eee) repeat scroll 0 0 #aaa;
+    background: -webkit-linear-gradient(#aaa, #eee) repeat scroll 0 0 #aaa;
+    background: linear-gradient(#aaa, #eee) repeat scroll 0 0 #aaa;
+}
+
+/************************************************************/
 
 #sideboard {
     position: absolute;
@@ -16,13 +49,19 @@ body {
     position: absolute;
     /*overflow: hidden;*/
     top: 8px;
-    left: 8px;
-    right: 8px;
-    height: 47%;
+    left: 0.8%;
+    right: 0.8%;
+    height: 46%;
     
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+
+    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+
+    z-index: 1;
 
     /* weird bug in firefox hides flash content when we have border-radius > 0 and overflow is hidden */
     /*-moz-border-radius: 0;*/
@@ -33,64 +72,57 @@ body {
     width: 100% !important;
 }
 
-#sorting-space {
+#sorting-space-container {
     position: absolute;
-    overflow: hidden;
     bottom: 8px;
-    left: 8px;
-    right: 8px;
+    left: 0.8%;
+    right: 0.8%;
     height: 50%;
     border-radius: 5px;
-    border: 3px dashed rgba(176, 176, 176, 0.75);
+    border: medium dashed rgba(176, 176, 176, 0.75);
+
+    text-align: center;
 
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+
+    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+
+    z-index: 1;
 }
 
-/*#sorting-space-yup {
+#sorting-space {
     position: absolute;
     top: 0;
     bottom: 0;
     right: 0;
-    width: 30%;
-    border-left: 3px dashed #71CC91;
-
-    color: #71CC91;
-    font-size: 95px;
-    font-weight: bold;
-    padding-top: 10%;
-    text-align: center;
-    text-transform: uppercase;
+    left: 0;
+    overflow: hidden;
 }
 
-#sorting-space-nope {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 30%;
-    border-right: 3px dashed #FD8C8E;
+#done-sorting {
+    z-index: 1;
+    position: relative;
+    top: -25px;
+}
 
-    color: #FD8C8E;
-    font-size: 95px;
-    font-weight: bold;
-    padding-top: 10%;
-    text-align: center;
-    text-transform: uppercase;
-}*/
+#done-sorting.disabled {
+    opacity: 0.4;
+}
 
 #sideboard-label {
-    color: rgba(176, 176, 176, 1.0);
-    font-size: 256px;
+    color: #B0B0B0;
+    font-size: 130px;
     font-weight: bold;
-    text-transform: uppercase;
-
-    text-align: center;
-    opacity: 0.25;
-    width: 100%;
-
     line-height: 0.9;
+    opacity: 0.3;
+    padding-left: 11px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 #sorting-space-label {
@@ -108,6 +140,8 @@ body {
     bottom: 5px;
     left: 0;
     right: 0;
+
+    letter-spacing: -5px;
 }
 
 #sorting-space-yup {
@@ -122,7 +156,7 @@ body {
     text-align: center;
     text-transform: uppercase;
     top: 0;
-    width: 49%;
+    width: 49.3%;
 }
 
 #sorting-space-nope {
@@ -137,7 +171,7 @@ body {
     text-align: center;
     text-transform: uppercase;
     top: 0;
-    width: 49%;
+    width: 49.3%;
 }
 
 #drag-icon-left {
@@ -157,17 +191,228 @@ body {
 #drag-icon-left-right {
     display: block;
     margin: auto;
-    margin-top: 10%;
+    margin-bottom: 5%;
     opacity: 0.5;
 }
+
+.yup-nope-sorting {
+    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+}
+
+#challenge-question {
+    border: 3px solid #999;
+    font-size: 14pt;
+    margin: 8px;
+    padding: 12px;
+    text-align: center;
+    width: 97%;
+    position: relative;
+
+    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#right-half {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    right: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#committed-boxes-container {
+    position: relative;
+    height: 100%;
+    padding: 8px;
+}
+
+.committed-box {
+    opacity: 1.0;
+    border-box: ;
+
+    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+
+    border-radius: 5px;
+    border: medium dashed rgba(176, 176, 176, 0.75);
+
+    display: inline-block;
+    min-height: 2em;
+    max-height: 50%;
+    width: 48%;
+    max-width: 48%;
+    margin-bottom: 8px;
+
+    overflow: auto;
+
+    vertical-align: top;
+
+    padding-bottom: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.committed-box h1 {
+    color: #aaa;
+    font-size: 12pt;
+    margin: 0 4px 8px;
+    text-align: center;
+}
+
+.committed-box .balloon {
+    position: static;
+    margin-bottom: 4px;
+    display: inline-block;
+}
+
+.committed-box .equation-svg {
+    height: 1.5em;
+}
+
+.committed-box .balloon .label {
+    padding: 5px 7px;
+    font-size: 12px;
+}
+
+.committed-box .balloon .subtext {
+    position: relative;
+    top: -5px;
+}
+
+.committed-box .balloon.assvar .label {
+    margin-bottom: 0;
+}
+
+.committed-box .balloon:hover {
+    cursor: default;
+}
+
+#principles-committed {
+
+}
+
+#problems-committed {
+    
+}
+
+#equations-committed {
+    
+}
+
+#assvars-committed {
+    
+}
+
+/****** principle-tagging ***********************************/
+
+.step-principle-tagging .yup-nope-sorting { opacity: 0 !important; }
+
+.step-principle-tagging #principles-committed { opacity: 0.0; }
+.step-principle-tagging #problems-committed { opacity: 0.0; }
+.step-principle-tagging #equations-committed { opacity: 0.0; }
+.step-principle-tagging #assvars-committed { opacity: 0.0; }
+
+/****** principle-sorting ***********************************/
+
+.step-principle-sorting .yup-nope-sorting { opacity: 1.0; }
+.step-principle-sorting #video-screen { right: 50%; } 
+.step-principle-sorting #sorting-space-container { right: 50%; }
+
+.step-principle-sorting #principles-committed { opacity: 1.0; }
+.step-principle-sorting #problems-committed { opacity: 0.0; }
+.step-principle-sorting #equations-committed { opacity: 0.0; }
+.step-principle-sorting #assvars-committed { opacity: 0.0; }
+
+/****** problem-tagging ***********************************/
+
+.step-problem-tagging .yup-nope-sorting { opacity: 0 !important; }
+.step-problem-tagging #video-screen { right: 50%; }
+.step-problem-tagging #sorting-space-container { right: 50%; }
+
+.step-problem-tagging #principles-committed { opacity: 1.0; }
+.step-problem-tagging #problems-committed { opacity: 0.0; }
+.step-problem-tagging #equations-committed { opacity: 0.0; }
+.step-problem-tagging #assvars-committed { opacity: 0.0; }
+
+/****** problem-sorting ***********************************/
+
+.step-problem-sorting .yup-nope-sorting { opacity: 1.0; }
+.step-problem-sorting #video-screen { right: 50%; }
+.step-problem-sorting #sorting-space-container { right: 50%; }
+
+.step-problem-sorting #principles-committed { opacity: 1.0; }
+.step-problem-sorting #problems-committed { opacity: 1.0; }
+.step-problem-sorting #equations-committed { opacity: 0.0; }
+.step-problem-sorting #assvars-committed { opacity: 0.0; }
+
+/****** equation-tagging ***********************************/
+
+.step-equation-tagging .yup-nope-sorting { opacity: 0.0 !important; }
+.step-equation-tagging #video-screen { right: 50%; }
+.step-equation-tagging #sorting-space-container { right: 50%; }
+
+.step-equation-tagging #principles-committed { opacity: 1.0; }
+.step-equation-tagging #problems-committed { opacity: 1.0; }
+.step-equation-tagging #equations-committed { opacity: 0.0; }
+.step-equation-tagging #assvars-committed { opacity: 0.0; }
+
+/****** equation-sorting ***********************************/
+
+.step-equation-sorting .yup-nope-sorting { opacity: 1.0; }
+.step-equation-sorting #video-screen { right: 50%; }
+.step-equation-sorting #sorting-space-container { right: 50%; }
+
+.step-equation-sorting #principles-committed { opacity: 1.0; }
+.step-equation-sorting #problems-committed { opacity: 1.0; }
+.step-equation-sorting #equations-committed { opacity: 1.0; }
+.step-equation-sorting #assvars-committed { opacity: 0.0; }
+
+/****** assvar-tagging ***********************************/
+
+.step-assvar-tagging .yup-nope-sorting { opacity: 0.0 !important; }
+.step-assvar-tagging #video-screen { right: 50%; }
+.step-assvar-tagging #sorting-space-container { right: 50%; }
+
+.step-assvar-tagging #principles-committed { opacity: 1.0; }
+.step-assvar-tagging #problems-committed { opacity: 1.0; }
+.step-assvar-tagging #equations-committed { opacity: 1.0; }
+.step-assvar-tagging #assvars-committed { opacity: 0.0; }
+
+/****** assvar-sorting ***********************************/
+
+.step-assvar-sorting .yup-nope-sorting { opacity: 1.0; }
+.step-assvar-sorting #video-screen { right: 50%; }
+.step-assvar-sorting #sorting-space-container { right: 50%; }
+
+.step-assvar-sorting #principles-committed { opacity: 1.0; }
+.step-assvar-sorting #problems-committed { opacity: 1.0; }
+.step-assvar-sorting #equations-committed { opacity: 1.0; }
+.step-assvar-sorting #assvars-committed { opacity: 1.0; }
 
 /************************************************************/
 
 #auth-indicator {
     position: absolute;
     right: 18px !important;
-    top: -6px !important;
+    bottom: -4px !important;
+    top: auto !important;
     padding: 4px;
+    z-index: 10;
 }
 
 #auth-indicator * {
@@ -186,6 +431,7 @@ body {
     /*width: 300px;*/
     display: inline-block;
 
+    font-size: 13px;
     font-weight: bold;
     color: #222;
     border: 1px solid #ccc;
@@ -194,6 +440,8 @@ body {
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 
     background: -moz-linear-gradient(#fff, #eee) repeat scroll 0 0 #eee;
+    background: -webkit-linear-gradient(#fff, #eee) repeat scroll 0 0 #eee;
+    background: linear-gradient(#fff, #eee) repeat scroll 0 0 #eee;
     text-align: center;
     padding-right: 10px;
     padding-left: 10px;
@@ -228,6 +476,17 @@ body {
     text-align: center;
 }
 
+.balloon .subtext {
+    color: #aaa;
+    font-size: 11px;
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    opacity: 0.6;
+}
+
 .balloon h3.headline {
     margin: 0;
 }
@@ -248,12 +507,12 @@ body {
 
 .balloon .label {
     margin-bottom: 4px;
-    font-size: 14px;
+    font-size: 13px;
 
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .balloon .counter {
@@ -267,17 +526,54 @@ body {
     width: 20px;
 }
 
+.balloon.sorted-as-accepted {
+    border: 1px solid #115C11;
+    background: #731515;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 -1px 1px #115C11;
+    background-image: -webkit-gradient(linear, left top, left bottom, from( #4B9D4B), to( #2E7E2E));
+    background-image: -webkit-linear-gradient(#4B9D4B, #2E7E2E);
+    background-image: -moz-linear-gradient(#4B9D4B, #2E7E2E);
+    background-image: linear-gradient(#4B9D4B, #2E7E2E);
+}
+
+.balloon.sorted-as-rejected {
+    border: 1px solid #731515;
+    background: #AB2626;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 -1px 1px #731515;
+    background-image: -webkit-gradient(linear, left top, left bottom, from( #C45E5E), to( #9E3939));
+    background-image: -webkit-linear-gradient(#C45E5E, #9E3939);
+    background-image: -moz-linear-gradient(#C45E5E, #9E3939);
+    background-image: linear-gradient(#C45E5E, #9E3939);
+}
+
+.equation-svg {
+    height: 2em;
+}
+
+.svg-cover {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+}
+
 /************************************************************/
 
 @-webkit-keyframes teleportIn {
-    0% { -webkit-transform:scale(2.5); opacity: 0.0;}
+    0% { -webkit-transform:scale(3.0); opacity: 0.0;}
     100% {-webkit-transform:scale(1.0); opacity: 1.0; }
 }
-
 @-moz-keyframes teleportIn {
-    0% { -moz-transform:scale(2.5); opacity: 0.0;}
+    0% { -moz-transform:scale(3.0); opacity: 0.0;}
     100% {-moz-transform:scale(1.0); opacity: 1.0; }
 }
+
 
 .balloon.new {
     -webkit-animation-name: teleportIn;
@@ -289,4 +585,19 @@ body {
     -moz-animation-duration: 0.5s;
     -moz-animation-iteration-count: 1;
     -moz-animation-timing-function: ease-out;
+}
+
+.balloon.out {
+/*    -moz-transition: all 1s ease-out;
+    -webkit-transition: all 1s ease-out;
+    transition: all 1s ease-out;
+
+    opacity: 1.0;
+    -moz-transform:scale(1.0);
+    -webkit-transform:scale(1.0);
+    transform:scale(1.0);*/
+}
+
+.ui-effects-transfer {
+    border: 2px dotted black;
 }

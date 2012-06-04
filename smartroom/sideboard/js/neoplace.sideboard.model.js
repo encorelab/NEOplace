@@ -1,5 +1,5 @@
 /*jshint browser: true, devel: true */
-/*globals Sail, jQuery, _, Backbone, Rollcall, NEOplace */
+/*globals Sail, jQuery, _, Backbone, Rollcall, NEOplace, MD5 */
 
 (function(app) {
     var model = {};
@@ -40,6 +40,10 @@
                 if (!this.get(this.idAttribute)) {
                     this.set(this.idAttribute, model.generateMongoObjectId());
                 }
+
+                if (!this.get('timestamp')) {
+                    this.set('timestamp', Date());
+                }
             }
         });
 
@@ -48,21 +52,109 @@
         });
         
         model.Tag = DrowsyModel.extend({
-            urlRoot: app.drowsyURL + "/sideboard_video_tags",
+            urlRoot: app.drowsyURL + "/sideboard_tags",
             getType: function () {
                 if (this.has('principle')) {
                     return 'principle';
+                } else if (this.has('problem')) {
+                    return 'problem';
+                } else if (this.has('equation')) {
+                    return 'equation';
+                } else if (this.has('assumption') || this.has('variable')) {
+                    return 'assvar';
                 } else {
                     var err = "Invalid tag data!";
                     console.error(err, this.toJSON());
-                    throw err;
+                    return undefined;
+                }
+            },
+            grouping: function () {
+                var type = this.getType();
+
+                if (type == 'assvar') {
+                    if (this.has('assumption'))
+                        return 'assumption-'+MD5.hexdigest(this.get('assumption'));
+                    else
+                        return 'variable-'+MD5.hexdigest(this.get('variable'));
+                } else {
+                    return type + '-' + 
+                    MD5.hexdigest(
+                        this.get('principle') || 
+                        this.get('problem') ||
+                        this.get('equation')
+                    );
                 }
             }
         });
 
         model.Tags = DrowsyCollection.extend({
             model: model.Tag,
-            url: app.drowsyURL + "/sideboard_video_tags"
+            url: app.drowsyURL + "/sideboard_tags"
+        });
+
+        model.TagBalloon = DrowsyModel.extend({
+            urlRoot: app.drowsyURL + "/sideboard_tag_balloons",
+            addTag: function (tag) {
+                if (!this.getType()) {
+                    console.error("Cannot add tag to this balloon because the balloon does not have a valid type.", this);
+                    return;
+                } else if (!tag.getType()) {
+                    console.error("Cannot add tag to this balloon because the tag does not have a valid type.", tag);
+                    return;
+                } else if (this.getType() !== tag.getType()) {
+                    var err = "Cannot add '"+tag.getType()+"' tag to '"+this.getType()+"' balloon!";
+                    console.error(err);
+                }
+
+                if (!this.get('tags'))
+                    this.set('tags', []);
+
+                var dbref = { '$ref': 'sideboard_tags', '$id': tag.id };
+                this.get('tags').push(dbref);
+
+                if (!this.get('contributors'))
+                    this.set('contributors', []);
+
+                this.get('contributors').push(tag.get('author'));
+            },
+            getType: function () {
+                if (this.has('principle')) {
+                    return 'principle';
+                } else if (this.has('problem')) {
+                    return 'problem';
+                } else if (this.has('equation')) {
+                    return 'equation';
+                } else if (this.has('assumption') || this.has('variable')) {
+                    return 'assvar';
+                } else {
+                    var err = "Invalid balloon data!";
+                    console.error(err, this.toJSON());
+                    return undefined;
+                }
+            },
+            grouping: function () {
+                var type = this.getType();
+
+                if (type == 'assvar') {
+                    if (this.has('assumption'))
+                        return 'assumption-'+MD5.hexdigest('assumption');
+                    else
+                        return 'variable-'+MD5.hexdigest('variable');
+                } else {
+                    return type + '-' + 
+                    MD5.hexdigest(
+                        this.get('principle') || 
+                        this.get('problem') ||
+                        this.get('equation')
+                    );
+                }
+                
+            }
+        });
+
+        model.TagBalloons = DrowsyCollection.extend({
+            model: model.TagBalloon,
+            url: app.drowsyURL + "/sideboard_tag_balloons"
         });
 
         model.BoardState = DrowsyModel.extend({
@@ -75,7 +167,8 @@
         });
 
         createNecessaryCollections([
-            'sideboard_video_tags',
+            'sideboard_tags',
+            'sideboard_tag_balloons',
             'sideboard_states'
         ]);
     }
