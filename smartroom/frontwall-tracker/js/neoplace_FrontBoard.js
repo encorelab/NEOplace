@@ -27,7 +27,7 @@ NEOplace.FrontWall = (function() {
   
   var taskTimeBoundariesInMinutes = [
                           [],
-                          [1.5, 2.0, 2.0],
+                          [1.0, 1.5, 2.0],
                           [8.0, 13.0, 15.0],
                           [10.0, 18.0, 20.0],
                           [11.0, 18.0, 20.0]
@@ -175,7 +175,7 @@ NEOplace.FrontWall = (function() {
      jQuery('#achievement-description').html(statusCaptions[0]);
      
     jQuery(backgroundModal).fadeIn(800, "linear", function(){
-        jQuery("#epic-task-completed-container").fadeIn(1500);
+        jQuery("#epic-task-completed-container").fadeIn(2500);
       });
   };
   
@@ -240,11 +240,23 @@ NEOplace.FrontWall = (function() {
     jQuery('#achievement-description').html('Group ' + groupNames[groupID] + " Completed " + activityNames[taskID] + "!!");
     jQuery(backgroundModal).fadeIn(800, "linear", function() {
         jQuery("#epic-task-completed-container").fadeIn('fast');
+        
+        jQuery("#epic-task-completed-container").append('<img id="bullet-bill" src="images/bulletbill.png" />');
+        jQuery('#bullet-bill').css({position: "relative", left: "1030px"});
+        
         jQuery("#mario").css({top:"800px", left: "730px"}).show();
-        jQuery("#mario").animate({top:"-=370px", left: "-=240px"},1200, "easeInQuad", function(){ jQuery('#achievement-symbol').hide('explode',{pieces: 40}, 950); jQuery("#task-completed-container").effect('bounce', 500);}).animate({top:"+=370px", left: "-=240px"}, 700, "easeOutQuad", function() {
+        jQuery('#bullet-bill').animate({left: "-=1024px"}, 2600, "easeOutQuad");
+        jQuery("#mario").animate({top:"-=370px", left: "-=240px"},1200, "easeInQuad", function(){
           
+          
+          jQuery('#achievement-symbol').hide('explode',{pieces: 40}, 950);
+          
+          
+          jQuery("#task-completed-container").effect('bounce', 500);}).animate({top:"+=370px", left: "-=240px"}, 700, "easeOutQuad", function() {
+        
           jQuery(this).fadeOut('fast', "linear", function(){
               jQuery("#epic-task-completed-container").hide();
+              jQuery('#bullet-bill').remove();
               jQuery('#achievement-symbol').show();
               jQuery(backgroundModal).fadeOut('fast', "linear", function() {
                   taskAnimationStarted = false;
@@ -275,7 +287,7 @@ NEOplace.FrontWall = (function() {
     players[playerID]["activityHistory"][taskID] = taskID;
     //alert( getLength(players[playerID]["activityHistory"]));
     var distanceLeft = app.getLength(players[playerID]["activityHistory"])*10;
-    var trophyImgID = "trophy_" + playerID;
+    var trophyImgID = "trophy_" + playerID + '_step_' + taskID;
     
     jQuery('#' + playerID).find('.trophies').append('<img id="' + trophyImgID + '" alt="Step ' + taskID + ' Completed!" style="display:none; position:relative; left: ' + distanceLeft + 'px;" src="images/icon_' + activities[taskID] + '.png" />');
     jQuery('#' + playerID).find('.user-name').animate({top: '20px'});
