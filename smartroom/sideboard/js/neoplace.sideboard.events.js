@@ -8,7 +8,8 @@
     /* INCOMING SAIL EVENTS */
 
     var forMe = function (sev) {
-        return sev.payload.location === app.location;
+        return sev.payload.location === app.location ||
+                sev.payload.videowall === app.location;
     };
 
     var student_submit = function (sev, type, value) {
@@ -33,6 +34,8 @@
             });
             b.set(type, value);
             app.balloons.add(b);
+
+            app.view.disableDoneSortingButton(); // disable until sorted
         }
 
         b.addTag(tag);
@@ -66,29 +69,42 @@
             case 'principle_sorting':
                 app.switchToPrincipleSorting();
                 break;
-            case 'problem_sorting':
-                app.switchToProblemSorting();
-                break;
-            case 'equation_sorting':
+            case 'equation_tagging': // yes, tagging, even though it's sorting
                 app.switchToEquationSorting();
                 break;
-            // TODO: automatically started
-            case 'assvar_sorting':
-                app.switchToAssvarSorting();
-                break;
+
+            // case 'principle_sorting':
+            //     app.switchToPrincipleSorting();
+            //     break;
+            // case 'problem_sorting':
+            //     app.switchToProblemSorting();
+            //     break;
+            // case 'equation_sorting':
+            //     app.switchToEquationSorting();
+            //     break;
+            // // TODO: automatically started
+            // case 'assvar_sorting':
+            //     app.switchToAssvarSorting();
+            //     break;
         }
     };
 
     events.sail.videowall_principles_commit = function (sev) {
-        app.switchToProblemTagging();
+        if (!forMe(sev)) return;
+
+        //app.switchToProblemTagging();
+        app.switchToProblemSorting();
+
     };
 
     events.sail.videowall_problems_commit = function (sev) {
-        app.switchToEquationTagging();
+        // do nothing; we're waiting for agent to signal
     };
 
     events.sail.videowall_equations_commit = function (sev) {
-        app.switchToAssvarTagging();
+        if (!forMe(sev)) return;
+
+        app.switchToAssvarSorting();
     };
 
     /* METHODS THAT TRIGGER OUTGOING SAIL EVENTS */
@@ -122,7 +138,7 @@
         commitBalloons();
     };
 
-    events.doneSortingProblems = function() {
+    events.doneSortingProblems = function(rationale) {
         console.log("Done sorting problems...");
         jQuery('.tag-balloon')
             .hide('fade', 'fast');

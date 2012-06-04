@@ -141,6 +141,11 @@ NEOplace.SideBoard = (function() {
         });
     };
 
+    app.updateStatus = function (status) {
+        console.log("We are now "+status);
+        jQuery('#auth-as').attr('title', status);
+    };
+
 
     /*** STATES *****/
 
@@ -183,7 +188,7 @@ NEOplace.SideBoard = (function() {
                     app.restoreToAssvarTagging();
                     break;
                 case 'assvar-sorting':
-                    app.restoreToAssvarTagging();
+                    app.restoreToAssvarSorting();
                     break;
             }
         };
@@ -202,6 +207,8 @@ NEOplace.SideBoard = (function() {
                 app.state = state;
 
                 restore(state);
+
+                app.view.toggleDoneSortingButton();
             }
         });
     };
@@ -246,11 +253,13 @@ NEOplace.SideBoard = (function() {
 
     app.restoreToPrincipleTagging = function () {
         console.log("Restoring to principle tagging activity...");
+        app.updateStatus('principle tagging');
         app.restoreBalloons();
     };
 
     app.restoreToPrincipleSorting = function () {
         console.log("Restoring to principle sorting activity...");
+        app.updateStatus('principle sorting');
         app.restoreBalloons();
         jQuery('#sideboard').attr('class', 'step-principle-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingPrinciples); 
@@ -259,6 +268,7 @@ NEOplace.SideBoard = (function() {
 
     app.restoreToProblemTagging = function () {
         console.log("Restoring to problem tagging activity...");
+        app.updateStatus('problem tagging');
         app.restoreBalloons();
         jQuery('#sideboard').attr('class', 'step-problem-tagging');
         app.view.unmakeSortingSpaceDroppable();
@@ -268,6 +278,7 @@ NEOplace.SideBoard = (function() {
 
     app.restoreToProblemSorting = function () {
         console.log("Restoring to problem sorting activity...");
+        app.updateStatus('problem sorting');
         app.restoreBalloons();
         jQuery('#sideboard').attr('class', 'step-problem-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingProblems); 
@@ -277,6 +288,7 @@ NEOplace.SideBoard = (function() {
 
     app.restoreToEquationTagging = function () {
         console.log("Restoring to equation tagging activity...");
+        app.updateStatus('equation tagging');
         app.restoreBalloons();
         jQuery('#sideboard').attr('class', 'step-equation-tagging');
         app.view.unmakeSortingSpaceDroppable();
@@ -286,6 +298,7 @@ NEOplace.SideBoard = (function() {
 
     app.restoreToEquationSorting = function () {
         console.log("Restoring to equation sorting activity...");
+        app.updateStatus('equation sorting');
         app.restoreBalloons();
         jQuery('#sideboard').attr('class', 'step-equation-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingEquations); 
@@ -295,6 +308,7 @@ NEOplace.SideBoard = (function() {
 
     app.restoreToAssvarTagging = function () {
         console.log("Restoring to assvar tagging activity...");
+        app.updateStatus('assvar tagging');
         app.restoreBalloons();
         jQuery('#sideboard').attr('class', 'step-assvar-tagging');
         app.view.unmakeSortingSpaceDroppable();
@@ -304,6 +318,7 @@ NEOplace.SideBoard = (function() {
 
     app.restoreToAssvarSorting = function () {
         console.log("Restoring to assvar sorting activity...");
+        app.updateStatus('problem sorting');
         app.restoreBalloons();
         jQuery('#sideboard').attr('class', 'step-assvar-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingAssvars); 
@@ -316,7 +331,7 @@ NEOplace.SideBoard = (function() {
     /*** TRANSITIONS *****/
 
     app.switchToPrincipleSorting = function () {
-        console.log("Switching to principle sorting activity...");
+        app.updateStatus('principle sorting');
 
         // TODO: move this to app.view
         jQuery('.balloon').each(function () {
@@ -339,6 +354,8 @@ NEOplace.SideBoard = (function() {
             }, 1500);
         });
 
+        app.view.toggleDoneSortingButton();
+
         setTimeout(function () {
             app.loadChallengeQuestion(app.location);
         }, 2000);
@@ -350,19 +367,21 @@ NEOplace.SideBoard = (function() {
 
     };
 
-    app.switchToProblemTagging = function () {
-        console.log("Switching to problem tagging activity...");
+    // app.switchToProblemTagging = function () {
+    //     console.log("Switching to problem tagging activity...");
 
-        app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
+    //     app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
 
-        jQuery('#sideboard').attr('class', 'step-problem-tagging');
-        app.view.unmakeSortingSpaceDroppable();
+    //     jQuery('#sideboard').attr('class', 'step-problem-tagging');
+    //     app.view.unmakeSortingSpaceDroppable();
         
-        app.state.save({step: 'problem-tagging'});
-    };
+    //     app.state.save({step: 'problem-tagging'});
+    // };
 
     app.switchToProblemSorting = function () {
-        console.log("Switching to problem sorting activity...");
+        app.updateStatus('problem sorting');
+
+        app.view.toggleDoneSortingButton();
 
         jQuery('#sideboard').attr('class', 'step-problem-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingProblems);
@@ -371,19 +390,21 @@ NEOplace.SideBoard = (function() {
 
     };
 
-    app.switchToEquationTagging = function () {
-        console.log("Switching to equation tagging activity...");
+    // app.switchToEquationTagging = function () {
+    //     console.log("Switching to equation tagging activity...");
 
-        app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
+    //     app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
 
-        jQuery('#sideboard').attr('class', 'step-equation-tagging');
-        app.view.unmakeSortingSpaceDroppable();
+    //     jQuery('#sideboard').attr('class', 'step-equation-tagging');
+    //     app.view.unmakeSortingSpaceDroppable();
         
-        app.state.save({step: 'equation-tagging'});
-    };
+    //     app.state.save({step: 'equation-tagging'});
+    // };
 
     app.switchToEquationSorting = function () {
-        console.log("Switching to problem sorting activity...");
+        app.updateStatus('equation sorting');
+
+        app.view.toggleDoneSortingButton();
 
         jQuery('#sideboard').attr('class', 'step-equation-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingEquations);
@@ -391,19 +412,21 @@ NEOplace.SideBoard = (function() {
         app.state.save({step: 'equation-sorting'});
     };
 
-    app.switchToAssvarTagging = function () {
-        console.log("Switching to assvar tagging activity...");
+    // app.switchToAssvarTagging = function () {
+    //     console.log("Switching to assvar tagging activity...");
 
-        app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
+    //     app.restoreBalloons(); // won't fetch committed balloons, so we start fresh
 
-        jQuery('#sideboard').attr('class', 'step-assvar-tagging');
-        app.view.unmakeSortingSpaceDroppable();
+    //     jQuery('#sideboard').attr('class', 'step-assvar-tagging');
+    //     app.view.unmakeSortingSpaceDroppable();
         
-        app.state.save({step: 'assvar-tagging'});
-    };
+    //     app.state.save({step: 'assvar-tagging'});
+    // };
 
     app.switchToAssvarSorting = function () {
-        console.log("Switching to assvar sorting activity...");
+        app.updateStatus('assvar sorting');
+
+        app.view.toggleDoneSortingButton();
 
         jQuery('#sideboard').attr('class', 'step-assvar-sorting');
         app.view.makeSortingSpaceDroppable(app.events.doneSortingAssvars);

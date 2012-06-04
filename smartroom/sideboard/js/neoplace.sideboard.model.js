@@ -69,14 +69,21 @@
                 }
             },
             grouping: function () {
-                return this.getType() + '-' + 
+                var type = this.getType();
+
+                if (type == 'assvar') {
+                    if (this.has('assumption'))
+                        return 'assumption-'+MD5.hexdigest(this.get('assumption'));
+                    else
+                        return 'variable-'+MD5.hexdigest(this.get('variable'));
+                } else {
+                    return type + '-' + 
                     MD5.hexdigest(
                         this.get('principle') || 
                         this.get('problem') ||
-                        this.get('equation') ||
-                        this.get('assumption') ||
-                        this.get('variable')
+                        this.get('equation')
                     );
+                }
             }
         });
 
@@ -126,14 +133,22 @@
                 }
             },
             grouping: function () {
-                return this.getType() + '-' + 
+                var type = this.getType();
+
+                if (type == 'assvar') {
+                    if (this.has('assumption'))
+                        return 'assumption-'+MD5.hexdigest('assumption');
+                    else
+                        return 'variable-'+MD5.hexdigest('variable');
+                } else {
+                    return type + '-' + 
                     MD5.hexdigest(
                         this.get('principle') || 
                         this.get('problem') ||
-                        this.get('equation') ||
-                        this.get('assumption') ||
-                        this.get('variable')
+                        this.get('equation')
                     );
+                }
+                
             }
         });
 

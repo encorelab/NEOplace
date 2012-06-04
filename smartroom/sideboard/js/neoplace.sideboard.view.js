@@ -65,10 +65,14 @@
                     label.text("!!! "+eqid+" !!!");
                 }
                 break;
-            case 'assumption':
-            case 'variable':
+            case 'assvar':
                 var assvar = balloon.get('assumption') || balloon.get('variable');
                 label.text(assvar);
+                var subtext = foc(jel, '.subtext',
+                                    "<div class='subtext'></div>");
+                var subtype = balloon.has('assumption') ? 'assumption' : 'variable';
+                subtext.text(subtype);
+                jel.addClass('assvar-'+subtype);
                 break;
         }
 
@@ -226,29 +230,62 @@
         }
     });
 
-    view.makeSortingSpaceDroppable = function (done) {
-        // just in case
-        view.unmakeSortingSpaceDroppable();
+    view.disableDoneSortingButton = function () {
+        jQuery('#done-sorting')
+                .addClass('disabled')
+                .unbind('click');
+    };
+    view.toggleDoneSortingButton = function (callWhenDone) {
+        var allSorted = jQuery('.tag-balloon')
+                            .filter(':not(.sorted-as-accepted)')
+                            .filter(':not(.sorted-as-rejected)').length == 0;
 
-        console.log("Making sorting space droppable...");
-        if (jQuery('#sorting-space-yup').is('ui-droppable-disabled')) {
-            jQuery('#sorting-space-yup, #sorting-space-nope').droppable('enable');
+        if (jQuery('.tag-balloon').length === 0)
+            allSorted = false;
+
+        if (allSorted) {
+            jQuery('#done-sorting')
+                .removeClass('disabled')
+                .unbind('click')
+                .bind('click', function () {
+                    if (app.state.get('step') === 'problem-sorting') {
+                        var rationale = prompt("Please provide a brief rationale for how the problems help in approaching solving the challenge question:");
+                        if (rationale && rationale.length > 0) {
+                            callWhenDone(rationale);
+                        }
+                    } else {
+                        if (confirm("Commit your sorted tags?")) {
+                            callWhenDone();
+                        }
+                    }
+                    
+                });
         } else {
+            view.disableDoneSortingButton();
+        }
+    };
+
+    view.makeSortingSpaceDroppable = function (callWhenDone) {
+        // just in case
+        //view.unmakeSortingSpaceDroppable();
+        
+        if (jQuery('#sorting-space-yup').is('ui-droppable-disabled')) {
+            console.log("Making sorting space droppable...");
+            jQuery('#sorting-space-yup, #sorting-space-nope').droppable('enable');
+        } else if (!jQuery('#sorting-space-yup').is('ui-droppable')) {
+            console.log("Making sorting space droppable...");
             jQuery('#sorting-space-yup, #sorting-space-nope').droppable({
                 greedy: true,
                 over: function (ev, ui) {
                     var balloon = jQuery(ui.draggable);
                     var sortedAs = jQuery(this).data('sorted-as');
                     balloon.data('view').model.set('sorted_as', sortedAs);
+
+                    view.toggleDoneSortingButton(callWhenDone);
                 }
             });
         }
         
-        jQuery('#done-sorting').bind('click', function () {
-            if (confirm("Commit your sorted tags?")) {
-                done();
-            }
-        });
     };
 
     view.unmakeSortingSpaceDroppable = function () {
