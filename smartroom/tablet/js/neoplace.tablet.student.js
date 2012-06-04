@@ -341,8 +341,18 @@ NEOplace.Tablet.Student = (function(Tablet) {
         });
     };
 
+    //this called for taggingEquations
+    self.assignProblemsWithEquations = function(){
 
-    self.assignProblems = function(students,principles,page) {
+        //self.userData.problemSet. //needs to be all problems
+
+        self.setState('equation_tagging');
+
+        jQuery.mobile.changePage('p-taggingEquations');
+    }
+
+    //this called for taggingProblems
+    self.assignProblems = function(students,principles) {
         var groupProblemSets = _.filter(self.allProblemSets, function(problemSet) {
             return ( _.find(problemSet.principles, function(p) {
                 if ( _.include(principles, p)) { return true; }
@@ -357,8 +367,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         self.setState('problems_tagging');
 
-        jQuery.mobile.changePage(page);
-        //self.getHtmlForProblems();
+        //jQuery.mobile.changePage(page);
+        jQuery.mobile.changePage('p-taggingProblems.html');
     };
 
     self.setState = function(activity) {
@@ -1026,7 +1036,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         videowall_principles_commit: function(sev) {
             // the if checks for this tablet user
             if (sev.payload.videowall === self.currentBoard) {
-                self.assignProblems(sev.payload.students,sev.payload.principles,'p-taggingProblems.html');
+                self.assignProblems(sev.payload.students,sev.payload.principles);
                 // assignProblems also moves the tablet to the next page          
             }
         },
@@ -1035,7 +1045,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
             // the if checks for this tablet user
             if (sev.payload.videowall === self.currentBoard) {
                 jQuery.mobile.changePage('p-waitScreen.html');
-                // assignProblems also moves the tablet to the next page          
             }
         },
 
@@ -1090,7 +1099,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
             } else if (sev.payload.activity_name === "equation_tagging") {
                 self.userData.group = sev.payload.students;                 // do we need this?
-                self.assignProblems(sev.payload.students,sev.payload.principles,'p-taggingEquations.html');                
+                //self.assignProblems(sev.payload.students,sev.payload.principles); //this wouldn't have workded before                
+                self.assignProblemsWithEquations();
 
             } else if (sev.payload.activity_name === "done_equation_tagging") {
                 // do something, go somewhere else
