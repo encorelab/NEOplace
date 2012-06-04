@@ -399,7 +399,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     self.currentBoard = _.find(statesCompleted, function(state) {
                         return state.activity === "problems_tagging";
                     }).board;
-                                        
+
                     console.log('variable_writing step restored');
                     jQuery.mobile.changePage('p-variableWriter.html');
                 } else if ( _.find(statesCompleted, function(state){ return state.activity === "equations_tagging";}) ) {
@@ -1049,7 +1049,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         },        
 
         teacher_assumptions_variables_approve: function(sev) {
-            if ( _.include(sev.payload.students, self.userData.name) ) {
+            if ( sev.payload.location === self.currentBoard ) {
                 jQuery.mobile.changePage('p-finishPage.html');
             }
         },
