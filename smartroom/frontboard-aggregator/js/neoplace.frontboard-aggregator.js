@@ -6,11 +6,10 @@ var NEOplace = window.NEOplace || {};
 NEOplace.FrontBoardAggregator = (function() {
 
     // Set this to true only on one saving data.
-    var saveModeOn = true;
-
+    var saveModeOn = false;
 
     // TODO: move this out to config.json
-    var assetsUrl="http://neoplace.aardvark.encorelab.org/assets/equations/20pt/";
+    // var assetsUrl="http://neoplace.aardvark.encorelab.org/assets/equations/20pt/";
     
     var self = {};
 
@@ -93,7 +92,7 @@ NEOplace.FrontBoardAggregator = (function() {
         jQuery("#toolbars").fadeIn("slow");
         jQuery("#board").show();
         jQuery("#toolbars").show();
-    }
+    };
 
     // Renders default view. Show 4 quadrants
     var viewAllQuadrants = function () {
@@ -115,19 +114,19 @@ NEOplace.FrontBoardAggregator = (function() {
 
         jQuery("#quadrant-B").animate({ 
             height: quadrantHeight+"px", 
-            width: quadrantWidth+"px", 
+            width: quadrantWidth+"px"
         }, 1000);
 
         jQuery("#quadrant-C").animate({ 
             height: quadrantHeight+"px", 
-            width: quadrantWidth+"px", 
+            width: quadrantWidth+"px"
         }, 1000);
         
         jQuery("#quadrant-D").animate({ 
             height: quadrantHeight+"px", 
-            width: quadrantWidth+"px", 
+            width: quadrantWidth+"px"
         }, 1000);
-    }
+    };
 
     // Hides all quadrants. 
     var hideAllQuadrants = function() {
@@ -135,7 +134,7 @@ NEOplace.FrontBoardAggregator = (function() {
         jQuery("#quadrant-B").hide();
         jQuery("#quadrant-C").hide();
         jQuery("#quadrant-D").hide();
-    }
+    };
 
     // Shows in fullscreen a given quadrant. Receives quadrant id
     var fullScreenOneQuadrant = function (quadrantId) {
@@ -158,7 +157,7 @@ NEOplace.FrontBoardAggregator = (function() {
 
             jQuery("#quadrant-"+quadrantId).animate({ 
                 height: quadrantHeight+"px", 
-                width: winWidth+"px", 
+                width: winWidth+"px"
             }, 1000);
         }
 
@@ -167,7 +166,7 @@ NEOplace.FrontBoardAggregator = (function() {
 
         jQuery("#board-"+quadrantId).addClass("widget-box-selected");
 
-    }
+    };
 
     // cleans db collection. CAREFULL JUST FOR TESTING. It basically puts an empy object
     var dbSaveState = function () {
@@ -177,7 +176,7 @@ NEOplace.FrontBoardAggregator = (function() {
             state:boardHtml
         };
 
-        jQuery.ajax(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator_states', {
+        jQuery.ajax(Sail.app.config.mongo.url + Sail.app.run.name + '/frontboard_aggregator_states', {
             type: 'post',
             data: stateObj,
 
@@ -190,41 +189,35 @@ NEOplace.FrontBoardAggregator = (function() {
                 console.log('some error when saving state.');
             }
         });
-    }
+    };
 
     // get db collection
     var dbRestoreState = function(){
-        
+        jQuery.getJSON(Sail.app.config.mongo.url + Sail.app.run.name + '/frontboard_aggregator', function(data) {
+            jQuery("#status").html("Restoring...");
 
-        jQuery.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator', function(data) {
-        
-        jQuery("#status").html("Restoring...");
+            // empty quadrants
+            jQuery("#quadrant-content-A").html("");
+            jQuery("#quadrant-content-B").html("");
+            jQuery("#quadrant-content-C").html("");
+            jQuery("#quadrant-content-D").html("");
 
-        // empty quadrants
-        jQuery("#quadrant-content-A").html("");
-        jQuery("#quadrant-content-B").html("");
-        jQuery("#quadrant-content-C").html("");
-        jQuery("#quadrant-content-D").html("");
-
-        console.log("frontboard_aggregator loaded");
+            console.log("frontboard_aggregator loaded");
 
 
-        _.each(data, function(obj){
-            
-            addElementToBoard(obj);
+            _.each(data, function(obj){
+                
+                addElementToBoard(obj);
+            });
+
+            jQuery("#status").html("State Restored");
         });
-
-        jQuery("#status").html("State Restored");
-    });
-           
-            
-
-    }
+    };
     // get db collection
     var dbRestoreStateBoard = function(){
         
 
-        jQuery.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator_states', function(data) {
+        jQuery.getJSON(Sail.app.config.mongo.url + Sail.app.run.name + '/frontboard_aggregator_states', function(data) {
             //alert(_.last(data).state);
             jQuery('#board').html(_.last(data).state);
             jQuery("#status").html("State Restored");
@@ -262,8 +255,8 @@ NEOplace.FrontBoardAggregator = (function() {
                 jQuery(this).mousedown(bringDraggableToFront);
             });
 
-        }
-    )};
+        });
+    };
 
     // saves incomming event into db: this is kind of redundant!!
     var submitFrontboardAggregatorData = function(obj) {
@@ -301,11 +294,14 @@ NEOplace.FrontBoardAggregator = (function() {
     var addElementToBoard = function (obj) {
         
         var divId = MD5.hexdigest(obj.name)+"-"+Math.floor((Math.random()*100)+1);
+        // Element needs to be defined here since it is used after if else block.
+        // JS moves var definitions to the top but not great to do this anyways
+        var element = jQuery();
 
         // assumptions
         if(obj.css_class=="assumption" && obj.text!=""){
             
-            var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"<br/><span class='assumption-fulltext'>"+obj.text+"</span></div>");
+            element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"<br/><span class='assumption-fulltext'>"+obj.text+"</span></div>");
 
             // expand on double click
             element.dblclick(function () {
@@ -330,7 +326,7 @@ NEOplace.FrontBoardAggregator = (function() {
         } else if (obj.css_class=="equation" && obj.name!="") {
             
             // image version
-            var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'><img alt='"+obj.name+"' src='"+assetsUrl+""+obj.name+".png"+"'></div>");
+            element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'><img alt='"+obj.name+"' src='"+Sail.app.assetsURL+"/equations/20pt/"+obj.name+".png"+"'></div>");
 
             
             // TODO: render LATEX code version: NOT USED NOW
@@ -340,10 +336,10 @@ NEOplace.FrontBoardAggregator = (function() {
             //MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
 
         } else if (obj.css_class=="problem" && obj.name!="") {
-            var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.title+"</div>");
+            element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.title+"</div>");
             
         } else {
-            var element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"</div>");
+            element = jQuery("<div id='"+divId+"' class='"+obj.css_class+"'>"+obj.name+"</div>");
         }
 
         // bring the element to the top when clicked
@@ -390,7 +386,7 @@ NEOplace.FrontBoardAggregator = (function() {
             jQuery("#quadrant-content-"+obj.board+" div").css('position', 'inherit');
         }
 
-    }
+    };
 
     // Brings a .ui-draggable element to the front (via z-index).
     // This is meant to be used as a callback for jQuery event bindings,
@@ -411,6 +407,8 @@ NEOplace.FrontBoardAggregator = (function() {
     self.events = {
         initialized: function (ev) {
             NEOplace.FrontBoardAggregator.authenticate();
+            Sail.app.drowsyURL = Sail.app.config.mongo.url;
+            Sail.app.assetsURL = Sail.app.config.assets.url;
         },
 
         'ui.initialized': function (ev) {
@@ -588,7 +586,7 @@ NEOplace.FrontBoardAggregator = (function() {
                         board:sev.payload.videowall,
                         name:i,
                         css_class:"variable"
-                    }
+                    };
                     addElementToBoard(variable);
                     if(saveModeOn) {
                         submitFrontboardAggregatorData(variable);
@@ -596,6 +594,8 @@ NEOplace.FrontBoardAggregator = (function() {
                 });
 
                 _.each(sev.payload.assumptions, function (i) {
+                    var shortName = "";
+                    var text = "";
                     
                     // cut text in assumption
                     if(i.length>30){
@@ -610,7 +610,7 @@ NEOplace.FrontBoardAggregator = (function() {
                         name:shortName,
                         css_class:"assumption",
                         text:text
-                    }
+                    };
                     addElementToBoard(assumption);
                     if(saveModeOn) {
                         submitFrontboardAggregatorData(assumption);
@@ -625,7 +625,7 @@ NEOplace.FrontBoardAggregator = (function() {
                         board:sev.payload.videowall,
                         name:i,
                         css_class:"equation"
-                    }
+                    };
                     addElementToBoard(equation);
                     if(saveModeOn) {
                         submitFrontboardAggregatorData(equation);
@@ -640,7 +640,7 @@ NEOplace.FrontBoardAggregator = (function() {
                         name:i,
                         title:problems[i],
                         css_class:"problem"
-                    }
+                    };
 
                     addElementToBoard(problem);
                     if(saveModeOn) {
@@ -669,4 +669,4 @@ NEOplace.FrontBoardAggregator = (function() {
     };
 	
     return self;
-})();
+})(NEOplace.FrontBoardAggregator);
