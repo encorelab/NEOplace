@@ -302,7 +302,8 @@ div.none-yet {
   margin-top: 4px;
   padding: 5px;
   text-align: center;
-  background-image: -webkit-linear-gradient( #DDD /*{b-body-background-start}*/, #CCC /*{b-body-background-end}*/)
+  background: -webkit-linear-gradient( #DDD, #CCC);
+  background: -moz-linear-gradient( #DDD, #CCC);
 }
 
 /* adding CSS specific to neoplace.frontboard2 */
@@ -310,7 +311,6 @@ div.none-yet {
 /*    border: 3px solid #AAAAAA;
 */    border-radius: 10px 10px 10px 10px;
     text-align: center;
-    overflow: auto;
 
 }
 
@@ -319,6 +319,7 @@ div.none-yet {
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
+  overflow: auto;
 }
 
 #aggregator-label {
@@ -390,7 +391,7 @@ div.none-yet {
 #quadrant-A{
 /*  border: 2px solid;*/
   background:#fff;
-  background-image: url("/images/a.png"); 
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/a.png"); 
   background-position: 50% 50%;
   background-repeat:no-repeat;
   float: left;
@@ -401,7 +402,7 @@ div.none-yet {
 #quadrant-B{
 /*  border: 2px solid;*/
   background:#fff;
-  background-image: url("/images/b.png"); 
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/b.png"); 
   background-position: 50% 50%;
   background-repeat:no-repeat;
   width: 40%;
@@ -412,7 +413,7 @@ div.none-yet {
 #quadrant-C{
 /*  border: 2px solid;*/
   background:#fff;
-  background-image: url("/images/c.png"); 
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/c.png"); 
   background-position: 50% 50%;
   background-repeat:no-repeat;
   float: left;
@@ -423,7 +424,7 @@ div.none-yet {
 #quadrant-D{
 /*  border: 2px solid;*/
   background:#fff;
-  background-image: url("/images/d.png"); 
+  background-image: url("http://neoplace.aardvark.encorelab.org/smartroom/frontboard-aggregator/images/d.png"); 
   background-position: 50% 50%;
   background-repeat:no-repeat;
   width: 40%;
@@ -473,9 +474,9 @@ div.none-yet {
 .widget-box-selected{
   border:1px solid #044062;
   background-color: #396B9E;
-  color: #FFFFFF;
-  -webkit-linear-gradient(#5F9CC5, #396B9E);
-
+  color: #F3F3F3;
+  background: -webkit-linear-gradient(#5F9CC5, #396B9E);
+  background: -moz-linear-gradient(#5F9CC5, #396B9E);
   }
 
 #widget-box .a{

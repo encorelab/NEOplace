@@ -15,18 +15,18 @@ NEOplace.FrontWall = (function() {
   var previousPlayerAllocation = {};
   var playerWalking = {};
   var activities = ['','square','triangle', 'circle', 'star', 'polygon', 'upsidedownTriangle'];
-  var activityNames = ['', 'A1', 'B2', 'C3', 'D4', 'E5', 'F6'];
+  var activityNames = ['', 'Principle Tagging', 'Principal Setting', 'Problem Setting', 'Equation Setting', 'Assumptions &amp; Variables Setting', 'Video Narrative'];
   var groupNames = ['', 'A', 'B', 'C', 'D'];
   var taskRewardsAnimationQueue = {};
   
   var numberOfLocations = 4;
-  var maxNumberOfPlayersPerLocation = 3;
+  var maxNumberOfPlayersPerLocation = 5;
   var counter = 0;
   var taskAnimationStarted = false;
+  var playerCount = 0;
   
   var taskTimeBoundariesInMinutes = [
                           [],
-                          [0.1,0.2,0.3],
                           [1.5, 2.0, 2.0],
                           [8.0, 13.0, 15.0],
                           [10.0, 18.0, 20.0],
@@ -80,6 +80,15 @@ NEOplace.FrontWall = (function() {
             });
 
         app.rollcall = new Rollcall.Client(app.config.rollcall.url);
+        
+        
+        // game init
+        for (var i = 0; i <= numberOfLocations; i++) {
+          playerLocationsAllocations[i] = 0;
+          taskRewardsAnimationQueue[i] = false;
+        }
+        
+        
     };
     
   app.authenticate = function () {
@@ -102,7 +111,17 @@ NEOplace.FrontWall = (function() {
         }
     };
   
+  app.stopTask = function(){
+    console.log('Stopping Task Timer for Current Task:' + currentTask);
+    currentTaskTickTimer = 0;
+    timeExpired = false;
+    currentTask = 0;
+    jQuery('#progress-bar').removeClass('stop-time').removeClass('caution-time').removeClass('good-time');
+    jQuery('#progress-text').html(statusCaptions[0]);
+  };
+  
   app.setCurrentTask = function(taskID) {
+    console.log('Starting Task:' + taskID);
     currentTaskTickTimer = 0;
     timeExpired = false;
     currentTask = taskID;
@@ -148,6 +167,31 @@ NEOplace.FrontWall = (function() {
     }
   };
   
+  // WELCOME SCREEN!!
+  app.showWelcomeScreen = function(str) {
+    jQuery("body").append('<div id="modal-background" style="display: none"></div>');
+    var backgroundModal = jQuery("#modal-background");
+     jQuery('#achievement-symbol').hide();
+     jQuery('#achievement-description').html(statusCaptions[0]);
+     
+    jQuery(backgroundModal).fadeIn(800, "linear", function(){
+        jQuery("#epic-task-completed-container").fadeIn(1500);
+      });
+  };
+  
+  app.hideWelcomeScreen = function() {
+      var backgroundModal = jQuery("#modal-background");
+      jQuery("#epic-task-completed-container").fadeOut(1500);
+      jQuery(backgroundModal).fadeOut('fast');
+  };
+  
+  app.hideGameOverScreen = function() {
+      var backgroundModal = jQuery("#modal-background");
+      jQuery("#epic-task-completed-container").fadeOut(1500);
+      jQuery(backgroundModal).fadeOut('fast');
+      jQuery('#achievement-description').html(statusCaptions[0]);
+  };
+  
   // GAME OVER!!!
   app.showTaskGameOverScreen = function(str) {
     if (timeExpired) return;
@@ -159,7 +203,6 @@ NEOplace.FrontWall = (function() {
     jQuery(backgroundModal).fadeIn(800, "linear", function(){
         jQuery("#epic-task-completed-container").fadeIn(1500).effect('pulsate', 'slow');
       });
-    setTimeout("animateTaskCompletion(2, 5);animateTaskCompletion(3, 3); animateTaskCompletion(1, 6);", 5000);
   };
   
   app.animateTaskCompletionAnimationProcessor = function() {
@@ -216,14 +259,14 @@ NEOplace.FrontWall = (function() {
     for (playerID in players) {
       
       if (players[playerID]["location"] == theLocale) { 
-        addItem(playerID, taskID);
+        app.addItem(playerID, taskID);
       }
     }
   };
   
   app.addItem = function(playerID, taskID) {
     
-    if (getLength(players[playerID]["activityHistory"]) == 0) {
+    if (app.getLength(players[playerID]["activityHistory"]) == 0) {
       players[playerID]["activityHistory"] = {};
       //alert('yo!');
     }
@@ -275,11 +318,31 @@ NEOplace.FrontWall = (function() {
     }
   };
   
+  app.localeHasPlayers = function(theLocale) {
+    for (playerID in players) {
+      
+      if (players[playerID]["location"] == theLocale) {
+        return true;
+      }
+    }
+    
+    return false;
+  };
+  
   
   app.movePlayer = function(playerID, newLocation) {
+    if (newLocation == null || newLocation > numberOfLocations) {
+      return;
+    }
     
-    if (newLocation == previousPlayerAllocation[playerID]) return;
-    if ((playerLocationsAllocations[newLocation] + 1) > maxNumberOfPlayersPerLocation) return;
+    if (newLocation == previousPlayerAllocation[playerID]) {
+      return;
+    }
+    
+    if ((playerLocationsAllocations[newLocation] + 1) > maxNumberOfPlayersPerLocation) {
+      return;
+    }
+    
     playerWalking[playerID] = true;
     
     
@@ -295,7 +358,7 @@ NEOplace.FrontWall = (function() {
     if (((playerLocationsAllocations[previousPlayerAllocation[playerID]]) - 1) >= 0) {
       playerLocationsAllocations[previousPlayerAllocation[playerID]]--;
       
-      redrawPlayersAtLocation(previousPlayerAllocation[playerID]);
+      app.redrawPlayersAtLocation(previousPlayerAllocation[playerID]);
     }
     
     
@@ -305,7 +368,54 @@ NEOplace.FrontWall = (function() {
 
   };
   
-  app.spawnPlayers = function() {
+  app.addPlayer = function(playerNickname, theLocale) {
+    if (! playerNickname) return false;
+    
+    var playerID = "player_" + playerNickname.replace(/[\s\W]/g,'_');
+    
+    if (jQuery('#' + playerID).length !== 0) {
+      console.log(playerID + ' exists moving user!');
+      app.movePlayer(playerID, theLocale);
+      return true;
+    }
+    
+    var randomColour = Math.floor(Math.random() * 5);
+    var avatarColour = '';
+    var playerInfo = {};
+    
+    playerInfo["userName"] = playerNickname;
+    playerInfo["playerID"] = playerID;
+    playerInfo["location"] = theLocale;
+    playerInfo["activityHistory"] = {};
+    
+    players[playerID] = playerInfo;
+    
+    previousPlayerAllocation[playerID] = -1;
+    
+    if (randomColour == 0){
+      avatarColour = 'blue';
+    }
+    else if (randomColour == 1) {
+      avatarColour = 'green';
+    }
+    else if (randomColour == 2) {
+       avatarColour = 'purple';
+    }
+    else if (randomColour == 3) {
+       avatarColour = 'yellow';
+    }
+    else {
+       avatarColour = 'orange';
+    }
+      
+    jQuery("#locations").append('<div class="user" id="' + playerID +  '"><img alt="' + playerID + '" title="' + playerID + '" src="images/avatar_' + avatarColour + '.png"  width="40" /><div class="triangle-right left"><div class="trophies"></div><div class="user-name">' + playerNickname +'</div></div></div>');
+    app.movePlayer(playerID, playerInfo["location"]);
+    
+    playerCount++;
+    return true;
+  };
+  
+  app.testSpawnPlayers = function() {
     var playerLength = 11;
     
     for (var i = 0; i <= numberOfLocations; i++) {

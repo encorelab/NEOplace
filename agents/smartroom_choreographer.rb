@@ -33,21 +33,6 @@ class SmartroomChoreographer < Sail::Agent
         end
       end
       log "Restored vidwalls_user_tag_counts from MongoDB #{@vidwalls_user_tag_counts}"
-
-      # @mongo.collection(:user_wall_assignments).find().each do |row|
-      #   log "#{row.inspect}"
-      #   new_row = {}
-      #   row.map do |key, value|
-      #     unless key == "_id" then
-      #       log "key #{key} value #{value}"
-      #       new_row.merge!({key => value})
-      #     end
-      #   end
-      #   log "new_row #{new_row}"
-      #   @user_wall_assignments.merge!(new_row)
-      # end
-      # log "Restored user_wall_assignments from MongoDB #{@user_wall_assignments}"
-
     end
     
     self_joined_log_room do |stanza|
@@ -76,10 +61,6 @@ class SmartroomChoreographer < Sail::Agent
       log "Received student_principles_submit #{data.inspect}"
       # first sorting by principle submission ranking
       if data && data['payload'] && data['payload']['step'] == "principle_sort" then
-        # data = JSON.parse('{ "VW1":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}], "VW2":[{"student_name":"bob","principle_count":3},{"student_name":"jim","principle_count":4}] }')
-        # vidwall_user_tag_counts = JSON.parse('{ "A":{"bob":3,"jim":4,"tim":1}, "B":{"bob":3,"jim":2,"tim":4} , "C":{"bob":1,"jim":2,"tim":4} }')
-        # vidwall_user_tag_counts = JSON.parse('[ {"bob":3,"jim":4,"tim":1}, {"bob":3,"jim":2,"tim":4} ]')
-
         # call function to generate the location assignments
         @user_wall_assignments = generate_location_assignments(@vidwalls_user_tag_counts)
 

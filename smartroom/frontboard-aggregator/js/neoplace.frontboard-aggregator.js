@@ -5,6 +5,10 @@ var NEOplace = window.NEOplace || {};
 
 NEOplace.FrontBoardAggregator = (function() {
 
+    // Set this to true only on one saving data.
+    var saveModeOn = true;
+
+
     // TODO: move this out to config.json
     var assetsUrl="http://neoplace.aardvark.encorelab.org/assets/equations/20pt/";
     
@@ -12,8 +16,34 @@ NEOplace.FrontBoardAggregator = (function() {
 
     self.name = "NEOplace.FrontBoardAggregator";
 
-    self.cumulativeTagArray = [];
+    // only users matching this filter will be shown in the account picker
+    self.userFilter = function (u) {
+        return u.kind === "Agent";
+    };
 
+    self.init = function() {
+        Sail.app.rollcall = new Rollcall.Client(Sail.app.rollcallURL);
+
+        Sail.app.run = Sail.app.run || JSON.parse(jQuery.cookie('run'));
+        if (Sail.app.run) {
+            Sail.app.groupchatRoom = Sail.app.run.name + '@conference.' + Sail.app.xmppDomain;
+        }
+
+        Sail.modules
+            .load('Rollcall.Authenticator', {mode: 'username-and-password', askForRun: true, curnit: 'NEOplace', userFilter: self.userFilter})
+            .load('Strophe.AutoConnector')
+            .load('AuthStatusWidget')
+            .thenRun(function () {
+                Sail.autobindEvents(Sail.app);
+
+                jQuery(Sail.app).trigger('initialized');
+                return true;
+            });
+
+
+    };
+
+    /*
     self.init = function() {
         Sail.app.groupchatRoom = 'neo-a@conference.' + Sail.app.xmppDomain;
 
@@ -33,10 +63,35 @@ NEOplace.FrontBoardAggregator = (function() {
                 return true;
             });
     };
+    //*/
 
+    // old authenticate
+    /*
     self.authenticate = function () {
         jQuery(self).trigger('authenticated');
     };
+    */
+
+    self.authenticate = function () {
+        Sail.app.token = Sail.app.rollcall.getCurrentToken();
+
+        if (!Sail.app.run) {
+            Rollcall.Authenticator.requestRun();
+        } else if (!Sail.app.token) {
+            Rollcall.Authenticator.requestLogin();
+        } else {
+            Sail.app.rollcall.fetchSessionForToken(Sail.app.token, function(data) {
+                    Sail.app.session = data;
+                    jQuery(Sail.app).trigger('authenticated');
+                },
+                function(error) {
+                    console.warn("Token '"+Sail.app.token+"' is invalid. Will try to re-authenticate...");
+                    Rollcall.Authenticator.unauthenticate();
+                }
+            );
+        }
+    };
+
 
     // Define control variables
     var principlesOn = true;
@@ -155,7 +210,35 @@ NEOplace.FrontBoardAggregator = (function() {
     var dbRestoreState = function(){
         
 
-        $.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator_states', function(data) {
+        jQuery.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator', function(data) {
+        
+        jQuery("#status").html("Restoring...");
+
+        // empty quadrants
+        jQuery("#quadrant-content-A").html("");
+        jQuery("#quadrant-content-B").html("");
+        jQuery("#quadrant-content-C").html("");
+        jQuery("#quadrant-content-D").html("");
+
+        console.log("frontboard_aggregator loaded");
+
+
+        _.each(data, function(obj){
+            
+            addElementToBoard(obj);
+        });
+
+        jQuery("#status").html("State Restored");
+    });
+           
+            
+
+    }
+    // get db collection
+    var dbRestoreStateBoard = function(){
+        
+
+        jQuery.getJSON(Sail.app.config.mongo.url + '' + "neo-a" + '/frontboard_aggregator_states', function(data) {
             //alert(_.last(data).state);
             jQuery('#board').html(_.last(data).state);
             jQuery("#status").html("State Restored");
@@ -166,12 +249,33 @@ NEOplace.FrontBoardAggregator = (function() {
             jQuery("#quadrant-content-C div").draggable({ containment: "#quadrant-C"});
             jQuery("#quadrant-content-D div").draggable({ containment: "#quadrant-D"});
 
-            // restore event listeners for collapsable elements (i.e. assumptions)
+            // expand on double click
+            jQuery("#board .assumption").dblclick(function () {
+                
+                var theFullText = jQuery(this).text();
+                var myDivId = jQuery(this).attr("id");
+                jQuery("#"+myDivId + " span").first().fadeIn("slow");
+                jQuery("#"+myDivId + " span").first().show();
+                jQuery("#"+myDivId).mousedown(bringDraggableToFront);
 
-            // re set z-index 
-            // removeAttr("z-index")
+            });
 
-  
+
+            // contract on click
+            jQuery("#board .assumption").click(function () {
+
+                var myDivId = jQuery(this).attr("id");
+                jQuery("#"+myDivId + " span").first().fadeIn("slow");
+                jQuery("#"+myDivId + " span").first().hide();
+                jQuery("#"+myDivId).mousedown(bringDraggableToFront);
+
+            });
+
+            // bring element to front
+            jQuery("#board .paper div").focusin(function () {
+                jQuery(this).mousedown(bringDraggableToFront);
+            });
+
         }
     )};
 
@@ -265,50 +369,20 @@ NEOplace.FrontBoardAggregator = (function() {
             winWidth = jQuery(window).width(),
             quadrantHeight = winHeight/2,
             quadrantWidth = winWidth/2,
-            tolerance = 185,
+            tolerance = 200,
             Min = 0,
             Max = 0,
             left = 0,
             top = 0;
 
-        // Think this works for all quadrants after Mike's and Pearl's change to CSS
-        //if (obj.board=="A") {
-        if (obj.board=="A" || obj.board=="B" || obj.board=="C" || obj.board=="D") {
             Min = 0;
-            Max = quadrantWidth-tolerance;
+            Max = winWidth-tolerance;
             left = Min + (Math.random() * ((Max - Min) + 1));
     
             Min = 0;
-            Max = quadrantHeight-tolerance;
+            Max = winHeight-100;
             top = Min + (Math.random() * ((Max - Min) + 1));
 
-        } else if (obj.board=="B") {
-            Min = winWidth-quadrantWidth;
-            Max = winWidth-tolerance;
-            left = Min + (Math.random() * ((Max - Min) + 1));
-    
-            Min = 0;
-            Max = quadrantHeight-tolerance;
-            top = Min + (Math.random() * ((Max - Min) + 1));
-            
-        } else if (obj.board=="C") {
-            Min = 0;
-            Max = quadrantWidth-tolerance;
-            left = Min + (Math.random() * ((Max - Min) + 1));
-    
-            Min = quadrantHeight;
-            Max = (quadrantHeight*2)-tolerance;
-            top = Min + (Math.random() * ((Max - Min) + 1));
-        } else if (obj.board=="D") {
-            Min = winWidth-quadrantWidth;
-            Max = winWidth-tolerance;
-            left = Min + (Math.random() * ((Max - Min) + 1));
-    
-            Min = quadrantHeight;
-            Max = (quadrantHeight*2)-tolerance;
-            top = Min + (Math.random() * ((Max - Min) + 1));
-        }
-        
         // set position 
         element.css('left', left + 'px');
         element.css('top', top + 'px');
@@ -476,15 +550,24 @@ NEOplace.FrontBoardAggregator = (function() {
             });
 
 
-            // db-restore and db-clean functions
+            // db-restore from single elements frontboard_aggregator
             jQuery('#db-restore-state').click(function () {
                 dbRestoreState();
             });
 
-            jQuery('#db-save-state').click(function () {
-                dbSaveState();
+            // db-restore from single elements frontboard_aggregator
+            jQuery('#db-restore-state-board').click(function () {
+                dbRestoreStateBoard();
             });
 
+// db-restore entire board including position of elements
+            jQuery('#db-save-state').click(function () {
+                if(saveModeOn) {
+                    dbSaveState();
+                } else {
+                    alert("Save mode is not ON \nThis board is only watching");
+                }
+            });
         },
 
         connected: function (ev) {
@@ -513,7 +596,9 @@ NEOplace.FrontBoardAggregator = (function() {
                         css_class:"variable"
                     }
                     addElementToBoard(variable);
-                    submitFrontboardAggregatorData(variable);
+                    if(saveModeOn) {
+                        submitFrontboardAggregatorData(variable);
+                    }
                 });
 
                 _.each(sev.payload.assumptions, function (i) {
@@ -533,8 +618,14 @@ NEOplace.FrontBoardAggregator = (function() {
                         text:text
                     }
                     addElementToBoard(assumption);
-                    submitFrontboardAggregatorData(assumption);
+                    if(saveModeOn) {
+                        submitFrontboardAggregatorData(assumption);
+                    }
+
                 });
+                if(saveModeOn) {
+                    dbSaveState();
+                }
             },
 
             videowall_equations_commit: function (sev) {
@@ -545,8 +636,13 @@ NEOplace.FrontBoardAggregator = (function() {
                         css_class:"equation"
                     }
                     addElementToBoard(equation);
-                    submitFrontboardAggregatorData(equation);
+                    if(saveModeOn) {
+                        submitFrontboardAggregatorData(equation);
+                    }
                 });
+                if(saveModeOn) {
+                    dbSaveState();
+                }
             },
 
             videowall_problems_commit: function (sev) {
@@ -557,8 +653,13 @@ NEOplace.FrontBoardAggregator = (function() {
                         css_class:"problem"
                     }
                     addElementToBoard(problem);
-                    submitFrontboardAggregatorData(problem);
+                    if(saveModeOn) {
+                        submitFrontboardAggregatorData(problem);
+                    }
                 });
+                if(saveModeOn) {
+                    dbSaveState();
+                }
             },
 
             videowall_principles_commit: function (sev) {
@@ -569,8 +670,15 @@ NEOplace.FrontBoardAggregator = (function() {
                         css_class:"principle"
                     };
                     addElementToBoard(principle);
-                    submitFrontboardAggregatorData(principle);
+                    if(saveModeOn) { 
+                        submitFrontboardAggregatorData(principle);
+                    }
+
                 });
+
+                if(saveModeOn) {
+                    dbSaveState();
+                }
             }
         }
     };

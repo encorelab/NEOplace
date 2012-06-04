@@ -17,15 +17,14 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.visitedVideoBoards = []; //nb: current video board is visitedVideoBoards[ visitedVideoBoards.length-1 ], as long as the DB isn't full of junk;
 
     self.studentPrinciples = [];
-    //self.groupPrinciples = [];
 
-    self.problemWidth = 0;
+    self.scrollingWidth = 0;
     self.currentlyAnimating = false;
     self.currentProblemIndex = 0;
 
     self.problemTemplate = "";
+    self.equationDragDropTemplate = "";
     // self.problemSet = [];    // added to userData
-    // self.problemSetForEquationTagging = [];
 
     self.allEquations = {};
     self.allProblemSets = {};
@@ -36,10 +35,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     // If set to false, remember to uncomment this line from the .html files
     //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
 
-    var YES = '<div class="checklist_icon yes_icon"></div>';
-    var NO = '<div class="checklist_icon no_icon"></div>';
-
-    /** private functions **/
+    /****************************** private functions ********************************/
 
     var currentDb = function () {
         if ( !UI_TESTING_ONLY ) {
@@ -48,12 +44,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
 
     /****************************** public functions ********************************/
-
-    // self.returnEquationName = function(EQ_ID) {
-    //     return _.find(Sail.app.allEquations, function(eq) {
-    //         return eq.EQ_ID == EQ_ID;
-    //     }).name;
-    // }
 
     self.escapeSelectorString = function(str) {
         if(str)
@@ -95,8 +85,6 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 } else {    // this one is for submitting principles
                     self.submitPrinciple(ui.draggable.attr("value"));
                 }
-                
-
             }else{
                 //note: don't need to want for response so no need to fake it
             }
@@ -107,13 +95,26 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
 
     //called on app load
-    self.loadProblemTempate = function() {
+    self.loadProblemTemplate = function() {
         // grab template body for problem layout
         $.ajax({
             url: 'template-problem.html',
             success: function(data, textStatus, jqXHR){
                 self.problemTemplate = data;
                 console.log("loaded problem template");
+            },
+            dataType: 'html'
+        });
+    };
+
+    //called on app load
+    self.loadEquationDragDropTemplate = function() {
+        // grab template body for problem layout
+        $.ajax({
+            url: 'template-equationdrop.html',
+            success: function(data, textStatus, jqXHR){
+                self.equationDragDropTemplate = data;
+                console.log("loaded equation drag and drop template");
             },
             dataType: 'html'
         });
@@ -157,6 +158,24 @@ NEOplace.Tablet.Student = (function(Tablet) {
         return equations;
     };
 
+    //helper method
+    self.parseEquationIdsIntoImgTag = function(equationIds){
+
+        var equations = _.map( equationIds, function(id){
+            var eq = {};
+            eq.id = id;
+            eq.name = '<img src="'
+            if ( !UI_TESTING_ONLY ) {
+                eq.name += Sail.app.config.assets.url
+            }else{
+                eq.name += "/assets";
+            }
+            eq.name += self.allEquations[id].img10 + '" alt="" />';
+            return eq;
+        });
+        return equations;
+    };
+
     self.getHtmlForProblems = function(pageScope) {
 
         var loadedProblems = 0;
@@ -188,13 +207,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         var scrollingProblemsWidth = 0;
         var windowWidth = $(window).width();
-        var sideMargins = 50;
-        var contentWidth = windowWidth - ( sideMargins * 2 );
+        var sidePadding = 30; //ui-content has 30px padding
+        var pageContentWidth = windowWidth - sidePadding; 
+        self.scrollingWidth = windowWidth; //pageContentWidth; //$("#taggingProblems .attachProblemContainer").css("width"); //(contentWidth - 40); //$("#taggingProblems .problem").css("width");
+
+        var contentWidth = 730;
 
         _.each( self.userData.problemSet, function(problem,key){
             var id = "problem" + key;
             $(pageScope+" .scrollingProblems").append(
-                '<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate +'</div>'
+                '<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate + ' ' + self.equationDragDropTemplate +'</div>'
             ).trigger("create");
 
             if (pageScope === "#taggingEquations") {
@@ -215,69 +237,83 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 $('#'+id+' .principlesList').replaceWith("");
             }
 
+            //var equations = self.parseEquationIdsIntoString(problem.equation_ids);
+            var equations = self.parseEquationIdsIntoImgTag(problem.equation_ids);
+            var equationsList = "";
             if (pageScope === "#taggingProblems") {
-                var equations = self.parseEquationIdsIntoString(problem.equation_ids);
-                var equationsList = "";
                 _.each( equations, function(equation){
                     equationsList += "<li>"+equation.name+"</li>";
                 });
                 $('#'+id+' .equationsList').html(equationsList).listview("refresh");
             }else{
                 $('#'+id+' .equationsList').replaceWith("");
-            }
 
-            scrollingProblemsWidth += windowWidth + (sideMargins*2);
+                _.each( equations, function(equation){
+                    equationsList += '<div data-role="button" data-inline="true" class="draggable" \
+                        value="'+equation.id+'" \
+                        >' 
+                        + equation.name 
+                        +'</div>';
+                });
+
+                $('#'+id+' .draggableTags').html(equationsList).trigger("create");
+                self.enableDragAndDropPortal(pageScope + ' #'+id);
+
+            }
+            console.log("equationsList", equationsList);
+
+            scrollingProblemsWidth += windowWidth; // + (sideMargins*2);
         });
 
         //update formatting of equations
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
+        //MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
         //TODO: refresh not happening at right time.... look into a different event to trigger the refresh
-        $('.equationsList').listview("refresh");
 
-        $(pageScope+' .connectProblemButton').die();
-        $(pageScope+' .connectProblemButton').live("click", function(){
-            var buttonValue = $(this).attr("value");
-            console.log( "click on connect button with value " + buttonValue);
-            self.submitProblem(buttonValue);
-            $(this).addClass("ui-disabled");
-        });
-
+        if (pageScope === "#taggingProblems") {
+            $(pageScope+' .connectProblemButton').die();
+            $(pageScope+' .connectProblemButton').live("click", function(){
+                var buttonValue = $(this).attr("value");
+                console.log( "click on connect button with value " + buttonValue);
+                self.submitProblem(buttonValue);
+                $(this).addClass("ui-disabled");
+            });
+        }
         console.log("windowWidth: " + windowWidth );
 
         $(pageScope+" .scrollingProblems").css("width",scrollingProblemsWidth);
         $(pageScope+" .scrollingProblems").css("left","0px");
 
-        $(pageScope+" .attachProblemContainer").css("width", contentWidth + "px" );
+        //$(pageScope+" .attachProblemContainer").css("width", contentWidth + "px" );
+        $(pageScope+" .attachProblemContainer").css("width", pageContentWidth + "px" );
         $(pageScope+" .problem").css("width", (contentWidth - 40) + "px");
 
-        self.problemWidth = (contentWidth - 40); //$("#taggingProblems .problem").css("width");
+        
         self.currentlyAnimating = false;
         self.currentProblemIndex = 0;
         
-        $(pageScope).swipeleft(function(){
-            if ( self.currentlyAnimating ) return;
-            if ( self.currentProblemIndex == self.userData.problemSet.length-1 ) return;
+        // $(pageScope).swipeleft(function(){
+        //     if ( self.currentlyAnimating ) return;
+        //     if ( self.currentProblemIndex == self.userData.problemSet.length-1 ) return;
 
-            self.currentProblemIndex++;
-            self.animateProblems(pageScope);
-        });
+        //     self.currentProblemIndex++;
+        //     self.animateProblems(pageScope);
+        // });
         
-        $(pageScope).swiperight(function(){
-            if ( self.currentlyAnimating ) return;
-            if ( self.currentProblemIndex == 0 ) return;
+        // $(pageScope).swiperight(function(){
+        //     if ( self.currentlyAnimating ) return;
+        //     if ( self.currentProblemIndex == 0 ) return;
 
-            self.currentProblemIndex--;
-            self.animateProblems(pageScope);
-            
-        });
+        //     self.currentProblemIndex--;
+        //     self.animateProblems(pageScope);
+        // });
+
     };
 
     self.animateProblems = function(pageScope){
 
         console.log( "animateProblems() on " + pageScope );
 
-        var target = self.problemWidth * self.currentProblemIndex;
+        var target = self.scrollingWidth * self.currentProblemIndex;
         console.log("swiping, target: -" + target );
 
         $(pageScope+" .previousProblem").addClass("ui-disabled");
@@ -433,7 +469,8 @@ NEOplace.Tablet.Student = (function(Tablet) {
         connected: function(ev) {
 
             // Load any JS/JSON objects required for the rest of the app
-            self.loadProblemTempate();
+            self.loadProblemTemplate();
+            self.loadEquationDragDropTemplate();
             self.loadAllEquations();
             self.loadAllClassroomProblems();
 
@@ -681,65 +718,30 @@ NEOplace.Tablet.Student = (function(Tablet) {
             $( '#taggingProblems' ).live( 'pageinit',function(event){
                 console.log("#taggingProblems pageinit");
 
-                //TODO: show loading animation
+                //reset index
+                self.currentProblemIndex = 0;
 
                 if ( !UI_TESTING_ONLY ) {
 
-                    // self.getProblemSetRelatedToVideo(); //to populate self.problemSet
-                    // self.getHtmlForProblems('#taggingProblems');
-
-                    if ( self.userData.problemSet.length > 1 ) {
-                        $("#taggingProblems .nextProblem").removeClass("ui-disabled");
-                    }
-
-                    $("#taggingProblems .previousProblem").click(function(){
-                        self.currentProblemIndex--; 
-                        self.animateProblems("#taggingProblems");
-                    });
-
-                    $("#taggingProblems .nextProblem").click(function(){
-                        self.currentProblemIndex++;
-                        self.animateProblems("#taggingProblems");
-                    });
-
-                    self.getHtmlForProblems("#taggingProblems");             
-
                 }else{
-                    //fake it
-                    //TODO: need to add in results from classroom activity
+                    //fake data
                     self.userData.problemSet = [
                         {   title:"Bowling Ball", 
-                            name:"BowlingBall", 
+                            problem_name:"BowlingBall", 
                             principles:["Acceleration", "Newton's First Law"],
-                            equations:[4, 18, 21]
+                            equation_ids:[4, 18, 21]
                         },
                         {   title:"Bumper Cars", 
-                            name:"BumperCars",
+                            problem_name:"BumperCars",
                             principles:["Static Friction", "Potential Energy"],
-                            equations:[6, 9, 18]
+                            equation_ids:[6, 9, 18]
                         },
                         {   title:"Car Stuck in Mud", 
-                            name:"StuckCar",
+                            problem_name:"StuckCar",
                             principles:["Potential Energy","Work"],
-                            equations:[4, 10, 11, 27, 29]
+                            equation_ids:[4, 10, 11, 27, 29]
                         }
                     ];
-
-                    if ( self.userData.problemSet.length > 1 ) {
-                        $("#taggingProblems .nextProblem").removeClass("ui-disabled");
-                    }
-
-                    $("#taggingProblems .previousProblem").click(function(){
-                        self.currentProblemIndex--;
-                        self.animateProblems("#taggingProblems");
-                    });
-
-                    $("#taggingProblems .nextProblem").click(function(){
-                        self.currentProblemIndex++;
-                        self.animateProblems("#taggingProblems");
-                    });
-
-                    self.getHtmlForProblems("#taggingProblems");
 
                     //fake it, this event comes from the video board
                     $('#taggingProblems .skipButton').css('display','block');
@@ -748,6 +750,22 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         self.events.sail.activity_started({payload:{activity_name:"equation_tagging_board_assigned"}});
                     });
                 }
+                
+                self.getHtmlForProblems("#taggingProblems");
+
+                if ( self.userData.problemSet.length > 1 ) {
+                    $("#taggingProblems .nextProblem").removeClass("ui-disabled");
+                }
+
+                $("#taggingProblems .previousProblem").click(function(){
+                    self.currentProblemIndex--; 
+                    self.animateProblems("#taggingProblems");
+                });
+
+                $("#taggingProblems .nextProblem").click(function(){
+                    self.currentProblemIndex++;
+                    self.animateProblems("#taggingProblems");
+                });
 
             });
 
@@ -792,63 +810,29 @@ NEOplace.Tablet.Student = (function(Tablet) {
             $( '#taggingEquations' ).live( 'pageinit',function(event){
                 console.log("#taggingEquations pageinit");
 
-                //TODO: show loading animation
+                self.currentProblemIndex = 0;
 
                 if ( !UI_TESTING_ONLY ) {
 
-                    if ( self.userData.problemSet.length > 1 ) {
-                        $("#taggingEquations .nextProblem").removeClass("ui-disabled");
-                    }
-
-                    $("#taggingEquations .previousProblem").click(function(){
-                        self.currentProblemIndex--;
-                        self.animateProblems("#taggingEquations");
-                    });
-
-                    $("#taggingProblems .nextProblem").click(function(){
-                        self.currentProblemIndex++;
-                        self.animateProblems("#taggingEquations");
-                    });
-
-                    self.getHtmlForProblems("#taggingEquations");
-
                 }else{
-                    //fake it
-                    //TODO: need to add in results from classroom activity
+                    //fake data
                     self.userData.problemSet = [
                         {   title:"Melon Drop", 
-                            name:"MellonDrop", 
+                            problem_name:"MellonDrop", 
                             principles:["Acceleration", "Newton's First Law"],
-                            equations:[4, 18, 21]
+                            equation_ids:[4, 18, 21]
                         },
                         {   title:"Block on a Table Top", 
-                            name:"BlockOnTable",
+                            problem_name:"BlockOnTable",
                             principles:["Static Friction", "Potential Energy"],
-                            equations:[6, 9, 18]
+                            equation_ids:[6, 9, 18]
                         },
                         {   title:"Block on a Board", 
-                            name:"BlockOnBoard",
+                            problem_name:"BlockOnBoard",
                             principles:["Potential Energy","Work"],
-                            equations:[4, 10, 11, 27, 29]
+                            equation_ids:[4, 10, 11, 27, 29]
                         }
                     ];
-
-                    if ( self.userData.problemSet.length > 1 ) {
-                        $("#taggingEquations .nextProblem").removeClass("ui-disabled");
-                    }
-
-                    $("#taggingEquations .previousProblem").click(function(){
-                        self.currentProblemIndex--;
-                        self.animateProblems("#taggingEquations");
-                    });
-
-                    $("#taggingProblems .nextProblem").click(function(){
-                        self.currentProblemIndex++;
-                        self.animateProblems("#taggingEquations");
-                    });
-
-                    self.getHtmlForProblems("#taggingEquations");
-
 
                     //fake it, this event comes from the video board
                     $('#taggingEquations .skipButton').css('display','block');
@@ -858,31 +842,21 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     });
                 }
 
-                // temp equations, they are actually per problem
-                var equationIds = [2,3,5,10];
+                if ( self.userData.problemSet.length > 1 ) {
+                    $("#taggingEquations .nextProblem").removeClass("ui-disabled");
+                }
 
-                var equations = self.parseEquationIdsIntoString(equationIds);
-                console.log("equations",equations);
-
-                var output = '';
-                _.each( equations, function(eq){ 
-                    output += '<div data-role="button" data-inline="true" class="draggable" \
-                        id="drag-'+eq.id+'" \
-                        value="'+eq.id+'" \
-                        >' 
-                        + eq.name 
-                        +'</div>';
+                $("#taggingEquations .previousProblem").click(function(){
+                    self.currentProblemIndex--;
+                    self.animateProblems("#taggingEquations");
                 });
 
+                $("#taggingEquations .nextProblem").click(function(){
+                    self.currentProblemIndex++;
+                    self.animateProblems("#taggingEquations");
+                });
 
-                var pageScope = "#taggingEquations";
-                $(pageScope + " .draggableTags").html(output).trigger("create");
-
-                //update formatting of equations
-                MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
-
-                self.enableDragAndDropPortal(pageScope);
-
+                self.getHtmlForProblems("#taggingEquations");
 
             });
 

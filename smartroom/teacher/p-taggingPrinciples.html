@@ -19,7 +19,7 @@
             .then('js/neoplace.tablet.teacher.js')
             //.then('http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML')
             //TODO: comment out UI_TESTING_ONLY = false, otherwise keep uncommented
-            .thenRun(function() { return Sail.init(NEOplace.Tablet.Teacher); });  
+            //.thenRun(function() { return Sail.init(NEOplace.Tablet.Teacher); });  
     </script>
 </head>
 <body class="student">
@@ -37,7 +37,6 @@
             <div class="step-instructions">
                 <h2>Step 1 of 4</h2>
                 <h3>Students watch videos clips and tag principles</h3>
-                <p>Tap the appropiate buttons to either allow students to sign into the video boards, or to start tagging rounds:</p>
             </div>
 
             <div class="ui-grid-c">
@@ -53,9 +52,13 @@
                 <div class="ui-block-d round-header">
                     Round 4
                 </div>
+            </div>
 
+            <p class="text-align-center button-group-layer ">Tap 'Allow Sign In' <strong>only after</strong> all students have logged in (pre-Round 1) or have clicked 'Done' after tagging principles in each round.</p>
+
+            <div class="ui-grid-c">
                 <div class="ui-block-a">
-                    <a href="#" data-role="button" data-icon="arrow-d" data-iconpos="right" class="allowSignInButton ui-disabled" value="1">Allow Sign In</a>
+                    <a href="#" data-role="button" data-theme="b" data-icon="arrow-d" data-iconpos="right" class="allowSignInButton ui-disabled" value="1">Allow Sign In</a>
                 </div>
                 <div class="ui-block-b">
                     <a href="#" data-role="button" data-icon="arrow-d" data-iconpos="right" class="allowSignInButton ui-disabled" value="2">Allow Sign In</a>
@@ -66,7 +69,11 @@
                 <div class="ui-block-d">
                     <a href="#" data-role="button" data-icon="arrow-d" data-iconpos="right" class="allowSignInButton ui-disabled" value="4">Allow Sign In</a>
                 </div>
+            </div>
 
+            <p class="text-align-center button-group-layer">Tap 'Start Round' <strong>only after</strong> all the students have signed into the a video board.</p>
+
+            <div class="ui-grid-c">
                 <div class="ui-block-a">
                     <a href="#" data-role="button" class="startVideoButton ui-disabled" value="1">Start Round 1</a>
                 </div>
@@ -81,7 +88,8 @@
                 </div>
             </div><!-- /grid-c -->
 
-            <a href="#" data-role="button" data-icon="arrow-r" data-iconpos="top" class="nextStepButton ui-disabled">Goto Step 2</a>
+            <p class="text-align-center button-group-layer">Tap 'Goto Step 2' <strong>only after</strong> all the students have clicked 'Done' after Round 4.</p>
+            <a href="#" data-role="button" data-theme="e" data-icon="arrow-r" data-iconpos="top" class="nextStepButton">Goto Step 2</a>
 
             <!-- for UI_TESTING_ONLY -->
             <a href="#" data-role="button" data-theme="e" class="skipButton" style="display:none;">Skip</a>
