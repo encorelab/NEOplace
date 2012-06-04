@@ -18,7 +18,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
     }
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
-    var UI_TESTING_ONLY = true;
+    var UI_TESTING_ONLY = false;
     console.log( "ATTN: UI_TESTING_ONLY is set to " + UI_TESTING_ONLY );
     // If set to false, remember to uncomment this line from the .html files
     //.thenRun(function() { return Sail.init(NEOplace.Tablet.Student); });  
