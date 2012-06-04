@@ -244,14 +244,15 @@
                 .unbind('click')
                 .bind('click', function () {
                     if (app.state.get('step') === 'problem-sorting') {
-                        var rationale = prompt("Please provide a brief rationale for how the problems help in approaching solving the challenge question:");
-                        if (rationale && rationale.length > 0) {
-                            callWhenDone(rationale);
-                        }
+                        //var rationale = prompt("Please provide a brief rationale for how the problems help in approaching solving the challenge question:");
+                        //if (rationale && rationale.length > 0) {
+                        //    callWhenDone(rationale);
+                        //}
+                        callWhenDone("");
                     } else {
-                        if (confirm("Commit your sorted tags?")) {
+                        //if (confirm("Commit your sorted tags?")) {
                             callWhenDone();
-                        }
+                        //}
                     }
                     
                 });
