@@ -11,5 +11,8 @@
   },
 "mongo": {
     "url": "http://drowsy.aardvark.encorelab.org/"
+  },
+"assets": {
+    "url": "http://neoplace.aardvark.encorelab.org/assets/"
   }
 }
