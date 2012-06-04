@@ -53,30 +53,37 @@ NEOplace.Tablet.Student = (function(Tablet) {
             return str;
     };
 
-    self.enableDragAndDropPortal = function(pageScope) {
+    self.enableDragAndDropPortal = function(pageScope,id) {
 
         console.log("enableDragAndDropPortal() on " + pageScope);
 
-        jQuery(pageScope + " .draggable").draggable({containment: pageScope + " .dragAndDropContainer"});
-        jQuery(pageScope + " .tagDropArea").droppable();
+        var targetElement = pageScope;
+        if ( id ) {
+            targetElement += " #" + id;
+        }
+
+        console.log("enableDragAndDropPortal() on " + targetElement);
+
+        jQuery(targetElement + " .draggable").draggable({containment: targetElement + " .dragAndDropContainer"});
+        jQuery(targetElement + " .tagDropArea").droppable();
 
         // Drag events on button
-        jQuery(pageScope + " .draggable").die();
-        jQuery(pageScope + " .draggable").live('dragstart', function(event,ui) {
+        jQuery(targetElement + " .draggable").die();
+        jQuery(targetElement + " .draggable").live('dragstart', function(event,ui) {
             // use css to bring more attention to drop area
-            jQuery(pageScope + " .tagDropArea").removeClass("idle").addClass("attention");
+            jQuery(targetElement + " .tagDropArea").removeClass("idle").addClass("attention");
         }); 
-        jQuery(pageScope + " .draggable").live('dragstop', function(event,ui) {
+        jQuery(targetElement + " .draggable").live('dragstop', function(event,ui) {
             // remove the css added to drop area in 'dragstart' event
-            jQuery(pageScope + " .tagDropArea").removeClass("attention").addClass("idle");
+            jQuery(targetElement + " .tagDropArea").removeClass("attention").addClass("idle");
         }); 
-        // jQuery(pageScope + " .draggable").live('drag', function(event,ui) {
+        // jQuery(targetElement + " .draggable").live('drag', function(event,ui) {
         //     console.log("dragging ", event.target.getAttribute("value"));
         // });
 
         // Drop events on portal
-        jQuery(pageScope + " .tagDropArea").die();
-        jQuery(pageScope + " .tagDropArea").live('drop', function(event,ui) {
+        jQuery(targetElement + " .tagDropArea").die();
+        jQuery(targetElement + " .tagDropArea").live('drop', function(event,ui) {
             console.log("drop ", ui.draggable.attr("value"));
 
             if ( !UI_TESTING_ONLY ) {
@@ -254,7 +261,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 });
 
                 jQuery('#'+id+' .draggableTags').html(equationsList).trigger("create");
-                self.enableDragAndDropPortal(pageScope + ' #'+id);
+                self.enableDragAndDropPortal(pageScope, id);
 
             }
             console.log("equationsList", equationsList);
@@ -608,7 +615,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
                     // update behaviour of done button
                     var nextPage = "p-waitScreen.html";
-                    if ( self.visitedVideoBoards.length == TOTAL_VIDEO_BOARDS ) {
+                    if ( self.visitedVideoBoards.length === TOTAL_VIDEO_BOARDS ) {
                         nextPage = "p-taggingPrinciplesFinished.html";
                     }
 
@@ -861,7 +868,9 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 jQuery('#variableWriter .addButton').live('click', function() {
 
                     var inputtedText = jQuery('#variableWriter #assumptionOrVariable').val().trim();
-                    if ( inputtedText === "" ) return;
+                    if ( inputtedText === "" ) {
+                        return;
+                    }
 
                     console.log( inputtedText );
 
