@@ -1028,7 +1028,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
         },*/
 
         videowall_equations_commit: function(sev) {
-            if (sev.payload.videowall === self.currentBoard) ) {
+            if (sev.payload.videowall === self.currentBoard) {
                 self.setState("variable_writing");
                 jQuery.mobile.changePage('p-variableWriter.html');
             }
