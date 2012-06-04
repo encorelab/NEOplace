@@ -566,11 +566,11 @@ button:hover {
 /************************************************************/
 
 @-webkit-keyframes teleportIn {
-    0% { -webkit-transform:scale(2.5); opacity: 0.0;}
+    0% { -webkit-transform:scale(3.0); opacity: 0.0;}
     100% {-webkit-transform:scale(1.0); opacity: 1.0; }
 }
 @-moz-keyframes teleportIn {
-    0% { -moz-transform:scale(2.5); opacity: 0.0;}
+    0% { -moz-transform:scale(3.0); opacity: 0.0;}
     100% {-moz-transform:scale(1.0); opacity: 1.0; }
 }
 
