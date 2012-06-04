@@ -238,7 +238,7 @@
     view.toggleDoneSortingButton = function (callWhenDone) {
         var allSorted = jQuery('.tag-balloon')
                             .filter(':not(.sorted-as-accepted)')
-                            .filter(':not(.sorted-as-rejected)').length == 0;
+                            .filter(':not(.sorted-as-rejected)').length === 0;
 
         if (jQuery('.tag-balloon').length === 0)
             allSorted = false;
