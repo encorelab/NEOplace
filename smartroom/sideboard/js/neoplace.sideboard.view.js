@@ -44,7 +44,7 @@
                 break;
             case 'problem':
                 var pid = balloon.get('problem');
-                var problem = _.find(app.problems, function (p) { return p.name == pid; });
+                var problem = app.problems[pid];
                 var txt;
                 if (problem)
                     txt = problem.title;

@@ -124,7 +124,10 @@ NEOplace.SideBoard = (function() {
         jQuery.ajax(Sail.app.config.assets.url + '/problems.json', {
             dataType: 'json',
             success: function (data) {
-                app.problems = data;
+                app.problems = {};
+                _.each(data, function (p) {
+                    app.problems[p.name] = p.title;
+                });
                 jQuery(app).trigger('problems_loaded');
             }
         });

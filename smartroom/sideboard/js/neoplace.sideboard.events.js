@@ -148,11 +148,16 @@
         jQuery('.tag-balloon')
             .hide('fade', 'fast');
 
-        var problems = _.uniq(app.balloons.pluck('problem'));
+        var problem_keys = _.uniq(app.balloons.pluck('problem'));
         var students = _.uniq(_.flatten(app.balloons.pluck('contributors')));
 
+        var problem_titles = _.map(problem_keys, function (k) {
+            return app.problems[k];
+        });
+
         var sev = new Sail.Event('videowall_problems_commit', {
-            problems: problems,
+            problem_keys: problem_keys,
+            problem_titles: problem_titles,
             students: students,
             rationale: rationale,
             videowall: app.location
