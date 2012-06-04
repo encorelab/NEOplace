@@ -66,7 +66,8 @@
        },
        activity_started: function(sev) {
             var activity = sev.payload.activity_name.toLowerCase();
-            app.hideGameOverScreen();
+            //app.hideGameOverScreen();
+            app.showBeginActivityScreen();
             app.setCurrentTask(activityMapper[activity]);
        },
        next_video: function(sev) {
