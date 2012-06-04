@@ -653,7 +653,7 @@ NEOplace.FrontBoardAggregator = (function() {
             },
 
             videowall_problems_commit: function (sev) {
-                _.each(sev.payload.problems, function (i) {
+                _.each(sev.payload.problem_keys, function (i) {
                     if(i!=null){
                         var problem = {
                             board:sev.payload.videowall,
