@@ -36,6 +36,14 @@ def clear_data()
   @mongo.collection(:user_wall_assignments_principle).remove()
   puts "Clearing vidwall_user_tag_counts (Agent)"
   @mongo.collection(:vidwall_user_tag_counts).remove()
+  puts "Clearing events"
+  @mongo.collection(:events).remove()
+  puts "Clearing sideboard_states (Matt's board)"
+  @mongo.collection(:sideboard_states).remove()
+  puts "Clearing sideboard_tag_balloons (Matt's board)"
+  @mongo.collection(:sideboard_tag_balloons).remove()
+  puts "Clearing sideboard_tags (Matt's board)"
+  @mongo.collection(:sideboard_tags).remove()
 end
 
 clear_data()
