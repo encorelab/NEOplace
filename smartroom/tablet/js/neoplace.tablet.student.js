@@ -166,7 +166,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
 
     //helper method
-    self.parseEquationIdsIntoImgTag = function(equationIds){
+    self.parseEquationIdsIntoImgTag = function(equationIds, size){
 
         var equations = _.map( equationIds, function(id){
             var eq = {};
@@ -177,7 +177,11 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }else{
                 eq.name += "/assets";
             }
-            eq.name += self.allEquations[id].img20 + '" alt="" />';
+            if ( size === 10 ) {
+                eq.name += self.allEquations[id].img10 + '" alt="" />';
+            }else{
+                eq.name += self.allEquations[id].img20 + '" alt="" />';
+            }
             return eq;
         });
         return equations;
@@ -245,15 +249,17 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }
 
             //var equations = self.parseEquationIdsIntoString(problem.equation_ids);
-            var equations = self.parseEquationIdsIntoImgTag(problem.equation_ids);
+            var equations = [];
             var equationsList = "";
             if (pageScope === "#taggingProblems") {
+                equations = self.parseEquationIdsIntoImgTag(problem.equation_ids,20);
                 _.each( equations, function(equation){
                     equationsList += "<li>"+equation.name+"</li>";
                 });
                 jQuery('#'+id+' .equationsList').html(equationsList).listview("refresh");
 
             }else{
+                equations = self.parseEquationIdsIntoImgTag(problem.equation_ids,10);
                 jQuery('#'+id+' .equationsList').replaceWith("");
 
                 _.each( equations, function(equation){
@@ -823,12 +829,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
                         {   title:"Melon Drop", 
                             problem_name:"MellonDrop", 
                             principles:["Acceleration", "Newton's First Law"],
-                            equation_ids:[4, 18, 21]
+                            equation_ids:[4, 17, 18, 21]
                         },
                         {   title:"Block on a Table Top", 
                             problem_name:"BlockOnTable",
                             principles:["Static Friction", "Potential Energy"],
-                            equation_ids:[6, 9, 18]
+                            equation_ids:[6, 9, 17, 18]
                         },
                         {   title:"Block on a Board", 
                             problem_name:"BlockOnBoard",

@@ -494,6 +494,8 @@ table.dragAndDropContainer .draggableTags {
 
 #taggingProblems .ui-li-thumb {
     margin: 10px 10px 0 10px;
+    max-height: none;
+    max-width: none;
 }
 /* END Styles exclusively for: p-taggingProblems.html */
 
