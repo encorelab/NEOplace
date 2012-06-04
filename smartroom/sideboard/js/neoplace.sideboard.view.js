@@ -135,7 +135,7 @@
                 var counter = foc(this.$el, '.counter', 
                             "<div class='counter'></div>");
 
-                counter.text(this.model.get('tags').length - 1);
+                counter.text(this.model.get('tags').length);
 
                 
                 //this.$el.effect('highlight', 'slow');
