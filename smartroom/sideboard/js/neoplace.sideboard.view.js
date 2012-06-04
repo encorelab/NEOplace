@@ -21,12 +21,12 @@
     // find or create element in parent matching the selector;
     // if element doesn't exist in parent, create it with the given html
     var foc = function(parent, selector, html) {
-        var el = parent.find(selector);
+        var el = jQuery(parent).find(selector);
         if (el.length) {
             return el;
         } else {
             el = jQuery(html);
-            parent.append(el);
+            jQuery(parent).append(el);
             return el;
         }
     };
@@ -288,6 +288,18 @@
         jQuery('#sorting-space-yup, #sorting-space-nope').droppable('disable');
 
         jQuery('#done-sorting').unbind('click');
+    };
+
+    view.addCheckedInUser = function (username) {
+        var domID = 'user-'+username;
+        var u = foc('#users-container', '#'+domID,
+                    '<div id="'+domID+'" class="checked-in-user">'+username+'</div>');
+        u.show();
+    };
+
+    view.removeCheckedInUser = function (username) {
+        var domID = 'user-'+username;
+        jQuery('#'+domID).hide('fade', 'slow');
     };
 
     app.view = view;

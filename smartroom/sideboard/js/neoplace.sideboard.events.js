@@ -112,6 +112,21 @@
         app.switchToAssvarSorting();
     };
 
+    events.sail.teacher_assumptions_variables_approve = function (sev) {
+        if (!forMe(sev)) return;
+
+        events.teacherApprovedAssvars();
+    };
+
+    events.sail.check_in = function (sev) {
+        var username = sev.origin;;
+        if (sev.payload.location === app.location) {
+            app.view.addCheckedInUser(username);
+        } else {
+            app.view.removeCheckedInUser(username);
+        }
+    };
+
     /* METHODS THAT TRIGGER OUTGOING SAIL EVENTS */
 
     var commitBalloons = function () {
@@ -189,6 +204,28 @@
 
     events.doneSortingAssvars = function() {
         console.log("Done sorting assvars...");
+
+        var sev = new Sail.Event('check_assumptions_variables_alert', {
+            location: app.location
+        });
+
+        app.groupchat.sendEvent(sev);
+
+        app.view.disableDoneSortingButton();
+        jQuery('#done-sorting')
+            .text("Waiting for teacher")
+
+        app.balloons.on('change', function () {
+            jQuery('#done-sorting')
+                .text("DONE SORTING");
+
+            app.view.toggleDoneSortingButton(events.doneSortingAssvars);
+        });
+
+    };
+
+    events.teacherApprovedAssvars = function() {
+        console.log("Done sorting assvars...");
         jQuery('.tag-balloon')
             .hide('fade', 'fast');
 
@@ -206,6 +243,8 @@
         app.groupchat.sendEvent(sev);
 
         commitBalloons();
+
+        app.view.disableDoneSortingButton();
     };
 
     /* LOCAL EVENTS */

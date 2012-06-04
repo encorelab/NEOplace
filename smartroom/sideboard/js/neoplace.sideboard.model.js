@@ -137,9 +137,9 @@
 
                 if (type == 'assvar') {
                     if (this.has('assumption'))
-                        return 'assumption-'+MD5.hexdigest('assumption');
+                        return 'assumption-'+MD5.hexdigest(this.get('assumption'));
                     else
-                        return 'variable-'+MD5.hexdigest('variable');
+                        return 'variable-'+MD5.hexdigest(this.get('variable'));
                 } else {
                     return type + '-' + 
                     MD5.hexdigest(
