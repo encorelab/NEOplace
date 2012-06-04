@@ -244,11 +244,11 @@
                 .unbind('click')
                 .bind('click', function () {
                     if (app.state.get('step') === 'problem-sorting') {
-                        //var rationale = prompt("Please provide a brief rationale for how the problems help in approaching solving the challenge question:");
+                        var instructions = "Please provide a brief rationale for how the problems help in approaching solving the challenge question:";
                         //if (rationale && rationale.length > 0) {
                         //    callWhenDone(rationale);
                         //}
-                        callWhenDone("");
+                        view.prompt(instructions, callWhenDone);
                     } else {
                         //if (confirm("Commit your sorted tags?")) {
                             callWhenDone();
@@ -259,6 +259,34 @@
         } else {
             view.disableDoneSortingButton();
         }
+    };
+
+    view.prompt = function (instructions, callOnSubmit) {
+        var dialog = jQuery("<div><p></p><textarea></textarea></div>");
+        
+        dialog.find('p').text(instructions);
+        dialog.find('textarea').css({'width': '100%', 'min-height': '5em'});
+        dialog.dialog({
+            minWidth: 440,
+            modal: true,
+            draggable: false,
+            buttons: {
+                Cancel: function() {
+                    jQuery(this).dialog("close");
+                },
+                Submit: function() {
+                    jQuery(this).dialog("close");
+                    callOnSubmit(dialog.find('textarea').val());
+                }
+            }
+        });
+        dialog.css('width', '400px');
+    };
+
+    view.addProblemsRationale = function (rationale) {
+        var rationaleContainer = jQuery("<div class='rationale'></div>");
+        rationaleContainer.text(rationale);
+        jQuery('#problems-committed').append(rationaleContainer);
     };
 
     view.makeSortingSpaceDroppable = function (callWhenDone) {
