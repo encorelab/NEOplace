@@ -177,7 +177,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
             }else{
                 eq.name += "/assets";
             }
-            eq.name += self.allEquations[id].img10 + '" alt="" />';
+            eq.name += self.allEquations[id].img20 + '" alt="" />';
             return eq;
         });
         return equations;
