@@ -373,7 +373,8 @@ to {
     position: relative;
     display: inline;
     top: 10px;
-    left: -60px;
+    left: -20px;
+    margin-left: 5px;
 }
 
 .good-time {
