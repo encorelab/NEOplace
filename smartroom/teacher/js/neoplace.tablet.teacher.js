@@ -72,6 +72,11 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         Sail.app.groupchat.sendEvent(sev);
     }
 
+    self.submitVideoTaggingComplete = function() {
+        var sev = new Sail.Event('video_tagging_complete', {}); //no payload
+        Sail.app.groupchat.sendEvent(sev);
+    }
+
     self.submitStartActivity = function(activityName) {
         var sev = new Sail.Event('activity_started', {
             activity_name: activityName,
@@ -121,6 +126,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             //save problems for this group
             //self.boards[boardLetter].students = sev.payload.students;
             //self.boards[boardLetter].problems = sev.payload.problems;
+            //TODO: should count?
         },
 
         videowall_equations_commit: function (sev) {
@@ -129,18 +135,22 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
             $('#taggingEquations .doneEquations[value="'+boardLetter+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
         },
 
-        videowall_assumptions_variables_commit: function (sev) {
+        check_assumptions_variables_alert: function (sev) {
             var boardLetter = sev.payload.videowall;
             console.log("Heard that board " + boardLetter + " is done writing assumptions.")
             self.boards[boardLetter].students = sev.payload.students;
             $('#taggingEquations .approveButton[value="'+boardLetter+'"]').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b").removeClass("ui-disabled");
         },
 
-        videowall_assumptions_variables_commit_cancel: function (sev) {
-            var boardLetter = sev.payload.videowall;
-            console.log("Heard that board " + boardLetter + " needs more time to write assumptions.")
-            $('#taggingEquations .approveButton[value="'+boardLetter+'"]').attr("data-theme","c").removeClass("ui-btn-up-b").addClass("ui-btn-up-c").addClass("ui-disabled");
+        videowall_assumptions_variables_commit: function(sev) {
+            //don't need to do anything here
         }
+
+        // videowall_assumptions_variables_commit_cancel: function (sev) {
+        //     var boardLetter = sev.payload.videowall;
+        //     console.log("Heard that board " + boardLetter + " needs more time to write assumptions.")
+        //     $('#taggingEquations .approveButton[value="'+boardLetter+'"]').attr("data-theme","c").removeClass("ui-btn-up-b").addClass("ui-btn-up-c").addClass("ui-disabled");
+        // }
 
     };
 
@@ -210,9 +220,18 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         });
 
         $('#taggingPrinciples .nextStepButton').click(function(){
+            self.submitVideoTaggingComplete(); //xmpp msg
             $.mobile.changePage('p-sortPrinciples.html');
         });
 
+        //if ( UI_TESTING_ONLY ) {
+            //skip button for testing only
+            $("#taggingPrinciples .skipButton").css("display","block");
+            $("#taggingPrinciples .skipButton").die();
+            $("#taggingPrinciples .skipButton").live("click", function(){
+                $.mobile.changePage('p-sortPrinciples.html');
+            });
+        //}
     });
 
     // ****************
@@ -232,6 +251,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
         });
 
         $('#sortPrinciples .startStepButton').click(function(){
+            //TODO: confirm alert dialog
             $(this).addClass("ui-disabled");
             if ( !UI_TESTING_ONLY ) {
                 self.submitStartActivity("principle_sorting"); //xmpp msg
@@ -239,6 +259,7 @@ NEOplace.Tablet.Teacher = (function(Tablet) {
                 $('#sortPrinciples .donePrinciples').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
                 $('#sortPrinciples .doneProblems').attr("data-theme","b").removeClass("ui-btn-up-c").addClass("ui-btn-up-b");
             }
+            //$('#sortPrinciples .nextStepButton').removeClass("ui-disabled");
         });
 
         //When the tablet hears "done" from the video board, update the fake buttons
