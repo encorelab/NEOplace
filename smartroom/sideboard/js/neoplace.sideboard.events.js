@@ -232,7 +232,7 @@
             .hide('fade', 'fast');
 
         var assumptions = _.without(_.uniq(app.balloons.pluck('assumption')), null);
-        var variables = _.without(_.uniq(app.balloons.pluck('equation')), null);
+        var variables = _.without(_.uniq(app.balloons.pluck('variable')), null);
         var students = _.uniq(_.flatten(app.balloons.pluck('contributors')));
 
         var sev = new Sail.Event('videowall_assumptions_variables_commit', {
