@@ -215,12 +215,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
 
         _.each( self.userData.problemSet, function(problem,key){
             var id = "problem" + key;
-            $(pageScope+" .scrollingProblems").append(
-                '<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate + ' ' + self.equationDragDropTemplate +'</div>'
-            ).trigger("create");
 
             if (pageScope === "#taggingEquations") {
+                $(pageScope+" .scrollingProblems").append('<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate + ' ' + self.equationDragDropTemplate +'</div>').trigger("create");
                 $('#'+id+' .connectButton').replaceWith("");
+            }else{
+                $(pageScope+" .scrollingProblems").append('<div class="attachProblemContainer" id="'+id+'">'+ self.problemTemplate +'</div>').trigger("create");
             }
 
             $('#'+id+' .problem-title').html(problem.title);
