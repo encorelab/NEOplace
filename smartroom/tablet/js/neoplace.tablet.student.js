@@ -953,7 +953,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     };
 
     self.submitVariableAssumption = function(type,variableAssumptionContent) {
-        var sev = new Sail.Event('student_variable_assumption_submit', {
+        var sev = new Sail.Event('student_assumption_variable_submit', {
             type:type,
             message:variableAssumptionContent
         });
@@ -1010,7 +1010,16 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 self.assignProblems(sev.payload.students,sev.payload.principles,'p-taggingProblems.html');
                 // assignProblems also moves the tablet to the next page          
             }
-        },        
+        },
+
+        videowall_problems_commit: function(sev) {
+            // the if checks for this tablet user
+            if (sev.payload.videowall === self.currentBoard) {
+                jQuery.mobile.changePage('p-waitScreen.html');
+                // assignProblems also moves the tablet to the next page          
+            }
+        },
+
 
 /*        videowall_principles_commit: function(sev) {
             // the if checks for this tablet user
