@@ -142,7 +142,7 @@ button:hover {
 
 #sideboard-label {
     color: #B0B0B0;
-    font-size: 130px;
+    font-size: 150px;
     font-weight: bold;
     line-height: 0.9;
     opacity: 0.3;
@@ -184,6 +184,7 @@ button:hover {
     text-transform: uppercase;
     top: 0;
     width: 49.3%;
+    letter-spacing: -3px;
 }
 
 #sorting-space-nope {
@@ -199,6 +200,7 @@ button:hover {
     text-transform: uppercase;
     top: 0;
     width: 49.3%;
+    letter-spacing: -3px;
 }
 
 #drag-icon-left {
@@ -277,8 +279,8 @@ button:hover {
     display: inline-block;
     min-height: 2em;
     max-height: 50%;
-    width: 48%;
-    max-width: 48%;
+    width: 49%;
+    max-width: 49%;
     margin-bottom: 8px;
 
     overflow: auto;
@@ -304,6 +306,7 @@ button:hover {
 .committed-box .balloon {
     position: static;
     margin-bottom: 4px;
+    margin-right: 3px;
     display: inline-block;
 }
 
@@ -312,13 +315,14 @@ button:hover {
 }
 
 .committed-box .balloon .label {
-    padding: 5px 7px;
-    font-size: 12px;
+    padding: 3px 1px;
+    font-size: 11px;
 }
 
 .committed-box .balloon .subtext {
     position: relative;
     top: -5px;
+    font-size: 9px;
 }
 
 .committed-box .balloon.assvar .label {
@@ -343,6 +347,13 @@ button:hover {
 
 #assvars-committed {
     
+}
+
+#users-container {
+    display: none;
+    position: absolute;
+    bottom: 0px;
+    padding: 8px;
 }
 
 /****** principle-tagging ***********************************/
@@ -458,7 +469,7 @@ button:hover {
     /*width: 300px;*/
     display: inline-block;
 
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
     color: #222;
     border: 1px solid #ccc;
@@ -534,7 +545,7 @@ button:hover {
 
 .balloon .label {
     margin-bottom: 4px;
-    font-size: 13px;
+    font-size: 12px;
 
     padding: 6px;
 }

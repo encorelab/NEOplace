@@ -40,6 +40,7 @@ NEOplace.FrontWall = (function() {
                         'Time is up!'];
   
   var currentTask = null;
+  var suspendTimer = false;
   var currentTaskTickTimer = 0;
   var tickInterval = 200;
   var timeExpired = false;
@@ -129,7 +130,7 @@ NEOplace.FrontWall = (function() {
   
   app.frontboardTrackerProcessor = function(){
     
-    if (currentTask) {
+    if (currentTask && ! suspendTimer) {
       currentTaskTickTimer += tickInterval;
       app.taskStatusAnimationProcessor();
     }
@@ -190,6 +191,26 @@ NEOplace.FrontWall = (function() {
       jQuery("#epic-task-completed-container").fadeOut(1500);
       jQuery(backgroundModal).fadeOut('fast');
       jQuery('#achievement-description').html(statusCaptions[0]);
+  };
+  
+  app.showBeginActivityScreen = function(){
+    app.stopTask();
+    suspendTimer = true;
+    var backgroundModal = jQuery("#modal-background");
+     jQuery('#achievement-symbol').hide();
+     jQuery('#achievement-description').html('Starting Activity...');
+     
+    jQuery(backgroundModal).fadeIn(800, "linear", function(){
+        jQuery("#epic-task-completed-container").fadeIn(1000, 'linear', function(){
+          
+          jQuery("#epic-task-completed-container").fadeOut(1500, 'linear', function(){
+            jQuery(backgroundModal).fadeOut('fast', 'linear', function(){ suspendTimer = false;});
+            });
+          
+        }
+                                                        
+                                                        );
+      });
   };
   
   // GAME OVER!!!
