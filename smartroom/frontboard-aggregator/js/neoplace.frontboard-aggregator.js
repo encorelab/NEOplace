@@ -87,8 +87,8 @@ NEOplace.FrontBoardAggregator = (function() {
    };
     // Shows board and toolbars. This function is called when sail is connected.
     var showHtmlContent = function() {
-        jQuery("#board").fadeIn("slow");
-        jQuery("#toolbars").fadeIn("slow");
+        jQuery("#board").fadeIn("fast");
+        jQuery("#toolbars").fadeIn("fast");
         jQuery("#board").show();
         jQuery("#toolbars").show();
     };
@@ -251,7 +251,7 @@ NEOplace.FrontBoardAggregator = (function() {
                 
                 var theFullText = jQuery(this).text();
                 var myDivId = jQuery(this).attr("id");
-                jQuery("#"+myDivId + " span").first().fadeIn("slow");
+                jQuery("#"+myDivId + " span").first().fadeIn("fast");
                 jQuery("#"+myDivId + " span").first().show();
                 jQuery("#"+myDivId).mousedown(bringDraggableToFront);
             });
@@ -261,14 +261,22 @@ NEOplace.FrontBoardAggregator = (function() {
             jQuery("#board .assumption").click(function () {
 
                 var myDivId = jQuery(this).attr("id");
-                jQuery("#"+myDivId + " span").first().fadeIn("slow");
+                jQuery("#"+myDivId + " span").first().fadeIn("fast");
                 jQuery("#"+myDivId + " span").first().hide();
                 jQuery("#"+myDivId).mousedown(bringDraggableToFront);
 
             });
 
+            /* 
+                remove opacities
+                since dbSaveState() can run before the fadeIn("fast") efect finishes, 
+                Some divs are stored with an opacity.
+            */
+            jQuery("#board .paper div").css("opacity", "");
+
             // bring element to front
             jQuery("#board .paper div").mousedown(function () {
+                //jQuery(this).mousedown(bringDraggableToFront);
                 jQuery(this).mousedown(bringDraggableToFront);
             });
             
@@ -328,7 +336,7 @@ NEOplace.FrontBoardAggregator = (function() {
                 
                 var theFullText = jQuery(this).text();
                 var myDivId = jQuery(this).attr("id");
-                jQuery("#"+myDivId + " span").first().fadeIn("slow");
+                jQuery("#"+myDivId + " span").first().fadeIn("fast");
                 jQuery("#"+myDivId + " span").first().show();
 
             });
@@ -337,7 +345,7 @@ NEOplace.FrontBoardAggregator = (function() {
             element.click(function () {
 
                 var myDivId = jQuery(this).attr("id");
-                jQuery("#"+myDivId + " span").first().fadeIn("slow");
+                jQuery("#"+myDivId + " span").first().fadeIn("fast");
                 jQuery("#"+myDivId + " span").first().hide();
 
             });
@@ -365,7 +373,7 @@ NEOplace.FrontBoardAggregator = (function() {
         // bring the element to the top when clicked
         element.mousedown(bringDraggableToFront);
 
-        element.fadeIn("slow");
+        element.fadeIn("fast");
 
         element.css('position', 'absolute'); 
 
