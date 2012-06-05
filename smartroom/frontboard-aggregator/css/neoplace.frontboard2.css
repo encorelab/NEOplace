@@ -450,9 +450,10 @@ div.none-yet {
 
 .equation{
   background: none repeat scroll 0 0 #FFFFFF;
-  padding: 1px 2px 4px 1px;
+  padding: 2px 2px 2px 2px;
   margin: 5px;
   float: left;
+  border: 1px solid rgba(176, 176, 176, 0.75);
 }
 
 .assumption{
@@ -505,4 +506,8 @@ div.none-yet {
 
 .hide-div{
   display: none; 
+}
+#status{
+    color: #000000;
+    font-size: 0.7em;
 }
