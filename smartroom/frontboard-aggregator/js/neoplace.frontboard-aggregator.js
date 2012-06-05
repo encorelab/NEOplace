@@ -184,9 +184,9 @@ NEOplace.FrontBoardAggregator = (function() {
             data: stateObj,
 
             success: function () {
-                console.log("Saved state in frontboard_aggregator_states");
+                console.log("Capture saved in collection");
                 //Sail.app.groupchat.sendEvent(sev);
-                jQuery("#status").html("State Saved");
+                jQuery("#status").html("Captured");
             },
             error: function (e) {
                 console.log('some error when saving state.');
@@ -268,7 +268,7 @@ NEOplace.FrontBoardAggregator = (function() {
             });
 
             // bring element to front
-            jQuery("#board .paper div").focusin(function () {
+            jQuery("#board .paper div").mousedown(function () {
                 jQuery(this).mousedown(bringDraggableToFront);
             });
             
@@ -419,9 +419,6 @@ NEOplace.FrontBoardAggregator = (function() {
         }).toArray();
         var maxZ = Math.max.apply(Math, zs);
         jQuery(this).css('z-index', maxZ + 1);
-
-        //test make make all position absolute
-        //jQuery("#quadrant-content-A div").css('position', 'absolute');
     };
 
     self.events = {
