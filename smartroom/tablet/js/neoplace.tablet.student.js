@@ -344,12 +344,45 @@ NEOplace.Tablet.Student = (function(Tablet) {
     //this called for taggingEquations
     self.assignProblemsWithEquations = function(){
 
-        //self.userData.problemSet. //needs to be all problems
+        // get all the problems associated with current particular wall from the db
+        // return full problem set for this board
+        // unique it
+        // take only problems and put in array
+        var url = Sail.app.config.mongo.url + '/' + currentDb() + '/sideboard_tag_balloons';
+        var videoboardProblems = [];
 
-        self.setState('equation_tagging');
+        jQuery.ajax(url, {
+            type: 'get',
+            data: {
+                selector: JSON.stringify({
+                    location: self.currentBoard,
+                    sorted_as: "accepted",
+                    problem: { '$exists': true }
+                })
+            },
+            success: function (data) {
+                var problems = _.pluck(data, 'problem');
+                // is analogous to - var problems = _.map(data, function (p) { return p.problem });
+                videoboardProblems = _.uniq(problems);
 
-        jQuery.mobile.changePage('p-taggingEquations');
-    }
+/*                self.userData.problemSet = _.filter(self.allProblemSets, function(problemSet) {
+                    return ( _.find(problemSet.problem_name, function(p) {
+                        return _.include(videoboardProblems, p)
+                    }) );
+                });*/
+
+                self.userData.problemSet = _.filter(self.allProblemSets, function(problemSet) {
+                    return _.any(videoboardProblems, function(vp) {
+                        return problemSet.problem_name === vp;
+                    });
+                });
+
+                self.setState("equations_tagging");
+            }
+        });        
+
+
+    };
 
     //this called for taggingProblems
     self.assignProblems = function(students,principles) {
@@ -1012,8 +1045,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                     success: function (statesCompleted) {
                         if ( _.find(statesCompleted, function(state){ return state.activity === "principles_sorting";}) ) {
                             self.currentBoard = sev.payload.location;
-                            self.setState("equations_tagging");
-                            jQuery.mobile.changePage('p-checkInBoard.html');
+
+                            self.assignProblemsWithEquations();
+                            // setState is done in assignProblemsWithEquations
+                            jQuery.mobile.changePage('p-checkInBoard.html');                // TODO relies on slowness of students
                         } else {
                             self.currentBoard = sev.payload.location;
                             self.setState("principles_sorting");
@@ -1098,9 +1133,10 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 jQuery.mobile.changePage('p-taggingEquationsBoard.html');
 
             } else if (sev.payload.activity_name === "equation_tagging") {
-                self.userData.group = sev.payload.students;                 // do we need this?
+                //self.userData.group = sev.payload.students;                 // do we need this?
                 //self.assignProblems(sev.payload.students,sev.payload.principles); //this wouldn't have workded before                
-                self.assignProblemsWithEquations();
+                //self.assignProblemsWithEquations();
+                jQuery.mobile.changePage('p-taggingEquations.html');
 
             } else if (sev.payload.activity_name === "done_equation_tagging") {
                 // do something, go somewhere else
