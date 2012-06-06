@@ -72,21 +72,7 @@ body {
   text-align: right;
 }
 
-/** teacher styles **/
-
-.teacher {
-    background: #F3D0D0;
-}
-
-.teacher .foobar {
-
-}
-
 /** student styles **/
-
-.student {
-
-}
 
 #loginScreen #statusMsg {
     font-size: 1.2em;
@@ -319,6 +305,11 @@ body {
 /* Styles used on all p-***.html pages */
 .skipButton {
     margin-top: 100px;
+}
+
+.instruction-msg {
+    font-weight: bold;
+    color: #356d90;
 }
 /* END Styles used on all p-***.html pages */
 
