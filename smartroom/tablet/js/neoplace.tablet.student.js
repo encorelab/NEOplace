@@ -30,6 +30,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
     self.allProblemSets = {};
 
     //set UI_TESTING_ONLY to true when developing the UI without backend integration, should be set to false when deploying
+    //var UI_TESTING_ONLY = true;
     var UI_TESTING_ONLY = false;
     console.log( "ATTN: UI_TESTING_ONLY is set to " + UI_TESTING_ONLY );
     // If set to false, remember to uncomment this line from the .html files
@@ -177,12 +178,12 @@ NEOplace.Tablet.Student = (function(Tablet) {
             if ( !UI_TESTING_ONLY ) {
                 eq.name += Sail.app.config.assets.url;
             }else{
-                eq.name += "/assets";
+                eq.name += '/assets';
             }
             if ( size === 10 ) {
-                eq.name += self.allEquations[id].img10 + '" alt="" />';
+                eq.name += self.allEquations[id].img10 + '" alt="eq" />';
             }else{
-                eq.name += self.allEquations[id].img20 + '" alt="" />';
+                eq.name += self.allEquations[id].img20 + '" alt="eq" />';
             }
             return eq;
         });
@@ -245,7 +246,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 _.each( problem.principles, function(principle){
                     principlesList += "<li>"+principle+"</li>";
                 });
-                jQuery('#'+id+' .principlesList').html(principlesList).listview("refresh");
+                jQuery('#'+id+' .principlesList').html(principlesList); //.listview("refresh");
             }else{
                 jQuery('#'+id+' .principlesList').replaceWith("");
             }
@@ -258,7 +259,7 @@ NEOplace.Tablet.Student = (function(Tablet) {
                 _.each( equations, function(equation){
                     equationsList += "<li>"+equation.name+"</li>";
                 });
-                jQuery('#'+id+' .equationsList').html(equationsList).listview("refresh");
+                jQuery('#'+id+' .equationsList').html(equationsList); //.listview("refresh");
 
             }else{
                 equations = self.parseEquationIdsIntoImgTag(problem.equation_ids,10);
