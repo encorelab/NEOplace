@@ -247,8 +247,8 @@
 
         var acceptedBalloons = app.balloons.filter(acceptedFilter);
 
-        var assumptions = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('assumptions');}));
-        var variables = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('assumptions');}));
+        var assumptions = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('assumption');}));
+        var variables = _.uniq(_.map(acceptedBalloons, function (b) {return b.get('variable');}));
         var students = _.uniq(_.flatten(_.map(acceptedBalloons, function (b) {return b.get('contributors');})));
 
         assumptions = _.without(assumptions, null);
