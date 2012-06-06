@@ -167,7 +167,7 @@
         jQuery('.tag-balloon')
             .hide('fade', 'fast');
 
-        var acceptedFilter = function (b) {return b.get('sorted_as') === 'accepted';};
+        var acceptedFilter = function (b) {return b.get('sorted_as') === 'accepted' && b.get('problem');};
 
         var acceptedBalloons = app.balloons.filter(acceptedFilter);
 
