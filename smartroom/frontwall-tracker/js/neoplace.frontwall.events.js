@@ -14,7 +14,7 @@
     var activityMapper = {};
     activityMapper["video_tagging"] = 1;
     activityMapper["principle_sorting"] = 2;
-    activityMapper["equation_adding"] = 3;
+    activityMapper["equation_tagging"] = 3;
     activityMapper["video_answer"] = 4;
     
     
