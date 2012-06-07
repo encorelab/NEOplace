@@ -272,9 +272,9 @@ from {
 }
 25% {
     background-color: #ff585d;
-    -moz-box-shadow: 0 0 12px 12px #ff585d;
-    -webkit-box-shadow: 0 0 12px 12px #ff585d;
-    box-shadow: 0 0 12px 12px #ff585d;
+    -moz-box-shadow: 0 0 27px 27px #ff585d;
+    -webkit-box-shadow: 0 0 27px 27px #ff585d;
+    box-shadow: 0 0 27px 27px #ff585d;
     
      }
 40% {
@@ -284,10 +284,10 @@ from {
     box-shadow: 0 0 2px 2px #ff9999;
      }
 60% {
-     background-color: #ff585d;
-    -moz-box-shadow: 0 0 15px 15px #ff585d;
-    -webkit-box-shadow: 0 0 15px 15px #ff585d;
-    box-shadow: 0 0 15px 15px #ff585d;
+    background-color: #ff585d;
+    -moz-box-shadow: 0 0 27px 27px #ff585d;
+    -webkit-box-shadow: 0 0 27px 27px #ff585d;
+    box-shadow: 0 0 27px 27px #ff585d;
      }
 75% {
     background-color: #ff9999;
@@ -313,9 +313,9 @@ from {
 }
 25% {
     background-color: #faaf3a;
-    -moz-box-shadow: 0 0 12px 12px #faaf3a;
-    -webkit-box-shadow: 0 0 12px 12px #faaf3a;
-    box-shadow: 0 0 12px 12px #faaf3a;
+    -moz-box-shadow: 0 0 18px 18px #faaf3a;
+    -webkit-box-shadow: 0 0 18px 18px #faaf3a;
+    box-shadow: 0 0 18px 18px #faaf3a;
     
      }
 40% {
@@ -326,9 +326,9 @@ from {
      }
 60% {
     background-color: #faaf3a;
-    -moz-box-shadow: 0 0 12px 12px #faaf3a;
-    -webkit-box-shadow: 0 0 12px 12px #faaf3a;
-    box-shadow: 0 0 12px 12px #faaf3a;
+    -moz-box-shadow: 0 0 18px 18px #faaf3a;
+    -webkit-box-shadow: 0 0 18px 18px #faaf3a;
+    box-shadow: 0 0 18px 18px #faaf3a;
      }
 75% {
     background-color: #fbc36b;
@@ -373,7 +373,7 @@ to {
     position: relative;
     display: inline;
     top: 10px;
-    left: -20px;
+    left: -30px;
     margin-left: 5px;
 }
 
